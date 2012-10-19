@@ -3,6 +3,7 @@ package ch.cern.dirq;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Random;
 
 import ch.cern.dirq.extra.TestDirq;
 import ch.cern.mig.posix.Posix;
@@ -16,7 +17,8 @@ import ch.cern.mig.utils.FileUtils;
  * <br />Copyright CERN 2010-2012
  */
 public class QueueSimpleTest extends QueueTest {
-	public static final String qsPath = dir + "qs/";
+	public static final String qsPath =
+			dir + new Random().nextInt(32000) + "qs/";
 
 	/**
 	 * Create the test case.
