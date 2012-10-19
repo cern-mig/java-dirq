@@ -190,16 +190,17 @@ public class QueueSimpleTest extends QueueTest {
 	 * @throws Exception
 	 */
 	public void testPurgeMultiDir() throws Exception {
+		deleteDir(new File(qsPath));
 		QueueSimple qs = new QueueSimple(qsPath);
 		File qsPath = new File(qs.getPath());
 		qs.add("foo");
 		assertEquals(1, qs.count());
 		assertEquals(1, qsPath.listFiles().length);
 		qs.add("bar");
-		assertEquals(2, qs.count());
-		assertEquals(2, qsPath.listFiles().length);
+		assertEquals("foo + bar count", 2, qs.count());
+		assertEquals("foo + bar list files ", 2, qsPath.listFiles().length);
 		qs.purge();
-		assertEquals(2, qs.count());
+		assertEquals("still foo + bar count", 2, qs.count());
 
 		String elem = qs.iterator().next();
 		qs.lock(elem);
@@ -209,8 +210,8 @@ public class QueueSimpleTest extends QueueTest {
 		assertEquals(1, qsPath.listFiles().length);
 
 		qs.add("abc");
-		assertEquals(2, qs.count());
-		assertEquals(2, qsPath.listFiles().length);
+		assertEquals("abs + 1 count", 2, qs.count());
+		assertEquals("abs + 1 list files", 2, qsPath.listFiles().length);
 		for (String element : qs) {
 			qs.lock(element);
 		}
@@ -228,7 +229,7 @@ public class QueueSimpleTest extends QueueTest {
 		qs.purge(10);
 		assertFalse(new File(lockPath1).exists());
 
-		//assertEquals(2, qs.count());
+		assertEquals("2 left count", 2, qs.count());
 		String elem2 = it.next();
 		String lockPath2 = qs.getPath() + File.separator + elem2
 				+ QueueSimple.LOCKED_SUFFIX;
