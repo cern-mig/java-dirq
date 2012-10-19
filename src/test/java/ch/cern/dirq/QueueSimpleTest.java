@@ -198,7 +198,8 @@ public class QueueSimpleTest extends QueueTest {
 		assertEquals(1, qsPath.listFiles().length);
 		qs.add("bar");
 		assertEquals("foo + bar count", 2, qs.count());
-		assertEquals("foo + bar list files ", 2, qsPath.listFiles().length);
+		assertEquals("foo + bar list files ",
+				2, new File(qs.getPath()).listFiles().length);
 		qs.purge();
 		assertEquals("still foo + bar count", 2, qs.count());
 
@@ -207,11 +208,12 @@ public class QueueSimpleTest extends QueueTest {
 		qs.remove(elem);
 		assertEquals(1, qs.count());
 		qs.purge();
-		assertEquals(1, qsPath.listFiles().length);
+		assertEquals(1, new File(qs.getPath()).listFiles().length);
 
 		qs.add("abc");
-		assertEquals("abs + 1 count", 2, qs.count());
-		assertEquals("abs + 1 list files", 2, qsPath.listFiles().length);
+		assertEquals("abc + 1 count", 2, qs.count());
+		assertEquals("abc + 1 list files",
+				2, new File(qs.getPath()).listFiles().length);
 		for (String element : qs) {
 			qs.lock(element);
 		}
