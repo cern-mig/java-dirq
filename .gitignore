@@ -9,7 +9,7 @@ out/
 .idea
 .idea/*
 *.iml
-test
+extra/
 
 *.class
 
