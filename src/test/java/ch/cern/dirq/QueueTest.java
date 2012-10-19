@@ -2,6 +2,8 @@ package ch.cern.dirq;
 
 import java.io.File;
 
+import ch.cern.mig.posix.Posix;
+
 import junit.framework.TestCase;
 
 /**
@@ -12,7 +14,7 @@ import junit.framework.TestCase;
  *
  */
 public abstract class QueueTest extends TestCase {
-	public static final String dir = "test/";
+	public static final String dir = Posix.posix.getpid() + "test/";
 
 	public QueueTest() {
 		super();
