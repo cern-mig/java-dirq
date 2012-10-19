@@ -37,7 +37,8 @@ Documentation
 -------------
 
 After installing, you can find documentation at this page:
-https://mpaladin.web.cern.ch/mpaladin/java/dirq/
+
+(https://mpaladin.web.cern.ch/mpaladin/java/dirq/)[https://mpaladin.web.cern.ch/mpaladin/java/dirq/]
 
 License and Copyright
 ---------------------
