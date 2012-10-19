@@ -192,7 +192,6 @@ public class QueueSimpleTest extends QueueTest {
 	 * @throws Exception
 	 */
 	public void testPurgeMultiDir() throws Exception {
-		deleteDir(new File(qsPath));
 		QueueSimple qs = new QueueSimple(qsPath);
 		File qsPath = new File(qs.getPath());
 		qs.add("foo");
