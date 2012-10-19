@@ -27,7 +27,6 @@ Install
 
 To install this module, run the following commands:
 
-    mvn test
     mvn install
     # or
     mvn package
@@ -38,7 +37,7 @@ Documentation
 
 After installing, you can find documentation at this page:
 
-(https://mpaladin.web.cern.ch/mpaladin/java/dirq/)[https://mpaladin.web.cern.ch/mpaladin/java/dirq/]
+[https://mpaladin.web.cern.ch/mpaladin/java/dirq/](https://mpaladin.web.cern.ch/mpaladin/java/dirq/)
 
 License and Copyright
 ---------------------
