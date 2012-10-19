@@ -229,7 +229,7 @@ public class QueueSimpleTest extends QueueTest {
 		qs.purge(10);
 		assertFalse(new File(lockPath1).exists());
 
-//		assertEquals(2, qs.count());
+		assertEquals(2, qs.count());
 		String elem2 = it.next();
 		String lockPath2 = qs.getPath() + File.separator + elem2
 				+ QueueSimple.LOCKED_SUFFIX;
