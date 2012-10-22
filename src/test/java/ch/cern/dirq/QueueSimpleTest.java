@@ -3,12 +3,14 @@ package ch.cern.dirq;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import ch.cern.dirq.extra.TestDirq;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.posix.Timeval;
 import ch.cern.mig.utils.FileUtils;
+import ch.cern.mig.utils.StringUtils;
 
 /**
  * Unit test for {@link ch.cern.dirq.QueueSimple}.
@@ -207,11 +209,13 @@ public class QueueSimpleTest extends QueueTest {
 		File qsPath = new File(qs.getPath());
 		qs.add("foo");
 		assertEquals(1, qs.count());
-		assertEquals(1, qsPath.listFiles().length);
+		String[] list = qsPath.list();
+		assertEquals("foo: " + StringUtils.join(list), 1, list.length);
 		qs.add("bar");
 		assertEquals("foo + bar count", 2, qs.count());
-		assertEquals("foo + bar list files ",
-				2, new File(qs.getPath()).listFiles().length);
+		list = qsPath.list();
+		assertEquals("foo + bar list: " + StringUtils.join(list),
+				2, list.length);
 		qs.purge();
 		assertEquals("still foo + bar count", 2, qs.count());
 
@@ -220,12 +224,15 @@ public class QueueSimpleTest extends QueueTest {
 		qs.remove(elem);
 		assertEquals(1, qs.count());
 		qs.purge();
-		assertEquals(1, new File(qs.getPath()).listFiles().length);
+		list = qsPath.list();
+		assertEquals("1 foo or bar: " + StringUtils.join(list),
+				1, list.length);
 
 		qs.add("abc");
 		assertEquals("abc + 1 count", 2, qs.count());
-		assertEquals("abc + 1 list files",
-				2, new File(qs.getPath()).listFiles().length);
+		list = qsPath.list();
+		assertEquals("abc + 1 list: " + StringUtils.join(list),
+				2, list.length);
 		for (String element : qs) {
 			qs.lock(element);
 		}
