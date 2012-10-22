@@ -7,7 +7,9 @@ import junit.framework.TestCase;
 
 import com.sun.jna.LastErrorException;
 
+import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
+import ch.cern.mig.utils.ProcessUtils;
 
 /**
  * 
@@ -211,34 +213,6 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	// public void test_new() throws Exception {
-	// // POSIX posix = POSIXFactory.getPOSIX(new DummyPOSIXHandler(), true);
-	// // MacOSHeapFileStat stat = new MacOSHeapFileStat();
-	// // MacOSFileStat stat = new MacOSFileStat(null);
-	// // Linux64HeapFileStat stat = new Linux64HeapFileStat();
-	// MacOSStat stat = new MacOSStat();
-	// LibC.Posix.posix.stat("license.txt", stat);
-	// println("dev: " + stat.dev());
-	// println("ino: " + stat.ino());
-	// println("mode: " + stat.mode());
-	// println("nlink: " + stat.nlink());
-	// println("uid: " + stat.uid());
-	// println("gid: " + stat.gid());
-	// println("rdev: " + stat.rdev());
-	// println("size: " + stat.st_size());
-	// println("atime: " + stat.atime());
-	// println("mtime: " + stat.mtime());
-	// println("ctime: " + stat.ctime());
-	// println("blksize: " + stat.blockSize());
-	// println("blocks: " + stat.blocks());
-	// // FileStat stat2 = Posix.posix.stat("notexist");
-	// // try {
-	// // Posix.posix.mkdir(d1, 0755);
-	// // } catch (RuntimeException e) {
-	// // println("errno: " + Posix.posix.errno());
-	// // }
-	// }
-
 	public void test_stat() throws Exception {
 		report(OK, stat(f1), "stat(f1)");
 		report(OK, stat(d1), "stat(d1)");
@@ -302,9 +276,16 @@ public class JnaPosixTest extends TestCase {
 		jt.runAll();
 
 		// System.setProperty("jna.predictable_field_order", "true");
-		// Stat stat = new Stat();
-		// CLibrary.INSTANCE.stat("license.txt", stat);
-		// println("" + stat);
+		// FileStat stat = Posix.posix.stat("license.txt");
+		// println("stat: " + stat);
+	}
+	
+	public void test_stat_print() {
+		String nStat =  Posix.posix.stat("license.txt").customRepr();
+		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
+		assertEquals(sStat, nStat);
+		System.out.println(
+			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
 	}
 
 	public void runAll() throws Exception {

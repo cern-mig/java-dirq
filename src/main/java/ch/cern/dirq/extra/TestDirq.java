@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import ch.cern.dirq.Queue;
 import ch.cern.dirq.QueueSimple;
 import ch.cern.mig.posix.Posix;
+import ch.cern.mig.utils.ProcessUtils;
 
 import com.lexicalscope.jewel.cli.Unparsed;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
@@ -125,7 +125,7 @@ public class TestDirq {
 	}
 
 	private void testSize() throws Exception {
-		Map<String, String> res = executeIt("du -ks " + options.getPath());
+		Map<String, String> res = ProcessUtils.executeIt("du -ks " + options.getPath());
 		int exitValue = Integer.parseInt(res.get("exitValue"));
 		if (exitValue > 0) {
 			die("du failed: " + exitValue);
@@ -315,31 +315,6 @@ public class TestDirq {
 		}
 		long t2 = System.currentTimeMillis();
 		debug(String.format("done in %.4f seconds", (t2 - t1) / 1000.0));
-	}
-	
-	/**
-	 * Execute the given system command and return a Map containing
-	 * output results and exit value.
-	 * 
-	 * @param command
-	 * @return Map containing output results and exit value
-	 */
-	public static Map<String, String> executeIt(String command) {
-		StringBuilder output = new StringBuilder();
-		Process process = null;
-		try {
-    		process = Runtime.getRuntime().exec(command);
-    		Scanner sc = new Scanner(process.getInputStream());
-    		while (sc.hasNext()) {
-    			output.append(sc.nextLine());
-    		}
-    	} catch (IOException e) {
-    		output.append(e.getMessage());
-    	}
-		Map<String, String> result = new HashMap<String, String>();
-		result.put("exitValue", "" + process.exitValue());
-		result.put("out", output.toString());
-		return result;
 	}
 	
 	/**
