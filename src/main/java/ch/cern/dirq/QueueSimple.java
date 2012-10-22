@@ -180,7 +180,14 @@ public class QueueSimple extends Queue {
 			throw new QueueException("invalid umask: " + umask);
 
 		// create top level directory
-		specialMkdir(dir.getPath(), umask);
+		String tmpPath = "";
+		for (String subDir:dir.getPath().split("/+")) {
+			tmpPath += subDir + "/";
+			if (new File(tmpPath).exists()) {
+				continue;
+			}
+			specialMkdir(tmpPath, umask);
+		}
 
 		// store the queue unique identifier
 		if (System.getProperty("os.name").startsWith("Windows"))

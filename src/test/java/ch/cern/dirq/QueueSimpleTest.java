@@ -30,6 +30,17 @@ public class QueueSimpleTest extends QueueTest {
 	}
 
 	/**
+	 * Test multi level directory queue creation.
+	 *
+	 * @throws QueueException
+	 */
+	public void testMultiLevelDirectory() throws QueueException {
+		String multiPath = qsPath + "three/ormore//levels";
+		QueueSimple qs = new QueueSimple(multiPath);
+		deleteDir(new File(multiPath));
+	}
+
+	/**
 	 * Test addDir.
 	 * 
 	 * @throws QueueException
