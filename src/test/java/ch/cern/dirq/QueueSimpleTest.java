@@ -2,8 +2,8 @@ package ch.cern.dirq;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
 import ch.cern.dirq.extra.TestDirq;
@@ -39,7 +39,9 @@ public class QueueSimpleTest extends QueueTest {
 	public void testMultiLevelDirectory() throws QueueException {
 		String multiPath = qsPath + "three/ormore//levels";
 		QueueSimple qs = new QueueSimple(multiPath);
-		deleteDir(new File(multiPath));
+		assertEquals(multiPath, qs.path);
+		assertTrue(new File(multiPath).isDirectory());
+		FileUtils.deleteDir(new File(multiPath));
 	}
 
 	/**
@@ -74,7 +76,11 @@ public class QueueSimpleTest extends QueueTest {
 		String data = "abc";
 		String elem = qs.add(data);
 		assertTrue(new File(qsPath + File.separator + elem).exists());
-		assertEquals(data, FileUtils.fileRead(qsPath + File.separator + elem));
+		assertEquals(data, FileUtils.readToString(qsPath + File.separator + elem));
+		byte[] binaryData = data.getBytes();
+		elem = qs.add(binaryData);
+		assertTrue(new File(qsPath + File.separator + elem).exists());
+		assertEquals(data, FileUtils.readToString(qsPath + File.separator + elem));
 	}
 
 	/**
@@ -98,7 +104,7 @@ public class QueueSimpleTest extends QueueTest {
 		assertTrue(new File(qsPath + File.separator + newName).exists());
 		// assertEquals(1, new File(tmpDir).listFiles().length);
 		assertEquals(data,
-				FileUtils.fileRead(qsPath + File.separator + newName));
+				FileUtils.readToString(qsPath + File.separator + newName));
 	}
 
 	/**
@@ -128,6 +134,19 @@ public class QueueSimpleTest extends QueueTest {
 		String elem = qs.add(data);
 		qs.lock(elem);
 		assertEquals(data, qs.get(elem));
+	}
+	
+	/**
+	 * Test get as byte array operation.
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetAsByteArray() throws Exception {
+		QueueSimple qs = new QueueSimple(qsPath);
+		byte[] dataBytes = "abc".getBytes();
+		String elem = qs.add(dataBytes);
+		qs.lock(elem);
+		assertTrue(Arrays.equals(dataBytes, qs.getAsByteArray(elem)));
 	}
 
 	/**

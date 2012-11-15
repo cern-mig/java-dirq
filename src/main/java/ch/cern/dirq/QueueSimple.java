@@ -1,10 +1,8 @@
 package ch.cern.dirq;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,6 +14,7 @@ import com.sun.jna.LastErrorException;
 import ch.cern.mig.posix.BasePosix;
 import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
+import ch.cern.mig.utils.FileUtils;
 import ch.cern.mig.utils.RegExpFilenameFilter;
 
 /**
@@ -232,6 +231,13 @@ public class QueueSimple extends Queue {
 		}
 		return true;
 	}
+	
+	@Override
+	public String add(byte[] data) throws QueueException {
+		String dir = _addDir();
+		File tmp = _addData(dir, data);
+		return _addPath(tmp, dir);
+	}
 
 	@Override
 	public String add(String data) throws QueueException {
@@ -281,8 +287,28 @@ public class QueueSimple extends Queue {
 		}
 		return file;
 	}
+	
+	private File _addData(String dir, byte[] data) throws QueueException {
+		File newFile = _getNewFile(dir);
+		try {
+			FileUtils.writeToFile(newFile, data);
+		} catch (IOException e) {
+			throw new QueueException("cannot write to file: " + newFile);
+		}
+		return newFile;
+	}
 
 	private File _addData(String dir, String data) throws QueueException {
+		File newFile = _getNewFile(dir);
+		try {
+			FileUtils.writeToFile(newFile, data);
+		} catch (IOException e) {
+			throw new QueueException("cannot write to file: " + newFile);
+		}
+		return newFile;
+	}
+
+	private File _getNewFile(String dir) throws QueueException {
 		File newFile = null;
 		while (true) {
 			String name = _name();
@@ -292,16 +318,6 @@ public class QueueSimple extends Queue {
 				break;
 			if (!new File(path + File.separator + dir).exists())
 				specialMkdir(path + File.separator + dir);
-		}
-		FileWriter newFileStream;
-		try {
-			newFileStream = new FileWriter(newFile);
-			BufferedWriter newFileOut = new BufferedWriter(newFileStream);
-			newFileOut.write(data);
-			newFileOut.close();
-			newFileStream.close();
-		} catch (IOException e) {
-			throw new QueueException("cannot write to file: " + newFile);
 		}
 		return newFile;
 	}
@@ -319,17 +335,12 @@ public class QueueSimple extends Queue {
 
 	@Override
 	public String get(String name) {
-		return _fileRead(new File(path + File.separator + name + LOCKED_SUFFIX));
+		return FileUtils.readToString(path + File.separator + name + LOCKED_SUFFIX);
 	}
-
-	private String _fileRead(File tmp) {
-		String content = "";
-		try {
-			content = new Scanner(tmp, "UTF-8").useDelimiter("\\A").next();
-		} catch (FileNotFoundException e) {
-			return null;
-		}
-		return content;
+	
+	@Override
+	public byte[] getAsByteArray(String name) {
+		return FileUtils.readToByteArray(path + File.separator + name + LOCKED_SUFFIX);
 	}
 
 	@Override

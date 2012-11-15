@@ -3,6 +3,7 @@ package ch.cern.dirq;
 import java.io.File;
 
 import ch.cern.mig.posix.Posix;
+import ch.cern.mig.utils.FileUtils;
 
 import junit.framework.TestCase;
 
@@ -24,29 +25,16 @@ public abstract class QueueTest extends TestCase {
 		super(name);
 	}
 
-	public static boolean deleteDir(File dir) {
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		return dir.delete();
-	}
-
 	@Override
 	protected void setUp() throws Exception {
-		deleteDir(new File(dir));
+		FileUtils.deleteDir(new File(dir));
 		new File(dir).mkdirs();
 		super.setUp();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		deleteDir(new File(dir));
+		FileUtils.deleteDir(new File(dir));
 		super.tearDown();
 	}
 

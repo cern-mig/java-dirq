@@ -33,6 +33,11 @@ public class QueueNull extends Queue {
 	}
 
 	@Override
+	public String add(byte[] data) {
+		return "";
+	}
+	
+	@Override
 	public String add(String data) {
 		return "";
 	}
@@ -47,6 +52,11 @@ public class QueueNull extends Queue {
 
 	@Override
 	public String get(String name) throws NotSupportedMethodException {
+		throw new NotSupportedMethodException();
+	}
+	
+	@Override
+	public byte[] getAsByteArray(String name) throws NotSupportedMethodException {
 		throw new NotSupportedMethodException();
 	}
 

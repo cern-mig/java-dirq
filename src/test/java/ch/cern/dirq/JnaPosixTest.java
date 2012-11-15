@@ -9,6 +9,7 @@ import com.sun.jna.LastErrorException;
 
 import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
+import ch.cern.mig.utils.FileUtils;
 import ch.cern.mig.utils.ProcessUtils;
 
 /**
@@ -241,7 +242,7 @@ public class JnaPosixTest extends TestCase {
 	}
 
 	public static boolean rmtree(String name) throws IOException {
-		return QueueTest.deleteDir(new File(name));
+		return FileUtils.deleteDir(new File(name));
 	}
 
 	public static boolean mkfile(String parent, String child)

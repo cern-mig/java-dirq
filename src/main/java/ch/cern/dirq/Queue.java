@@ -117,12 +117,20 @@ public abstract class Queue implements Iterable<String> {
 	}
 
 	/**
-	 * Add data to the queue.
+	 * Add data as a string to the queue.
 	 * @param data data to be added to the queue
 	 * @return return the element name (<directory_name>/<file_name>)
 	 * @throws QueueException
 	 */
 	public abstract String add(String data) throws QueueException;
+	
+	/**
+	 * Add data as byte array to the queue.
+	 * @param data data to be added to the queue
+	 * @return return the element name (<directory_name>/<file_name>)
+	 * @throws QueueException
+	 */
+	public abstract String add(byte[] data) throws QueueException;
 
 	/**
 	 * Add the given file (identified by its path) to the queue and return
@@ -135,12 +143,20 @@ public abstract class Queue implements Iterable<String> {
 	public abstract String addPath(String path) throws QueueException;
 
 	/**
-	 * Get locked element.
+	 * Get locked element as a string.
 	 * @param name the name of the element to be returned
 	 * @return return the value associated to the given name
 	 * @throws Exception
 	 */
 	public abstract String get(String name) throws Exception;
+	
+	/**
+	 * Get locked element as a byte array.
+	 * @param name the name of the element to be returned
+	 * @return return the value associated to the given name
+	 * @throws Exception
+	 */
+	public abstract byte[] getAsByteArray(String name) throws Exception;
 
 	/**
 	 * Return the path given the name of the element.

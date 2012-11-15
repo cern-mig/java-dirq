@@ -16,8 +16,7 @@ public class StringUtilsTest extends TestCase {
 	/**
 	 * Create the test case
 	 * 
-	 * @param name
-	 *            name of the test case
+	 * @param name name of the test case
 	 */
 	public StringUtilsTest(String name) {
 		super(name);
