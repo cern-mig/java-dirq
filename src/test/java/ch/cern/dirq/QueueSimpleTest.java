@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
-import ch.cern.dirq.extra.TestDirq;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.posix.Timeval;
 import ch.cern.mig.utils.FileUtils;
@@ -276,14 +275,4 @@ public class QueueSimpleTest extends QueueTest {
 		assertTrue(new File(lockPath2).exists());
 	}
 	
-	/**
-	 * Multi test.
-	 * 
-	 * @throws Exception
-	 */
-	public void testMulti() throws Exception {
-		System.out.println("################ TestDirq simple ################## BEGIN");
-		new TestDirq().mainSimple();
-		System.out.println("################ TestDirq simple ################## END");
-	}
 }
