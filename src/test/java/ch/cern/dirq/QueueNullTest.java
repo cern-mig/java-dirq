@@ -11,7 +11,7 @@ import ch.cern.dirq.QueueNull;
  * <br />Copyright CERN 2010-2012
  *
  */
-public class QueueNullTest extends QueueTest {
+public class QueueNullTest extends QueueTestBase {
 
 	/**
 	 * Create the test case

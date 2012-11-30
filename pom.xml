@@ -38,7 +38,7 @@
   </parent>
 
   <properties>
-    <jna.version>3.5.0</jna.version>
+    <jna.version>3.5.1</jna.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -96,6 +96,7 @@
       </plugin>
     </plugins>
   </build>
+
   <profiles>
     <profile>
       <id>release-sign-artifacts</id>
@@ -125,6 +126,7 @@
       </build>
     </profile>
   </profiles>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

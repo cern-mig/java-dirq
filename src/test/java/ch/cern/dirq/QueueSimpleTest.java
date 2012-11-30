@@ -17,7 +17,7 @@ import ch.cern.mig.utils.StringUtils;
  * @author Massimo Paladin - massimo.paladin@gmail.com
  * <br />Copyright CERN 2010-2012
  */
-public class QueueSimpleTest extends QueueTest {
+public class QueueSimpleTest extends QueueTestBase {
 	public static final String qsPath =
 			dir + new Random().nextInt(32000) + "qs/";
 
