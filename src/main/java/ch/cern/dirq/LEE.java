@@ -16,16 +16,15 @@ import com.sun.jna.LastErrorException;
 public class LEE {
 	
 	public static int getErrorCode(LastErrorException error) throws QueueException {
-		Class errorClass = error.getClass();
 		String aMethod = "getErrorCode";
 		// get the method
 		Object result = null;
 		try {
-			Method thisMethod = errorClass.getDeclaredMethod(aMethod);
+			Method thisMethod = error.getClass().getDeclaredMethod(aMethod);
 			result = thisMethod.invoke(error);
 		} catch (Exception e) {
 			try {
-				Field field = errorClass.getField("errorCode");
+				Field field = error.getClass().getField("errorCode");
 				result = field.get(error);
 			} catch (Exception e1) {
 				throw new QueueException("Could not get the error code");
