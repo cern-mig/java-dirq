@@ -21,7 +21,7 @@ public class LEE {
 		// get the method
 		Object result = null;
 		try {
-			Method thisMethod = errorClass.getDeclaredMethod(aMethod, null);
+			Method thisMethod = errorClass.getDeclaredMethod(aMethod);
 			result = thisMethod.invoke(error, null);
 		} catch (Exception e) {
 			try {
