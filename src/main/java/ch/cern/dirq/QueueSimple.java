@@ -2,11 +2,9 @@ package ch.cern.dirq;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import com.sun.jna.LastErrorException;
@@ -210,9 +208,9 @@ public class QueueSimple extends Queue {
 		try {
 			posix.mkdir(path, 0777 - umask);
 		} catch (LastErrorException e) {
-			if (e.getErrorCode() == BasePosix.EEXIST && !new File(path).isFile())
+			if (LEE.getErrorCode(e) == BasePosix.EEXIST && !new File(path).isFile())
 				return false;
-			else if (e.getErrorCode() == BasePosix.EISDIR)
+			else if (LEE.getErrorCode(e) == BasePosix.EISDIR)
 				return false;
 			throw new QueueException(String.format("cannot mkdir(%s): %s",
 					path, e.getMessage()));
@@ -224,7 +222,7 @@ public class QueueSimple extends Queue {
 		try {
 			posix.rmdir(path);
 		} catch (LastErrorException e) {
-			if (!(e.getErrorCode() == BasePosix.ENOENT))
+			if (!(LEE.getErrorCode(e) == BasePosix.ENOENT))
 				throw new QueueException(String.format("cannot rmdir(%s): %s",
 						path, e.getMessage()));
 			return false;
@@ -254,7 +252,7 @@ public class QueueSimple extends Queue {
 			try {
 				posix.link(tmp.getPath(), newFile.getPath());
 			} catch (LastErrorException e) {
-				if (e.getErrorCode() != BasePosix.EEXIST) {
+				if (LEE.getErrorCode(e) != BasePosix.EEXIST) {
 					throw new QueueException(String.format(
 							"cannot link(%s, %s): %s", tmp, newFile,
 							e.getMessage()));
@@ -279,8 +277,8 @@ public class QueueSimple extends Queue {
 		} catch (LastErrorException e) {
 			// RACE: someone else may have created the file (EEXIST)
 			// RACE: the containing directory may be mising (ENOENT)
-			if (e.getErrorCode() != BasePosix.EEXIST
-					&& e.getErrorCode() != BasePosix.ENOENT)
+			if (LEE.getErrorCode(e) != BasePosix.EEXIST
+					&& LEE.getErrorCode(e) != BasePosix.ENOENT)
 				throw new QueueException(String.format("cannot create %s: %s",
 						path, e.getMessage()));
 			return null;
@@ -356,7 +354,7 @@ public class QueueSimple extends Queue {
 			posix.link(file.getPath(), lock.getPath());
 		} catch (LastErrorException e) {
 			if (permissive
-					&& (e.getErrorCode() == BasePosix.EEXIST || e.getErrorCode() == BasePosix.ENOENT))
+					&& (LEE.getErrorCode(e) == BasePosix.EEXIST || LEE.getErrorCode(e) == BasePosix.ENOENT))
 				return false;
 			throw new QueueException(String.format("cannot link(%s, %s): %s",
 					file, lock, e.getMessage()));
@@ -364,7 +362,7 @@ public class QueueSimple extends Queue {
 		try {
 			posix.utimes(file.getPath(), null);
 		} catch (LastErrorException e) {
-			if (permissive && e.getErrorCode() == BasePosix.ENOENT) {
+			if (permissive && LEE.getErrorCode(e) == BasePosix.ENOENT) {
 				posix.unlink(lock.getPath());
 				return false;
 			}
@@ -381,7 +379,7 @@ public class QueueSimple extends Queue {
 		try {
 			posix.unlink(lock);
 		} catch (LastErrorException e) {
-			if (permissive && e.getErrorCode() == BasePosix.ENOENT)
+			if (permissive && LEE.getErrorCode(e) == BasePosix.ENOENT)
 				return false;
 			throw new QueueException(String.format("cannot unlink(%s): %s",
 					lock, e.getMessage()));
