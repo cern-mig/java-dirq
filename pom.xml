@@ -3,7 +3,7 @@
   <groupId>ch.cern.dirq</groupId>
   <artifactId>java-dirq</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
+  <version>1.0-SNAPSHOT</version>
   <name>java-dirq</name>
   <description>Directory based queue.</description>
   <url>https://github.com/mpaladin/java-dirq</url>
@@ -17,8 +17,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git://github.com/mpaladin/java-dirq.git</connection>
-    <developerConnection>scm:git:git://github.com/mpaladin/java-dirq.git</developerConnection>
+    <connection>scm:git:git@github.com:mpaladin/java-dirq.git</connection>
+    <developerConnection>scm:git:git@github.com:mpaladin/java-dirq.git</developerConnection>
     <url>https://github.com/mpaladin/java-dirq</url>
   </scm>
 
