@@ -22,7 +22,7 @@ public class LEE {
 		Object result = null;
 		try {
 			Method thisMethod = errorClass.getDeclaredMethod(aMethod);
-			result = thisMethod.invoke(error, null);
+			result = thisMethod.invoke(error);
 		} catch (Exception e) {
 			try {
 				Field field = errorClass.getField("errorCode");
