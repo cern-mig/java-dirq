@@ -95,7 +95,7 @@ import java.util.regex.Pattern;
  * enough to control who can access the queue.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public abstract class Queue implements Iterable<String> {

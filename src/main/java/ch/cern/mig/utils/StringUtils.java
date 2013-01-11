@@ -11,7 +11,7 @@ import java.util.List;
  * Useful String utility.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public class StringUtils {

@@ -3,7 +3,7 @@ package ch.cern.mig.posix;
 /**
  * Exception to be thrown if an error occurs in the queue handling.
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public class PosixException extends Exception {

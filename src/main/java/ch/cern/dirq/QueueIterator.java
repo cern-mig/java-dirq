@@ -11,7 +11,7 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
 /**
  * Queue iterator to be implemented by each directory queue implementation.
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public abstract class QueueIterator implements Iterator<String> {

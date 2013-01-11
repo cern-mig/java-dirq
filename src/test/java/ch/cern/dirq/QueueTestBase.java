@@ -11,7 +11,7 @@ import junit.framework.TestCase;
  * {@link ch.cern.dirq.Queue} base tests.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public abstract class QueueTestBase extends TestCase {

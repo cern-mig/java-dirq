@@ -18,7 +18,7 @@ import java.util.Iterator;
  * directory queues.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public class QueueNull extends Queue {

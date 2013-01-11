@@ -8,7 +8,7 @@ import ch.cern.dirq.QueueNull;
 /**
  * Unit test for {@link ch.cern.dirq.QueueNull}.
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2012
+ * <br />Copyright CERN 2010-2013
  *
  */
 public class QueueNullTest extends QueueTestBase {
