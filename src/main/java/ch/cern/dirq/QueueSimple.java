@@ -101,7 +101,7 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * A locked element will have a hard link with the same name and the
  * <i>.lck</i> suffix.
  * <p>
- * Please refer to {@link ch.cern.dirq.QueueBase} for general information about
+ * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com

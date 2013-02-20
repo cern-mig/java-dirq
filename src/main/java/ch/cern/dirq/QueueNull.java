@@ -15,7 +15,7 @@ import java.util.Map;
  * This can be used for testing purposes or to discard data like one
  * would do on Unix by redirecting output to <i>/dev/null</i>.
  * <p>
- * Please refer to {@link ch.cern.dirq.QueueBase} for general information about
+ * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
