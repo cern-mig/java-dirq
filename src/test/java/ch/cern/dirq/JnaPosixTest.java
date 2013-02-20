@@ -1,13 +1,16 @@
 package ch.cern.dirq;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 
 import com.sun.jna.LastErrorException;
 
-import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 import ch.cern.mig.utils.ProcessUtils;
@@ -18,39 +21,24 @@ import ch.cern.mig.utils.ProcessUtils;
  * <br />Copyright CERN 2010-2013
  *
  */
-public class JnaPosixTest extends TestCase {
-	String dir = "posixtmp";
-	String f1 = dir + File.separator + "f1";
-	String f2 = dir + File.separator + "f2";
-	String f3 = dir + File.separator + "f3";
-	String x1 = dir + File.separator + "x1";
-	String x2 = dir + File.separator + "x2";
-	String x3 = dir + File.separator + "x3";
-	String d1 = dir + File.separator + "d1";
-	String d2 = dir + File.separator + "d2";
-	String d3 = dir + File.separator + "d3";
+public class JnaPosixTest {
+	private static final String dir = "posixtmp";
+	private static final String f1 = dir + File.separator + "f1";
+	private static final String f2 = dir + File.separator + "f2";
+	private static final String f3 = dir + File.separator + "f3";
+	private static final String x1 = dir + File.separator + "x1";
+	private static final String x2 = dir + File.separator + "x2";
+	private static final String d1 = dir + File.separator + "d1";
+	private static final String d2 = dir + File.separator + "d2";
+	private static final String d3 = dir + File.separator + "d3";
 
-	static String line = "################################################";
+	private static final  String line =
+		"################################################";
 
-	boolean OK = true;
-	boolean FAIL = false;
+	private static final boolean OK = true;
+	private static final boolean FAIL = false;
 
-	public JnaPosixTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		init();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
-	public static Exception mkdir(String name) {
+	private static Exception mkdir(String name) {
 		try {
 			Posix.posix.mkdir(name);
 		} catch (LastErrorException e) {
@@ -59,7 +47,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception rmdir(String path) {
+	private static Exception rmdir(String path) {
 		try {
 			Posix.posix.rmdir(path);
 		} catch (LastErrorException e) {
@@ -68,7 +56,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception opendir(String path) {
+	private static Exception opendir(String path) {
 		try {
 			Posix.posix.opendir(path);
 		} catch (LastErrorException e) {
@@ -77,7 +65,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception open(String path) {
+	private static Exception open(String path) {
 		try {
 			Posix.posix.open(path);
 		} catch (LastErrorException e) {
@@ -86,7 +74,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception rename(String from, String to) {
+	private static Exception rename(String from, String to) {
 		try {
 			Posix.posix.rename(from, to);
 		} catch (LastErrorException e) {
@@ -95,7 +83,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception link(String from, String to) {
+	private static Exception link(String from, String to) {
 		try {
 			Posix.posix.link(from, to);
 		} catch (LastErrorException e) {
@@ -104,7 +92,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public Exception unlink(String path) {
+	private Exception unlink(String path) {
 		try {
 			Posix.posix.unlink(path);
 		} catch (Exception e) {
@@ -113,7 +101,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception stat(String path) {
+	private static Exception stat(String path) {
 		try {
 			Posix.posix.stat(path);
 		} catch (LastErrorException e) {
@@ -122,7 +110,7 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public static Exception lstat(String path) {
+	private static Exception lstat(String path) {
 		try {
 			Posix.posix.lstat(path);
 		} catch (LastErrorException e) {
@@ -131,21 +119,38 @@ public class JnaPosixTest extends TestCase {
 		return null;
 	}
 
-	public void report(boolean ok, Exception exc, String test) throws Exception {
+	private void report(boolean ok, Exception exc, String test) {
 		if (ok) {
 			if (exc != null)
-				throw exc;
+				throw new AssertionError("Got error: " + exc);
 			println(test + ": ok");
 		} else {
 			if (exc == null)
-				throw new Exception("Error expected");
+				throw new AssertionError("Error expected");
 			println(test + ": " + exc.getMessage());
 			// if (exc instanceof LastErrorException)
 			// println("" + ((LastErrorException)exc).getErrorCode());
 		}
 	}
+	
+	private static boolean rmtree(String name) throws IOException {
+		return FileUtils.deleteDir(new File(name));
+	}
 
-	public void test_mkdir() throws Exception {
+	private static boolean mkfile(String parent, String child)
+			throws IOException {
+		return new File(parent, child).createNewFile();
+	}
+
+	private static boolean mkfile(String name) throws IOException {
+		return new File(name).createNewFile();
+	}
+
+	private static void println(String string) {
+		System.out.println(string);
+	}
+
+	@Test public void testMkdir() {
 		report(OK, mkdir(d3), "mkdir(d3)");
 		report(FAIL, mkdir(d1), "mkdir(d1)");
 		report(FAIL, mkdir(x1 + "/d"), "mkdir(x1/d)");
@@ -153,7 +158,7 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_rmdir() throws Exception {
+	@Test public void testRmdir() {
 		report(OK, rmdir(d1), "rmdir(d1)");
 		report(FAIL, rmdir(x1), "rmdir(x1)");
 		report(FAIL, rmdir(x1 + "/d"), "rmdir(x1/d)");
@@ -165,14 +170,14 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_opendir() throws Exception {
+	@Test public void testOpendir() {
 		report(OK, opendir(d1), "opendir(d1)");
 		report(FAIL, opendir(x1), "opendir(x1)");
 		report(FAIL, opendir(x1 + "/d"), "opendir(x1/d)");
 		println(line);
 	}
 
-	public void test_rename() throws Exception {
+	@Test public void testRename() throws IOException {
 		// setup
 		mkfile(d1 + "/f");
 		mkfile(d2 + "/f");
@@ -188,7 +193,7 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_open() throws Exception {
+	@Test public void testOpen() {
 		// tests
 		report(OK, open(f3), "open(f3)");
 		report(FAIL, open(f1), "open(f1)");
@@ -198,7 +203,7 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_link() throws Exception {
+	@Test public void testLink() {
 		report(OK, link(f1, f3), "link(f1, f3)");
 		report(FAIL, link(x1, x2), "link(x1, x2)");
 		report(FAIL, link(f1, f2), "link(f1, f2)");
@@ -207,14 +212,14 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_unlink() throws Exception {
+	@Test public void testUnlink() throws IOException {
 		report(OK, unlink(f1), "unlink(f1)");
 		report(FAIL, unlink(x1), "unlink(x1)");
 		mkfile(f1);
 		println(line);
 	}
 
-	public void test_stat() throws Exception {
+	@Test public void testStat() {
 		report(OK, stat(f1), "stat(f1)");
 		report(OK, stat(d1), "stat(d1)");
 		report(FAIL, stat(x1), "stat(x1)");
@@ -223,7 +228,7 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
-	public void test_lstat() throws Exception {
+	@Test public void testLstat() {
 		report(OK, lstat(f1), "lstat(f1)");
 		report(OK, lstat(d1), "lstat(d1)");
 		report(FAIL, lstat(x1), "lstat(x1)");
@@ -232,6 +237,7 @@ public class JnaPosixTest extends TestCase {
 		println(line);
 	}
 
+	@Before
 	public void init() throws IOException {
 		rmtree(dir);
 		mkdir(dir);
@@ -240,26 +246,13 @@ public class JnaPosixTest extends TestCase {
 		mkdir(d1);
 		mkdir(d2);
 	}
-
-	public static boolean rmtree(String name) throws IOException {
-		return FileUtils.deleteDir(new File(name));
-	}
-
-	public static boolean mkfile(String parent, String child)
-			throws IOException {
-		return new File(parent, child).createNewFile();
-	}
-
-	public static boolean mkfile(String name) throws IOException {
-		return new File(name).createNewFile();
-	}
-
-	public static void print(String string) {
-		System.out.print(string);
-	}
-
-	public static void println(String string) {
-		System.out.println(string);
+	
+	private void testStatPrint() {
+		String nStat =  Posix.posix.stat("license.txt").customRepr();
+		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
+		assertEquals(sStat, nStat);
+		System.out.println(
+			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -272,7 +265,7 @@ public class JnaPosixTest extends TestCase {
 		println("current dir: " + new File(".").getAbsolutePath());
 		println(line);
 
-		JnaPosixTest jt = new JnaPosixTest("jna posix test");
+		JnaPosixTest jt = new JnaPosixTest();
 		jt.init();
 		jt.runAll();
 
@@ -281,25 +274,16 @@ public class JnaPosixTest extends TestCase {
 		// println("stat: " + stat);
 	}
 	
-	public void test_stat_print() {
-		String nStat =  Posix.posix.stat("license.txt").customRepr();
-		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
-		assertEquals(sStat, nStat);
-		System.out.println(
-			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
-	}
-
 	public void runAll() throws Exception {
 		println(line);
-		test_link();
-		test_unlink();
-		test_mkdir();
-		test_rmdir();
-		test_opendir();
-		test_open();
-		test_stat();
-		test_lstat();
-		test_rename();
-		// test_new();
+		testLink();
+		testUnlink();
+		testMkdir();
+		testRmdir();
+		testOpendir();
+		testOpen();
+		testStat();
+		testLstat();
+		testRename();
 	}
 }

@@ -15,7 +15,7 @@ import com.sun.jna.LastErrorException;
  */
 public class LEE {
 	
-	public static int getErrorCode(LastErrorException error) throws QueueException {
+	public static int getErrorCode(LastErrorException error) {
 		String aMethod = "getErrorCode";
 		// get the method
 		Object result = null;
@@ -27,7 +27,7 @@ public class LEE {
 				Field field = error.getClass().getField("errorCode");
 				result = field.get(error);
 			} catch (Exception e1) {
-				throw new QueueException("Could not get the error code");
+				throw new IllegalStateException("Could not get the error code");
 			}
 		}
 		int errorCode = (Integer) result;

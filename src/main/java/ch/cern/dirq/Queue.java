@@ -1,8 +1,7 @@
 package ch.cern.dirq;
 
-import java.util.Iterator;
+import java.io.IOException;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Queue - object oriented interface to a directory based queue
@@ -98,39 +97,28 @@ import java.util.regex.Pattern;
  * <br />Copyright CERN 2010-2013
  *
  */
-public abstract class Queue implements Iterable<String> {
-	private static final int defaultMaxTemp = 300;
-	private static final int defaultMaxLock = 600;
-	public static final Pattern DirectoryRegexp = Pattern
-			.compile("[0-9a-f]{8}");
-	public static final Pattern ElementRegexp = Pattern.compile("[0-9a-f]{14}");
-
-	protected String id = null;
-	protected String path = null;
-
-	public String getId() {
-		return id;
-	}
-
-	public String getPath() {
-		return path;
-	}
+public interface Queue extends Iterable<String> {
+	
+	/**
+	 * @return the queue id
+	 */
+	public String getId();
 
 	/**
 	 * Add data as a string to the queue.
 	 * @param data data to be added to the queue
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public abstract String add(String data) throws QueueException;
+	public String add(String data) throws IOException;
 	
 	/**
 	 * Add data as byte array to the queue.
 	 * @param data data to be added to the queue
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public abstract String add(byte[] data) throws QueueException;
+	public String add(byte[] data) throws IOException;
 
 	/**
 	 * Add the given file (identified by its path) to the queue and return
@@ -138,9 +126,9 @@ public abstract class Queue implements Iterable<String> {
 	 * filesystem and will be moved to the queue.
 	 * @param path the path of the file to be added
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws QueueException
+	 * @throws IOException 
 	 */
-	public abstract String addPath(String path) throws QueueException;
+	public String addPath(String path) throws IOException;
 
 	/**
 	 * Get locked element as a string.
@@ -148,7 +136,7 @@ public abstract class Queue implements Iterable<String> {
 	 * @return return the value associated to the given name
 	 * @throws Exception
 	 */
-	public abstract String get(String name) throws Exception;
+	public String get(String name);
 	
 	/**
 	 * Get locked element as a byte array.
@@ -156,7 +144,7 @@ public abstract class Queue implements Iterable<String> {
 	 * @return return the value associated to the given name
 	 * @throws Exception
 	 */
-	public abstract byte[] getAsByteArray(String name) throws Exception;
+	public byte[] getAsByteArray(String name);
 
 	/**
 	 * Return the path given the name of the element.
@@ -164,18 +152,16 @@ public abstract class Queue implements Iterable<String> {
 	 * @return return the path of the element
 	 * @throws Exception
 	 */
-	public abstract String getPath(String name) throws Exception;
+	public String getPath(String name);
 
 	/**
 	 * Lock an element in permissive mode.
 	 * @param name name of the element to be locked
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be locked
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public boolean lock(String name) throws Exception {
-		return lock(name, true);
-	}
+	public boolean lock(String name) throws IOException;
 
 	/**
 	 * Lock an element.
@@ -183,21 +169,18 @@ public abstract class Queue implements Iterable<String> {
 	 * @param permissive work in permissive mode
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be locked
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public abstract boolean lock(String name, boolean permissive)
-			throws Exception;
+	public boolean lock(String name, boolean permissive) throws IOException;
 
 	/**
 	 * Unlock an element in non-permissive mode.
 	 * @param name name of the element to be locked
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be unlocked
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public boolean unlock(String name) throws Exception {
-		return unlock(name, false);
-	}
+	public boolean unlock(String name) throws IOException;
 
 	/**
 	 * Unlock an element.
@@ -205,24 +188,23 @@ public abstract class Queue implements Iterable<String> {
 	 * @param permissive work in permissive mode
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be unlocked
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public abstract boolean unlock(String name, boolean permissive)
-			throws Exception;
+	public boolean unlock(String name, boolean permissive) throws IOException;
 
 	/**
 	 * Remove a locked element from the queue.
 	 * @param name name of the element to be removed
 	 * @throws Exception
 	 */
-	public abstract void remove(String name) throws Exception;
+	public void remove(String name);
 
 	/**
 	 * Return the number of elements in the queue, locked or not
 	 * (but not temporary).
 	 * @return the number of elements in the queue
 	 */
-	public abstract int count();
+	public int count();
 	
 	/**
 	 * Purge the queue by removing unused intermediate directories,
@@ -231,11 +213,9 @@ public abstract class Queue implements Iterable<String> {
 	 * queues with many elements.
 	 * <p>
 	 * It uses default value for maxTemp and maxLock
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void purge() throws QueueException {
-		purge(defaultMaxTemp, defaultMaxLock);
-	}
+	public void purge() throws IOException;
 	
 	/**
 	 * Purge the queue by removing unused intermediate directories,
@@ -244,13 +224,9 @@ public abstract class Queue implements Iterable<String> {
 	 * queues with many elements.
 	 * @param options map containing purge options, only <i>maxLock</i>
 	 * and <i>maxTemp</i> values are used, the others are ignored
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void purge(Map<String, Integer> options) throws QueueException {
-		int maxLock = options.get("maxLock") == null ? defaultMaxLock : options.get("maxLock");
-		int maxTemp = options.get("maxTemp") == null ? defaultMaxTemp : options.get("maxTemp");
-		purge(maxTemp, maxLock);
-	}
+	public void purge(Map<String, Integer> options) throws IOException;
 
 	/**
 	 * Purge the queue by removing unused intermediate directories,
@@ -260,11 +236,9 @@ public abstract class Queue implements Iterable<String> {
 	 * @param maxLock maximum time for a locked element
 	 * (in seconds, default 600);
 	 * if set to 0, locked elements will not be unlocked
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void purge(int maxLock) throws QueueException {
-		purge(defaultMaxTemp, maxLock);
-	}
+	public void purge(int maxLock) throws IOException;
 
 	/**
 	 * Purge the queue by removing unused intermediate directories,
@@ -277,13 +251,8 @@ public abstract class Queue implements Iterable<String> {
 	 * @param maxLock maximum time for a locked element
 	 * (in seconds, default 600);
 	 * if set to 0, locked elements will not be unlocked
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public abstract void purge(int maxTemp, int maxLock) throws QueueException;
-
-	/**
-	 * Return the queue iterator.
-	 */
-	public abstract Iterator<String> iterator();
+	public void purge(int maxTemp, int maxLock) throws IOException;
 
 }

@@ -1,10 +1,14 @@
 package ch.cern.dirq;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
+
+import org.junit.Test;
 
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.posix.Timeval;
@@ -18,27 +22,18 @@ import ch.cern.mig.utils.StringUtils;
  * <br />Copyright CERN 2010-2013
  */
 public class QueueSimpleTest extends QueueTestBase {
-	public static final String qsPath =
+	private static final String qsPath =
 			dir + new Random().nextInt(32000) + "qs/";
-
-	/**
-	 * Create the test case.
-	 * 
-	 * @param name name of the test case
-	 */
-	public QueueSimpleTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Test multi level directory queue creation.
 	 *
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void testMultiLevelDirectory() throws QueueException {
+	@Test public void multiLevelDirectory() throws IOException {
 		String multiPath = qsPath + "three/ormore//levels";
 		QueueSimple qs = new QueueSimple(multiPath);
-		assertEquals(multiPath, qs.path);
+		assertEquals(multiPath, qs.getPath());
 		assertTrue(new File(multiPath).isDirectory());
 		FileUtils.deleteDir(new File(multiPath));
 	}
@@ -46,20 +41,20 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test addDir.
 	 * 
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void testAddDir() throws QueueException {
+	@Test public void addDir() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
-		String dirname = qs._addDir();
+		String dirname = qs.addDir();
 		assertEquals(8, dirname.length());
 	}
 
 	/**
 	 * Test queue creation.
 	 * 
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void testCreation() throws QueueException {
+	@Test public void creation() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		assertEquals(qsPath, qs.getPath());
 		assertTrue(new File(qsPath).isDirectory());
@@ -68,9 +63,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test add operation.
 	 * 
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void testAdd() throws QueueException {
+	@Test public void add() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elem = qs.add(data);
@@ -86,9 +81,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * Test addPath operation.
 	 * 
 	 * @throws IOException
-	 * @throws QueueException
 	 */
-	public void testAddPath() throws IOException, QueueException {
+	@Test public void addPath() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String tmpDir = qsPath + File.separator + "elems";
@@ -109,9 +103,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test lock/unlock operations.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testLockUnlock() throws Exception {
+	@Test public void lockUnlock() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elemName = "foobar";
@@ -125,9 +119,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test get operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testGet() throws Exception {
+	@Test public void get() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elem = qs.add(data);
@@ -138,9 +132,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test get as byte array operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testGetAsByteArray() throws Exception {
+	@Test public void getAsByteArray() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		byte[] dataBytes = "abc".getBytes();
 		String elem = qs.add(dataBytes);
@@ -151,9 +145,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test count operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testCount() throws Exception {
+	@Test public void count() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		qs.add(data);
@@ -166,9 +160,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test remove operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testRemove() throws Exception {
+	@Test public void remove() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		for (int i = 0; i < 5; i++) {
@@ -185,9 +179,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test purge basic operation.
 	 * 
-	 * @throws QueueException
+	 * @throws IOException
 	 */
-	public void testPurgeBasic() throws QueueException {
+	@Test public void purgeBasic() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		qs.purge();
 		qs.purge(0, 0);
@@ -199,9 +193,10 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test purge one dir operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
-	public void testPurgeOneDir() throws Exception {
+	@Test public void purgeOneDir() throws IOException, InterruptedException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		qs.add("abc");
 		assertEquals(1, qs.count());
@@ -220,9 +215,9 @@ public class QueueSimpleTest extends QueueTestBase {
 	/**
 	 * Test purge multi dir operation.
 	 * 
-	 * @throws Exception
+	 * @throws IOException
 	 */
-	public void testPurgeMultiDir() throws Exception {
+	@Test public void purgeMultiDir() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		File qsPath = new File(qs.getPath());
 		qs.add("foo");

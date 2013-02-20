@@ -1,8 +1,11 @@
 package ch.cern.dirq;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+
 import ch.cern.mig.utils.StringUtils;
 
 /**
@@ -11,21 +14,12 @@ import ch.cern.mig.utils.StringUtils;
  * <br />Copyright CERN 2010-2013
  *
  */
-public class StringUtilsTest extends TestCase {
-
-	/**
-	 * Create the test case
-	 * 
-	 * @param name name of the test case
-	 */
-	public StringUtilsTest(String name) {
-		super(name);
-	}
+public class StringUtilsTest {
 
 	/**
 	 * Test join.
 	 */
-	public void testJoin() {
+	@Test public void join() {
 		assertEquals("", StringUtils.join(new ArrayList<Object>(), ","));
 		assertEquals("", StringUtils.join(new String[]{}, ", "));
 		assertEquals("hello, world",

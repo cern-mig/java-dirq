@@ -1,7 +1,11 @@
 package ch.cern.dirq;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
+
+import org.junit.Test;
 
 import ch.cern.dirq.QueueNull;
 
@@ -14,28 +18,18 @@ import ch.cern.dirq.QueueNull;
 public class QueueNullTest extends QueueTestBase {
 
 	/**
-	 * Create the test case
-	 * 
-	 * @param name
-	 *            name of the test case
-	 */
-	public QueueNullTest(String name) {
-		super(name);
-	}
-
-	/**
 	 * Test constructor.
 	 */
-	public void testCreation() {
+	@Test public void creation() {
 		QueueNull blackHole = new QueueNull();
 		assertEquals("NULL", blackHole.getId());
-		assertEquals("NULL", blackHole.getPath());
+		// assertEquals("NULL", blackHole.getPath());
 	}
 
 	/**
 	 * Test add.
 	 */
-	public void testAdd() {
+	@Test public void add() {
 		QueueNull blackHole = new QueueNull();
 		String elem = blackHole.add("foo bar");
 		assertEquals("", elem);
@@ -46,7 +40,7 @@ public class QueueNullTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	public void testAddPath() throws IOException {
+	@Test public void addPath() throws IOException {
 		QueueNull blackHole = new QueueNull();
 		String name = dir + "foo bar";
 		File file = new File(name);
@@ -57,44 +51,36 @@ public class QueueNullTest extends QueueTestBase {
 	}
 
 	/**
-	 * Test lock unlock.
-	 * 
-	 * @throws Exception
+	 * Test lock.
 	 */
-	public void testLockUnlock() throws Exception {
-		boolean thrown = true;
+	@Test(expected=UnsupportedOperationException.class)
+	public void lock() {
 		QueueNull blackHole = new QueueNull();
-		try {
-			blackHole.lock("");
-		} catch (NotSupportedMethodException e) {
-			thrown = thrown && true;
-		}
-		try {
-			blackHole.unlock("");
-		} catch (NotSupportedMethodException e) {
-			thrown = thrown && true;
-		}
-		assertTrue(thrown);
+		blackHole.lock("");
+	}
+	
+	/**
+	 * Test unlock.
+	 */
+	@Test(expected=UnsupportedOperationException.class)
+	public void unlock() throws Exception {
+		QueueNull blackHole = new QueueNull();
+		blackHole.unlock("");
 	}
 
 	/**
 	 * Test get.
 	 */
-	public void testget() {
-		boolean thrown = true;
+	@Test(expected=UnsupportedOperationException.class)
+	public void get() {
 		QueueNull blackHole = new QueueNull();
-		try {
-			blackHole.get("");
-		} catch (NotSupportedMethodException e) {
-			thrown = thrown && true;
-		}
-		assertTrue(thrown);
+		blackHole.get("");
 	}
 
 	/**
 	 * Test count.
 	 */
-	public void testCount() {
+	@Test public void count() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.add("foo bar 1");
 		assertEquals(0, blackHole.count());
@@ -105,23 +91,16 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test remove.
 	 */
-	public void testRemove() {
-		boolean thrown = true;
+	@Test(expected=UnsupportedOperationException.class)
+	public void remove() {
 		QueueNull blackHole = new QueueNull();
-		try {
-			blackHole.remove("");
-		} catch (NotSupportedMethodException e) {
-			thrown = thrown && true;
-		}
-		assertTrue(thrown);
+		blackHole.remove("");
 	}
 
 	/**
 	 * Test purge.
-	 * 
-	 * @throws QueueException
 	 */
-	public void testPurge() throws QueueException {
+	@Test public void purge() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.purge();
 	}

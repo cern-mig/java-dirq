@@ -1,10 +1,15 @@
 package ch.cern.dirq;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 
@@ -14,23 +19,14 @@ import ch.cern.mig.utils.FileUtils;
  * <br />Copyright CERN 2010-2013
  *
  */
-public class FileUtilsTest extends TestCase {
-	public static final String dir = Posix.posix.getpid() + "test/";
-
-	/**
-	 * Create the test case
-	 * 
-	 * @param name name of the test case
-	 */
-	public FileUtilsTest(String name) {
-		super(name);
-	}
+public class FileUtilsTest {
+	private static final String dir = Posix.posix.getpid() + "test/";
 
 	/**
 	 * Test read write String.
 	 * @throws IOException 
 	 */
-	public void testReadWriteString() throws IOException {
+	@Test public void testReadWriteString() throws IOException {
 		String content = "Hello World!";
 		String filePath = dir + "hello_world";
 		FileUtils.writeToFile(filePath, content);
@@ -44,7 +40,7 @@ public class FileUtilsTest extends TestCase {
 	 * Test read write ByteArray.
 	 * @throws IOException 
 	 */
-	public void testReadWriteByteArray() throws IOException {
+	@Test public void testReadWriteByteArray() throws IOException {
 		String data = "Hello World!";
 		byte[] dataAsBytes = data.getBytes();
 		String filePath = dir + "hello_world_byte";
@@ -59,7 +55,7 @@ public class FileUtilsTest extends TestCase {
 	 * Test read write mix.
 	 * @throws IOException 
 	 */
-	public void testReadWriteMix() throws IOException {
+	@Test public void testReadWriteMix() throws IOException {
 		String data = "Hello World!";
 		String filePath = dir + "hello_world_mix";
 		FileUtils.writeToFile(filePath, data);
@@ -69,17 +65,15 @@ public class FileUtilsTest extends TestCase {
 		assertEquals(data, new String(FileUtils.readToByteArray(file)));
 	}
 	
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() {
 		FileUtils.deleteDir(new File(dir));
 		new File(dir).mkdirs();
-		super.setUp();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
 		FileUtils.deleteDir(new File(dir));
-		super.tearDown();
 	}
 
 }
