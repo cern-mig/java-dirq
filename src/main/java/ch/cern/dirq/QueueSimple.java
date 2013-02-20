@@ -576,19 +576,21 @@ public class QueueSimple implements Queue {
 		}
 
 		private boolean buildElements() {
-			while (!dirs.isEmpty()) {
+			boolean result = false;
+			while (!result && !dirs.isEmpty()) {
 				String dir = dirs.remove(0);
 				File[] content = new File(queue.path + File.separator + dir)
 						.listFiles(new RegExpFilenameFilter(ELEMENT_REGEXP));
 				if (content == null || content.length == 0)
 					continue;
-				Arrays.sort(content);
-				for (File element : content) {
-					elts.add(dir + File.separator + element.getName());
-				}
-				return true;
+				else
+					result = true;
+					Arrays.sort(content);
+					for (File element : content) {
+						elts.add(dir + File.separator + element.getName());
+					}
 			}
-			return false;
+			return result;
 		}
 	}
 
