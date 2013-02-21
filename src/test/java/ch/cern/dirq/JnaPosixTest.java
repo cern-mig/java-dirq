@@ -1,7 +1,5 @@
 package ch.cern.dirq;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -13,7 +11,6 @@ import com.sun.jna.LastErrorException;
 
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
-import ch.cern.mig.utils.ProcessUtils;
 
 /**
  * 
@@ -247,13 +244,13 @@ public class JnaPosixTest {
 		mkdir(d2);
 	}
 	
-	private void testStatPrint() {
-		String nStat =  Posix.posix.stat("license.txt").customRepr();
-		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
-		assertEquals(sStat, nStat);
-		System.out.println(
-			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
-	}
+//	private void testStatPrint() {
+//		String nStat =  Posix.posix.stat("license.txt").customRepr();
+//		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
+//		assertEquals(sStat, nStat);
+//		System.out.println(
+//			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
+//	}
 
 	public static void main(String[] args) throws Exception {
 		println(line);
