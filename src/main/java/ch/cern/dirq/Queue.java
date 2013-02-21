@@ -108,7 +108,7 @@ public interface Queue extends Iterable<String> {
 	 * Add data as a string to the queue.
 	 * @param data data to be added to the queue
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public String add(String data) throws IOException;
 	
@@ -116,7 +116,7 @@ public interface Queue extends Iterable<String> {
 	 * Add data as byte array to the queue.
 	 * @param data data to be added to the queue
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public String add(byte[] data) throws IOException;
 
@@ -126,7 +126,7 @@ public interface Queue extends Iterable<String> {
 	 * filesystem and will be moved to the queue.
 	 * @param path the path of the file to be added
 	 * @return return the element name (<directory_name>/<file_name>)
-	 * @throws IOException 
+	 * @throws IOException if any file operation fail
 	 */
 	public String addPath(String path) throws IOException;
 
@@ -134,23 +134,20 @@ public interface Queue extends Iterable<String> {
 	 * Get locked element as a string.
 	 * @param name the name of the element to be returned
 	 * @return return the value associated to the given name
-	 * @throws Exception
 	 */
 	public String get(String name);
 	
 	/**
 	 * Get locked element as a byte array.
 	 * @param name the name of the element to be returned
-	 * @return return the value associated to the given name
-	 * @throws Exception
+	 * @return the value associated to the given name
 	 */
 	public byte[] getAsByteArray(String name);
 
 	/**
 	 * Return the path given the name of the element.
 	 * @param name the name of the element
-	 * @return return the path of the element
-	 * @throws Exception
+	 * @return the path of the element
 	 */
 	public String getPath(String name);
 
@@ -159,7 +156,7 @@ public interface Queue extends Iterable<String> {
 	 * @param name name of the element to be locked
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be locked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public boolean lock(String name) throws IOException;
 
@@ -169,7 +166,7 @@ public interface Queue extends Iterable<String> {
 	 * @param permissive work in permissive mode
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be locked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public boolean lock(String name, boolean permissive) throws IOException;
 
@@ -178,7 +175,7 @@ public interface Queue extends Iterable<String> {
 	 * @param name name of the element to be locked
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be unlocked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public boolean unlock(String name) throws IOException;
 
@@ -188,14 +185,13 @@ public interface Queue extends Iterable<String> {
 	 * @param permissive work in permissive mode
 	 * @return <code>true</code> on success, <code>false</code> if
 	 * the element could not be unlocked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public boolean unlock(String name, boolean permissive) throws IOException;
 
 	/**
 	 * Remove a locked element from the queue.
 	 * @param name name of the element to be removed
-	 * @throws Exception
 	 */
 	public void remove(String name);
 
@@ -213,7 +209,7 @@ public interface Queue extends Iterable<String> {
 	 * queues with many elements.
 	 * <p>
 	 * It uses default value for maxTemp and maxLock
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public void purge() throws IOException;
 	
@@ -224,7 +220,7 @@ public interface Queue extends Iterable<String> {
 	 * queues with many elements.
 	 * @param options map containing purge options, only <i>maxLock</i>
 	 * and <i>maxTemp</i> values are used, the others are ignored
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public void purge(Map<String, Integer> options) throws IOException;
 
@@ -236,7 +232,7 @@ public interface Queue extends Iterable<String> {
 	 * @param maxLock maximum time for a locked element
 	 * (in seconds, default 600);
 	 * if set to 0, locked elements will not be unlocked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public void purge(int maxLock) throws IOException;
 
@@ -251,7 +247,7 @@ public interface Queue extends Iterable<String> {
 	 * @param maxLock maximum time for a locked element
 	 * (in seconds, default 600);
 	 * if set to 0, locked elements will not be unlocked
-	 * @throws IOException
+	 * @throws IOException if any file operation fail
 	 */
 	public void purge(int maxTemp, int maxLock) throws IOException;
 

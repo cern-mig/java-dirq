@@ -5,7 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * QueueNull - object oriented interface to a null directory based queue.
+ * QueueNull - object oriented interface to a <b>null</b>
+ * directory based queue.
  * <p>
  * The goal of this module is to offer a <b>null</b> queue system using the
  * same API as the other directory queue implementations. The queue will
@@ -25,30 +26,31 @@ import java.util.Map;
 public class QueueNull implements Queue {
 
 	/**
-	 * Constructor which creates a <b>null</b> directory queues which
+	 * Constructor which creates a <b>null</b> directory queue which
 	 * accept no parameters.
 	 */
 	public QueueNull() {
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#add(byte[])
+	/**
+	 * @return an empty string
 	 */
 	@Override
 	public String add(byte[] data) {
 		return "";
 	}
 	
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#add(String)
+	/**
+	 * @return an empty String
 	 */
 	@Override
 	public String add(String data) {
 		return "";
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#addPath(String)
+	/**
+	 * Delete the File at the given path.
+	 * @return an empty String
 	 */
 	@Override
 	public String addPath(String path) {
@@ -58,24 +60,30 @@ public class QueueNull implements Queue {
 		return "";
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#get(String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public String get(String name) {
 		throw new UnsupportedOperationException();
 	}
 	
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#getAsByteArray(String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public byte[] getAsByteArray(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#getPath(String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public String getPath(String path) {
@@ -83,94 +91,133 @@ public class QueueNull implements Queue {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#lock(String, boolean)
-	 */@Override
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
+	 */
 	public boolean lock(String name, boolean permissive) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#unlock(String, boolean)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean unlock(String name, boolean permissive) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#remove(String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public void remove(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#count()
+	/**
+	 * Always return 0.
 	 */
 	@Override
 	public int count() {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#purge(int, int)
-	 */
-	@Override
-	public void purge(int maxTemp, int maxLock) {
-	}
-
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#getPath(String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public Iterator<String> iterator() {
-		return null;
+		return new QueueNullIterator();
+	}
+	
+	private static class QueueNullIterator implements Iterator<String> {
+
+		/**
+		 * @return false as it is a <b>null</b> queue.
+		 */
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		/**
+		 * @return null as it is a <b>null</b> queue.
+		 */
+		@Override
+		public String next() {
+			return null;
+		}
+
+		/**
+		 * Does not do anything.
+		 */
+		@Override
+		public void remove() {
+		}
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#getId()
+	/**
+	 * @return String "NULL"
 	 */
 	@Override
 	public String getId() {
 		return "NULL";
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#lock(java.lang.String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean lock(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#unlock(java.lang.String)
+	/**
+	 * Not implemented, always throws UnsupportedOperationException.
+	 * @throws UnsupportedOperationException as does not make sense
+	 * for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean unlock(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#purge()
+	/**
+	 * Does not do anything.
 	 */
 	@Override
 	public void purge() {
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#purge(java.util.Map)
+	/**
+	 * Does not do anything.
 	 */
 	@Override
 	public void purge(Map<String, Integer> options) {
 	}
 
-	/* (non-Javadoc)
-	 * @see ch.cern.dirq.Queue#purge(int)
+	/**
+	 * Does not do anything.
 	 */
 	@Override
 	public void purge(int maxLock) {
+	}
+	
+	/**
+	 * Does not do anything.
+	 */
+	@Override
+	public void purge(int maxTemp, int maxLock) {
 	}
 }

@@ -33,7 +33,7 @@ public class QueueSimpleTest extends QueueTestBase {
 	@Test public void multiLevelDirectory() throws IOException {
 		String multiPath = qsPath + "three/ormore//levels";
 		QueueSimple qs = new QueueSimple(multiPath);
-		assertEquals(multiPath, qs.getPath());
+		assertEquals(multiPath, qs.getQueuePath());
 		assertTrue(new File(multiPath).isDirectory());
 		FileUtils.deleteDir(new File(multiPath));
 	}
@@ -56,7 +56,7 @@ public class QueueSimpleTest extends QueueTestBase {
 	 */
 	@Test public void creation() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
-		assertEquals(qsPath, qs.getPath());
+		assertEquals(qsPath, qs.getQueuePath());
 		assertTrue(new File(qsPath).isDirectory());
 	}
 
@@ -202,14 +202,14 @@ public class QueueSimpleTest extends QueueTestBase {
 		assertEquals(1, qs.count());
 		String elem = qs.iterator().next();
 		qs.lock(elem);
-		String elemPathLock = qs.getPath() + File.separator + elem
+		String elemPathLock = qs.getQueuePath() + File.separator + elem
 				+ QueueSimple.LOCKED_SUFFIX;
 		assertTrue(new File(elemPathLock).exists());
 		Thread.sleep(2000);
 		qs.purge(1);
 		assertFalse(new File(elemPathLock).exists());
 		assertEquals(1, qs.count());
-		assertEquals(1, new File(qs.getPath()).listFiles().length);
+		assertEquals(1, new File(qs.getQueuePath()).listFiles().length);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class QueueSimpleTest extends QueueTestBase {
 	 */
 	@Test public void purgeMultiDir() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
-		File qsPath = new File(qs.getPath());
+		File qsPath = new File(qs.getQueuePath());
 		qs.add("foo");
 		assertEquals(1, qs.count());
 		String[] list = qsPath.list();
@@ -251,7 +251,7 @@ public class QueueSimpleTest extends QueueTestBase {
 		}
 		Iterator<String> it = qs.iterator();
 		String elem1 = it.next();
-		String lockPath1 = qs.getPath() + File.separator + elem1
+		String lockPath1 = qs.getQueuePath() + File.separator + elem1
 				+ QueueSimple.LOCKED_SUFFIX;
 		assertTrue(new File(lockPath1).exists());
 		long[] backInTime = new long[] {
@@ -265,7 +265,7 @@ public class QueueSimpleTest extends QueueTestBase {
 
 		assertEquals("2 left count", 2, qs.count());
 		String elem2 = it.next();
-		String lockPath2 = qs.getPath() + File.separator + elem2
+		String lockPath2 = qs.getQueuePath() + File.separator + elem2
 				+ QueueSimple.LOCKED_SUFFIX;
 		assertTrue(new File(lockPath2).exists());
 	}
