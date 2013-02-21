@@ -33,7 +33,7 @@ public class QueueNull implements Queue {
 	}
 
 	/**
-	 * @return an empty string
+	 * @return an empty String
 	 */
 	@Override
 	public String add(byte[] data) {
