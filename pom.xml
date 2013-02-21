@@ -70,6 +70,7 @@
         <configuration>
           <nohelp>true</nohelp>
           <show>public</show>
+          <excludePackageNames>ch.cern.mig.posix:ch.cern.mig.utils</excludePackageNames>
         </configuration>
         <executions>
           <execution>
