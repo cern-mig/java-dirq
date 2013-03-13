@@ -6,7 +6,7 @@
   <version>1.1-SNAPSHOT</version>
   <name>dirq</name>
   <description>Directory based queue.</description>
-  <url>https://github.com/mpaladin/java-dirq</url>
+  <url>https://github.com/cern-mig/java-dirq</url>
 
   <licenses>
     <license>
@@ -17,9 +17,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:mpaladin/java-dirq.git</connection>
-    <developerConnection>scm:git:git@github.com:mpaladin/java-dirq.git</developerConnection>
-    <url>https://github.com/mpaladin/java-dirq</url>
+    <connection>scm:git:git@github.com:cern-mig/java-dirq.git</connection>
+    <developerConnection>scm:git:git@github.com:cern-mig/java-dirq.git</developerConnection>
+    <url>https://github.com/cern-mig/java-dirq</url>
   </scm>
 
   <developers>
