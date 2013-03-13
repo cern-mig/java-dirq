@@ -7,8 +7,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import ch.cern.dirq.QueueNull;
-
 /**
  * Unit test for {@link ch.cern.dirq.QueueNull}.
  * @author Massimo Paladin - massimo.paladin@gmail.com
