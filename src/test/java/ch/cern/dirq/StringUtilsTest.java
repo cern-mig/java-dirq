@@ -11,7 +11,7 @@ import ch.cern.mig.utils.StringUtils;
 /**
  * Unit tests for {@link ch.cern.dirq.StringUtils}.
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2013
+ * <br />Copyright (C) CERN 2012-2013
  *
  */
 public class StringUtilsTest {

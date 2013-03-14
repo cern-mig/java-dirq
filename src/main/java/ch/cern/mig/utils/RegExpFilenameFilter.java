@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * <li>find mode: regular expression occurs in the filename
  * </ul>
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2013
+ * <br />Copyright (C) CERN 2012-2013
  *
  */
 public class RegExpFilenameFilter implements FilenameFilter {

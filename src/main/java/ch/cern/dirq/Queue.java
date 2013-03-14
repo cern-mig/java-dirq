@@ -94,7 +94,7 @@ import java.util.Map;
  * enough to control who can access the queue.
  * 
  * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright CERN 2010-2013
+ * <br />Copyright (C) CERN 2012-2013
  *
  */
 public interface Queue extends Iterable<String> {
