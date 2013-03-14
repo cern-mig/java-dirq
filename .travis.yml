@@ -1,3 +1,6 @@
+notifications:
+  email:
+    - mig-travis@cern.ch
 language: java
 jdk:
   - openjdk6
