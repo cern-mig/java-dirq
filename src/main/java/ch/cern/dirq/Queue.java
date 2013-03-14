@@ -18,11 +18,11 @@ import java.util.Map;
  * can be written in different programming languages:
  * <ul>
  * <li>A Perl implementation of the same algorithms is
- * available at <a href="http://search.cpan.org/~lcons/Directory-Queue/">
- * http://search.cpan.org/~lcons/Directory-Queue/</a>
+ * available at <a href="http://search.cpan.org/dist/Directory-Queue/">
+ * http://search.cpan.org/dist/Directory-Queue/</a>
  * <li>A Python implementation of the same algorithms is
- * available at <a href="http://pypi.python.org/pypi/dirq/">
- * http://pypi.python.org/pypi/dirq/</a>
+ * available at <a href="https://github.com/cern-mig/python-dirq">
+ * https://github.com/cern-mig/python-dirq</a>
  * </ul>
  * <p>
  * There is no knowledge of priority within a queue. If multiple priorities

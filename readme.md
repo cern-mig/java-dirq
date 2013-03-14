@@ -17,8 +17,8 @@ This module allows multiple concurrent readers and writers to interact
 with the same queue.
 
 A port of Perl module
-[Directory::Queue](http://search.cpan.org/~lcons/Directory-Queue/)
-and a Python [dirq](http://pypi.python.org/pypi/dirq/) implementation of
+[Directory::Queue](http://search.cpan.org/dist/Directory-Queue/)
+and a Python [dirq](https://github.com/cern-mig/python-dirq) implementation of
 the same algorithm are available so readers and writers
 can be written in different programming languages.
 

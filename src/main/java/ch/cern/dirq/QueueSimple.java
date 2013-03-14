@@ -26,8 +26,8 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * QueueSimple - object oriented interface to a simple directory based queue.
  * <p>
  * A port of Perl module Directory::Queue::Simple
- * <a href="http://search.cpan.org/~lcons/Directory-Queue/">
- * http://search.cpan.org/~lcons/Directory-Queue/</a>
+ * <a href="http://search.cpan.org/dist/Directory-Queue/">
+ * http://search.cpan.org/dist/Directory-Queue/</a>
  * <p>
  * The documentation from Directory::Queue::Simple module was adapted for Java.
  * <p>
