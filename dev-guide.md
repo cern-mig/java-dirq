@@ -55,6 +55,6 @@ release then the release process can be summarized with the following steps:
     mvn release:prepare
     mvn release:perform
 
-At this point follow point 8 in order to confirm the release and
-get it synchronized with central Maven repository.
+At this point follow point 8 of the Sonatype guide in order to confirm
+the release and get it synchronized with central Maven repository.
 
