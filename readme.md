@@ -52,7 +52,7 @@ After installing, you can find documentation at this page:
 Developers
 ----------
 
-Look at dev-guide.md file.
+Look at `dev-guide.md` file.
 
 
 License and Copyright
