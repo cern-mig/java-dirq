@@ -15,7 +15,7 @@ the documentation to the gh-pages branch of the repository.
 
 For this reason, in order to proceed with the upload of the documentation
 you should make sure that you have the proper configuration for the
-GitHub Maven plugin (in the settings.xml).
+GitHub Maven plugin (in your ~/.m2/settings.xml).
 
 You find the recipe in the plugin page:
 https://github.com/github/maven-plugins
