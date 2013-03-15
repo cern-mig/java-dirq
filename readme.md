@@ -32,12 +32,28 @@ To install this module, run the following commands:
     mvn package
     # get the jar from target folder
 
+Or simply add it to your `pom.xml` file:
+
+    <dependency>
+      <groupId>ch.cern.dirq</groupId>
+      <artifactId>dirq</artifactId>
+      <version>X.X</version>
+    </dependency>
+
+
 Documentation
 -------------
 
 After installing, you can find documentation at this page:
 
 [http://cern-mig.github.com/java-dirq/](http://cern-mig.github.com/java-dirq/)
+
+
+Developers
+----------
+
+Look at dev-guide.md file.
+
 
 License and Copyright
 ---------------------
