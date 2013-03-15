@@ -3,6 +3,8 @@
 Generate documentation and upload it to GitHub Pages
 ====================================================
 
+First you have to generate the package documentation:
+
     # generate apidocs in target/site/apidocs/
     mvn javadoc:javadoc
 
@@ -20,6 +22,10 @@ https://github.com/github/maven-plugins
 
     # upload it to gh-pages branch in github
     mvn site
+
+If the command executes successfully the updated documentation will
+appear at this address, with a delay of 5-15 minutes:
+[dirq documentation](http://cern-mig.github.com/java-dirq/).
 
 
 Build a snapshot
