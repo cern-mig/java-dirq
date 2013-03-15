@@ -27,8 +27,7 @@ Build a snapshot
 
 Sonatype Nexus is used for the package release, if you want to build
 a snapshot first have a read at their guide:
-
-http://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+[Sonatype OSS Maven Repository Usage Guide](http://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide)
 
 Building a snapshot is as easy as running a single command when you have
 proper configuration.
@@ -40,9 +39,8 @@ Perform a release
 =================
 
 In order to release the package and get it synchronized with
-central Maven repo follow this guide:
-
-http://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
+central Maven repo follow the Sonatype guide:
+[Sonatype OSS Maven Repository Usage Guide](http://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide)
 
 If you have the proper configuration for Sonatype and it is not your first
 release then the release process can be summarized with the following steps:
