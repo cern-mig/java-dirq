@@ -5,29 +5,28 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * QueueNull - object oriented interface to a <b>null</b>
- * directory based queue.
+ * QueueNull - object oriented interface to a <b>null</b> directory based queue.
  * <p>
- * The goal of this module is to offer a <b>null</b> queue system using the
- * same API as the other directory queue implementations. The queue will
- * behave like a black hole: added data will disappear immediately so the
- * queue will therefore always appear empty.
+ * The goal of this module is to offer a <b>null</b> queue system using the same
+ * API as the other directory queue implementations. The queue will behave like
+ * a black hole: added data will disappear immediately so the queue will
+ * therefore always appear empty.
  * <p>
- * This can be used for testing purposes or to discard data like one
- * would do on Unix by redirecting output to <i>/dev/null</i>.
+ * This can be used for testing purposes or to discard data like one would do on
+ * Unix by redirecting output to <i>/dev/null</i>.
  * <p>
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  * 
- * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright (C) CERN 2012-2013
- *
+ * @author Massimo Paladin - massimo.paladin@gmail.com <br />
+ *         Copyright (C) CERN 2012-2013
+ * 
  */
 public class QueueNull implements Queue {
 
 	/**
-	 * Constructor which creates a <b>null</b> directory queue which
-	 * accept no parameters.
+	 * Constructor which creates a <b>null</b> directory queue which accept no
+	 * parameters.
 	 */
 	public QueueNull() {
 	}
@@ -39,7 +38,7 @@ public class QueueNull implements Queue {
 	public String add(byte[] data) {
 		return "";
 	}
-	
+
 	/**
 	 * @return an empty String
 	 */
@@ -50,6 +49,7 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Delete the File at the given path.
+	 * 
 	 * @return an empty String
 	 */
 	@Override
@@ -62,18 +62,20 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public String get(String name) {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public byte[] getAsByteArray(String name) {
@@ -82,19 +84,20 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public String getPath(String path) {
 		throw new UnsupportedOperationException();
 	}
 
-	
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	public boolean lock(String name, boolean permissive) {
 		throw new UnsupportedOperationException();
@@ -102,8 +105,9 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean unlock(String name, boolean permissive) {
@@ -112,8 +116,9 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public void remove(String name) {
@@ -130,14 +135,15 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public Iterator<String> iterator() {
 		return new QueueNullIterator();
 	}
-	
+
 	private static class QueueNullIterator implements Iterator<String> {
 
 		/**
@@ -162,7 +168,7 @@ public class QueueNull implements Queue {
 		@Override
 		public void remove() {
 		}
-		
+
 	}
 
 	/**
@@ -175,8 +181,9 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean lock(String name) {
@@ -185,8 +192,9 @@ public class QueueNull implements Queue {
 
 	/**
 	 * Not implemented, always throws UnsupportedOperationException.
-	 * @throws UnsupportedOperationException as does not make sense
-	 * for a <b>null</b> queue.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             as does not make sense for a <b>null</b> queue.
 	 */
 	@Override
 	public boolean unlock(String name) {
@@ -213,7 +221,7 @@ public class QueueNull implements Queue {
 	@Override
 	public void purge(int maxLock) {
 	}
-	
+
 	/**
 	 * Does not do anything.
 	 */

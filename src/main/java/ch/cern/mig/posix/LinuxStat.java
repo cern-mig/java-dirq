@@ -24,23 +24,21 @@ public class LinuxStat extends FileStat {
 	public int st_ctim_sec;
 	public int st_ctim_nsec;
 	public long __unused5;
-	
-	public List<String>  getFieldOrder() {
-		return Arrays.asList("st_dev", "__pad1", "st_ino",
-			"st_mode", "st_nlink", "st_uid", "st_gid",
-			"st_rdev", "__pad2", "st_size", "st_blksize",
-			"st_blocks", "__unused4", "st_atim_sec", "st_atim_nsec",
-			"st_mtim_sec", "st_mtim_nsec", "st_ctim_sec", "st_ctim_nsec",
-			"__unused5");
+
+	public List<String> getFieldOrder() {
+		return Arrays.asList("st_dev", "__pad1", "st_ino", "st_mode",
+				"st_nlink", "st_uid", "st_gid", "st_rdev", "__pad2", "st_size",
+				"st_blksize", "st_blocks", "__unused4", "st_atim_sec",
+				"st_atim_nsec", "st_mtim_sec", "st_mtim_nsec", "st_ctim_sec",
+				"st_ctim_nsec", "__unused5");
 	}
-	
+
 	public String customRepr() {
-		return String.format("%d-%d-%d-%x-%d-%d-%d-%d-%d-%d-%d-%d-%d",
-			st_dev, st_ino, st_nlink, st_mode, st_uid, st_gid, st_rdev,
-			st_size, st_blksize, st_blocks,
-			st_atim_sec, st_mtim_sec, st_ctim_sec);
+		return String.format("%d-%d-%d-%x-%d-%d-%d-%d-%d-%d-%d-%d-%d", st_dev,
+				st_ino, st_nlink, st_mode, st_uid, st_gid, st_rdev, st_size,
+				st_blksize, st_blocks, st_atim_sec, st_mtim_sec, st_ctim_sec);
 	}
-	
+
 	public String systemCommand() {
 		return "stat --format %d-%i-%h-%f-%u-%g-%t-%s-%o-%b-%X-%Y-%Z ";
 	}

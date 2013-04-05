@@ -11,10 +11,9 @@ public final class Timeval extends Structure {
 
 	public Timeval() {
 	}
-	
-	public List<String>  getFieldOrder() {
-		return Arrays.asList(
-			"tv_sec", "tv_usec");
+
+	public List<String> getFieldOrder() {
+		return Arrays.asList("tv_sec", "tv_usec");
 	}
 
 	public void setTime(long[] timeval) {
