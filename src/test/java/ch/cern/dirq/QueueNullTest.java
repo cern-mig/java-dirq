@@ -9,16 +9,18 @@ import org.junit.Test;
 
 /**
  * Unit test for {@link ch.cern.dirq.QueueNull}.
- * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright (C) CERN 2012-2013
- *
+ * 
+ * @author Massimo Paladin - massimo.paladin@gmail.com <br />
+ *         Copyright (C) CERN 2012-2013
+ * 
  */
 public class QueueNullTest extends QueueTestBase {
 
 	/**
 	 * Test constructor.
 	 */
-	@Test public void creation() {
+	@Test
+	public void creation() {
 		QueueNull blackHole = new QueueNull();
 		assertEquals("NULL", blackHole.getId());
 		// assertEquals("NULL", blackHole.getPath());
@@ -27,7 +29,8 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test add.
 	 */
-	@Test public void add() {
+	@Test
+	public void add() {
 		QueueNull blackHole = new QueueNull();
 		String elem = blackHole.add("foo bar");
 		assertEquals("", elem);
@@ -38,7 +41,8 @@ public class QueueNullTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void addPath() throws IOException {
+	@Test
+	public void addPath() throws IOException {
 		QueueNull blackHole = new QueueNull();
 		String name = dir + "foo bar";
 		File file = new File(name);
@@ -51,16 +55,16 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test lock.
 	 */
-	@Test(expected=UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void lock() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.lock("");
 	}
-	
+
 	/**
 	 * Test unlock.
 	 */
-	@Test(expected=UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void unlock() throws Exception {
 		QueueNull blackHole = new QueueNull();
 		blackHole.unlock("");
@@ -69,7 +73,7 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test get.
 	 */
-	@Test(expected=UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void get() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.get("");
@@ -78,7 +82,8 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test count.
 	 */
-	@Test public void count() {
+	@Test
+	public void count() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.add("foo bar 1");
 		assertEquals(0, blackHole.count());
@@ -89,7 +94,7 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test remove.
 	 */
-	@Test(expected=UnsupportedOperationException.class)
+	@Test(expected = UnsupportedOperationException.class)
 	public void remove() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.remove("");
@@ -98,7 +103,8 @@ public class QueueNullTest extends QueueTestBase {
 	/**
 	 * Test purge.
 	 */
-	@Test public void purge() {
+	@Test
+	public void purge() {
 		QueueNull blackHole = new QueueNull();
 		blackHole.purge();
 	}

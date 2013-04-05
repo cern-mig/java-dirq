@@ -25,26 +25,23 @@ public class MacOSStat extends FileStat {
 	public int st_lspare;
 	public long st_qspare0;
 	public long st_qspare1;
-	
-	public List<String>  getFieldOrder() {
-		return Arrays.asList(
-			"st_dev", "st_ino", "st_mode",
-			"st_nlink", "st_uid", "st_gid",
-			"st_rdev", "st_atime", "st_atimensec",
-			"st_mtime", "st_mtimensec", "st_ctime", "st_ctimensec",
-			"st_size", "st_blocks", "st_blksize",
-			"st_flags", "st_gen", "st_lspare",
-			"st_qspare0", "st_qspare1");
+
+	public List<String> getFieldOrder() {
+		return Arrays.asList("st_dev", "st_ino", "st_mode", "st_nlink",
+				"st_uid", "st_gid", "st_rdev", "st_atime", "st_atimensec",
+				"st_mtime", "st_mtimensec", "st_ctime", "st_ctimensec",
+				"st_size", "st_blocks", "st_blksize", "st_flags", "st_gen",
+				"st_lspare", "st_qspare0", "st_qspare1");
 	}
-	
+
 	public String systemCommand() {
 		return "stat -f %d-%i-%l-%u-%g-%r-%z-%k-%b-%a-%m-%c ";
 	}
-	
+
 	public String customRepr() {
-		return String.format("%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d",
-			st_dev, st_ino, st_nlink, st_uid, st_gid, st_rdev,
-			st_size, st_blksize, st_blocks, st_atime, st_mtime, st_ctime);
+		return String.format("%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d-%d", st_dev,
+				st_ino, st_nlink, st_uid, st_gid, st_rdev, st_size, st_blksize,
+				st_blocks, st_atime, st_mtime, st_ctime);
 	}
 
 	@Override

@@ -18,19 +18,20 @@ import ch.cern.mig.utils.StringUtils;
 /**
  * Unit test for {@link ch.cern.dirq.QueueSimple}.
  * 
- * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright (C) CERN 2012-2013
+ * @author Massimo Paladin - massimo.paladin@gmail.com <br />
+ *         Copyright (C) CERN 2012-2013
  */
 public class QueueSimpleTest extends QueueTestBase {
-	private static final String qsPath =
-			dir + new Random().nextInt(32000) + "qs/";
+	private static final String qsPath = dir + new Random().nextInt(32000)
+			+ "qs/";
 
 	/**
 	 * Test multi level directory queue creation.
-	 *
+	 * 
 	 * @throws IOException
 	 */
-	@Test public void multiLevelDirectory() throws IOException {
+	@Test
+	public void multiLevelDirectory() throws IOException {
 		String multiPath = qsPath + "three/ormore//levels";
 		QueueSimple qs = new QueueSimple(multiPath);
 		assertEquals(multiPath, qs.getQueuePath());
@@ -43,7 +44,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void addDir() throws IOException {
+	@Test
+	public void addDir() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String dirname = qs.addDir();
 		assertEquals(8, dirname.length());
@@ -54,7 +56,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void creation() throws IOException {
+	@Test
+	public void creation() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		assertEquals(qsPath, qs.getQueuePath());
 		assertTrue(new File(qsPath).isDirectory());
@@ -65,16 +68,19 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void add() throws IOException {
+	@Test
+	public void add() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elem = qs.add(data);
 		assertTrue(new File(qsPath + File.separator + elem).exists());
-		assertEquals(data, FileUtils.readToString(qsPath + File.separator + elem));
+		assertEquals(data,
+				FileUtils.readToString(qsPath + File.separator + elem));
 		byte[] binaryData = data.getBytes();
 		elem = qs.add(binaryData);
 		assertTrue(new File(qsPath + File.separator + elem).exists());
-		assertEquals(data, FileUtils.readToString(qsPath + File.separator + elem));
+		assertEquals(data,
+				FileUtils.readToString(qsPath + File.separator + elem));
 	}
 
 	/**
@@ -82,7 +88,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void addPath() throws IOException {
+	@Test
+	public void addPath() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String tmpDir = qsPath + File.separator + "elems";
@@ -105,7 +112,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void lockUnlock() throws IOException {
+	@Test
+	public void lockUnlock() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elemName = "foobar";
@@ -121,20 +129,22 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void get() throws IOException {
+	@Test
+	public void get() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		String elem = qs.add(data);
 		qs.lock(elem);
 		assertEquals(data, qs.get(elem));
 	}
-	
+
 	/**
 	 * Test get as byte array operation.
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void getAsByteArray() throws IOException {
+	@Test
+	public void getAsByteArray() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		byte[] dataBytes = "abc".getBytes();
 		String elem = qs.add(dataBytes);
@@ -147,7 +157,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void count() throws IOException {
+	@Test
+	public void count() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		qs.add(data);
@@ -162,7 +173,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void remove() throws IOException {
+	@Test
+	public void remove() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		String data = "abc";
 		for (int i = 0; i < 5; i++) {
@@ -181,7 +193,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void purgeBasic() throws IOException {
+	@Test
+	public void purgeBasic() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		qs.purge();
 		qs.purge(0, 0);
@@ -194,9 +207,10 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * Test purge one dir operation.
 	 * 
 	 * @throws IOException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
-	@Test public void purgeOneDir() throws IOException, InterruptedException {
+	@Test
+	public void purgeOneDir() throws IOException, InterruptedException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		qs.add("abc");
 		assertEquals(1, qs.count());
@@ -217,7 +231,8 @@ public class QueueSimpleTest extends QueueTestBase {
 	 * 
 	 * @throws IOException
 	 */
-	@Test public void purgeMultiDir() throws IOException {
+	@Test
+	public void purgeMultiDir() throws IOException {
 		QueueSimple qs = new QueueSimple(qsPath);
 		File qsPath = new File(qs.getQueuePath());
 		qs.add("foo");
@@ -227,8 +242,8 @@ public class QueueSimpleTest extends QueueTestBase {
 		qs.add("bar");
 		assertEquals("foo + bar count", 2, qs.count());
 		list = qsPath.list();
-		assertEquals("foo + bar list: " + StringUtils.join(list),
-				2, list.length);
+		assertEquals("foo + bar list: " + StringUtils.join(list), 2,
+				list.length);
 		qs.purge();
 		assertEquals("still foo + bar count", 2, qs.count());
 
@@ -238,14 +253,12 @@ public class QueueSimpleTest extends QueueTestBase {
 		assertEquals(1, qs.count());
 		qs.purge();
 		list = qsPath.list();
-		assertEquals("1 foo or bar: " + StringUtils.join(list),
-				1, list.length);
+		assertEquals("1 foo or bar: " + StringUtils.join(list), 1, list.length);
 
 		qs.add("abc");
 		assertEquals("abc + 1 count", 2, qs.count());
 		list = qsPath.list();
-		assertEquals("abc + 1 list: " + StringUtils.join(list),
-				2, list.length);
+		assertEquals("abc + 1 list: " + StringUtils.join(list), 2, list.length);
 		for (String element : qs) {
 			qs.lock(element);
 		}
@@ -269,5 +282,5 @@ public class QueueSimpleTest extends QueueTestBase {
 				+ QueueSimple.LOCKED_SUFFIX;
 		assertTrue(new File(lockPath2).exists());
 	}
-	
+
 }
