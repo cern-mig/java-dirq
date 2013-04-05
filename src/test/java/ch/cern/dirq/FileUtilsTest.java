@@ -15,21 +15,18 @@ import ch.cern.mig.utils.FileUtils;
 
 /**
  * Unit tests for {@link ch.cern.dirq.FileUtils}.
- * 
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- * 
+ * @author Massimo Paladin - massimo.paladin@gmail.com
+ * <br />Copyright (C) CERN 2012-2013
+ *
  */
 public class FileUtilsTest {
 	private static final String dir = Posix.posix.getpid() + "test/";
 
 	/**
 	 * Test read write String.
-	 * 
-	 * @throws IOException
+	 * @throws IOException 
 	 */
-	@Test
-	public void testReadWriteString() throws IOException {
+	@Test public void testReadWriteString() throws IOException {
 		String content = "Hello World!";
 		String filePath = dir + "hello_world";
 		FileUtils.writeToFile(filePath, content);
@@ -38,14 +35,12 @@ public class FileUtilsTest {
 		FileUtils.writeToFile(file, content);
 		assertEquals(content, FileUtils.readToString(file));
 	}
-
+	
 	/**
 	 * Test read write ByteArray.
-	 * 
-	 * @throws IOException
+	 * @throws IOException 
 	 */
-	@Test
-	public void testReadWriteByteArray() throws IOException {
+	@Test public void testReadWriteByteArray() throws IOException {
 		String data = "Hello World!";
 		byte[] dataAsBytes = data.getBytes();
 		String filePath = dir + "hello_world_byte";
@@ -55,14 +50,12 @@ public class FileUtilsTest {
 		FileUtils.writeToFile(file, dataAsBytes);
 		assertTrue(Arrays.equals(dataAsBytes, FileUtils.readToByteArray(file)));
 	}
-
+	
 	/**
 	 * Test read write mix.
-	 * 
-	 * @throws IOException
+	 * @throws IOException 
 	 */
-	@Test
-	public void testReadWriteMix() throws IOException {
+	@Test public void testReadWriteMix() throws IOException {
 		String data = "Hello World!";
 		String filePath = dir + "hello_world_mix";
 		FileUtils.writeToFile(filePath, data);
@@ -71,7 +64,7 @@ public class FileUtilsTest {
 		FileUtils.writeToFile(file, data);
 		assertEquals(data, new String(FileUtils.readToByteArray(file)));
 	}
-
+	
 	@Before
 	public void setUp() {
 		FileUtils.deleteDir(new File(dir));

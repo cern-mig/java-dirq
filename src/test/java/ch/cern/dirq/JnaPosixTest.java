@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import com.sun.jna.LastErrorException;
 
 import ch.cern.mig.posix.Posix;
@@ -13,9 +14,9 @@ import ch.cern.mig.utils.FileUtils;
 
 /**
  * 
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- * 
+ * @author Massimo Paladin - massimo.paladin@gmail.com
+ * <br />Copyright (C) CERN 2012-2013
+ *
  */
 public class JnaPosixTest {
 	private static final String dir = "posixtmp";
@@ -28,7 +29,8 @@ public class JnaPosixTest {
 	private static final String d2 = dir + File.separator + "d2";
 	private static final String d3 = dir + File.separator + "d3";
 
-	private static final String line = "################################################";
+	private static final  String line =
+		"################################################";
 
 	private static final boolean OK = true;
 	private static final boolean FAIL = false;
@@ -127,7 +129,7 @@ public class JnaPosixTest {
 			// println("" + ((LastErrorException)exc).getErrorCode());
 		}
 	}
-
+	
 	private static boolean rmtree(String name) throws IOException {
 		return FileUtils.deleteDir(new File(name));
 	}
@@ -145,8 +147,7 @@ public class JnaPosixTest {
 		System.out.println(string);
 	}
 
-	@Test
-	public void testMkdir() {
+	@Test public void testMkdir() {
 		report(OK, mkdir(d3), "mkdir(d3)");
 		report(FAIL, mkdir(d1), "mkdir(d1)");
 		report(FAIL, mkdir(x1 + "/d"), "mkdir(x1/d)");
@@ -154,8 +155,7 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testRmdir() {
+	@Test public void testRmdir() {
 		report(OK, rmdir(d1), "rmdir(d1)");
 		report(FAIL, rmdir(x1), "rmdir(x1)");
 		report(FAIL, rmdir(x1 + "/d"), "rmdir(x1/d)");
@@ -167,16 +167,14 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testOpendir() {
+	@Test public void testOpendir() {
 		report(OK, opendir(d1), "opendir(d1)");
 		report(FAIL, opendir(x1), "opendir(x1)");
 		report(FAIL, opendir(x1 + "/d"), "opendir(x1/d)");
 		println(line);
 	}
 
-	@Test
-	public void testRename() throws IOException {
+	@Test public void testRename() throws IOException {
 		// setup
 		mkfile(d1 + "/f");
 		mkfile(d2 + "/f");
@@ -192,8 +190,7 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testOpen() {
+	@Test public void testOpen() {
 		// tests
 		report(OK, open(f3), "open(f3)");
 		report(FAIL, open(f1), "open(f1)");
@@ -203,8 +200,7 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testLink() {
+	@Test public void testLink() {
 		report(OK, link(f1, f3), "link(f1, f3)");
 		report(FAIL, link(x1, x2), "link(x1, x2)");
 		report(FAIL, link(f1, f2), "link(f1, f2)");
@@ -213,16 +209,14 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testUnlink() throws IOException {
+	@Test public void testUnlink() throws IOException {
 		report(OK, unlink(f1), "unlink(f1)");
 		report(FAIL, unlink(x1), "unlink(x1)");
 		mkfile(f1);
 		println(line);
 	}
 
-	@Test
-	public void testStat() {
+	@Test public void testStat() {
 		report(OK, stat(f1), "stat(f1)");
 		report(OK, stat(d1), "stat(d1)");
 		report(FAIL, stat(x1), "stat(x1)");
@@ -231,8 +225,7 @@ public class JnaPosixTest {
 		println(line);
 	}
 
-	@Test
-	public void testLstat() {
+	@Test public void testLstat() {
 		report(OK, lstat(f1), "lstat(f1)");
 		report(OK, lstat(d1), "lstat(d1)");
 		report(FAIL, lstat(x1), "lstat(x1)");
@@ -250,16 +243,14 @@ public class JnaPosixTest {
 		mkdir(d1);
 		mkdir(d2);
 	}
-
-	// private void testStatPrint() {
-	// String nStat = Posix.posix.stat("license.txt").customRepr();
-	// String sStat =
-	// ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() +
-	// " license.txt").get("out");
-	// assertEquals(sStat, nStat);
-	// System.out.println(
-	// "stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
-	// }
+	
+//	private void testStatPrint() {
+//		String nStat =  Posix.posix.stat("license.txt").customRepr();
+//		String sStat = ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() + " license.txt").get("out");
+//		assertEquals(sStat, nStat);
+//		System.out.println(
+//			"stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
+//	}
 
 	public static void main(String[] args) throws Exception {
 		println(line);
@@ -279,7 +270,7 @@ public class JnaPosixTest {
 		// FileStat stat = Posix.posix.stat("license.txt");
 		// println("stat: " + stat);
 	}
-
+	
 	public void runAll() throws Exception {
 		println(line);
 		testLink();

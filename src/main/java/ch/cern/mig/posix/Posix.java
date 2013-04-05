@@ -13,7 +13,7 @@ public class Posix {
 			Platform.isLinux() ? LinuxLibC.class : LibC.class);
 	public static final BasePosix posix = Platform.isLinux() ? new LinuxPosix(
 			libc) : new BasePosix(libc);
-
+	
 	public static int getErrorCode(LastErrorException error) {
 		String aMethod = "getErrorCode";
 		// get the method

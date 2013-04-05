@@ -3,9 +3,9 @@ package ch.cern.mig.posix;
 import com.sun.jna.Structure;
 
 public abstract class FileStat extends Structure {
-
+	
 	public abstract String systemCommand();
-
+	
 	public abstract String customRepr();
 
 	public abstract long atime();

@@ -11,9 +11,9 @@ import ch.cern.mig.utils.FileUtils;
 /**
  * {@link ch.cern.dirq.QueueBase} base tests.
  * 
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- * 
+ * @author Massimo Paladin - massimo.paladin@gmail.com
+ * <br />Copyright (C) CERN 2012-2013
+ *
  */
 public abstract class QueueTestBase {
 	protected static final String dir = Posix.posix.getpid() + "test/";
@@ -28,5 +28,5 @@ public abstract class QueueTestBase {
 	public void tearDown() throws Exception {
 		FileUtils.deleteDir(new File(dir));
 	}
-
+	
 }

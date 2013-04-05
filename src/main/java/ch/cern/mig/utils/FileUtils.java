@@ -12,21 +12,20 @@ import java.util.Scanner;
 
 /**
  * 
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- * 
+ * @author Massimo Paladin - massimo.paladin@gmail.com
+ * <br />Copyright (C) CERN 2012-2013
+ *
  */
 public class FileUtils {
-
+	
 	public static void writeToFile(File path, byte[] data) throws IOException {
 		FileOutputStream newFileStream = new FileOutputStream(path);
-		BufferedOutputStream newFileOut = new BufferedOutputStream(
-				newFileStream);
+		BufferedOutputStream newFileOut = new BufferedOutputStream(newFileStream);
 		newFileOut.write(data);
 		newFileOut.close();
 		newFileStream.close();
 	}
-
+	
 	public static void writeToFile(String path, byte[] data) throws IOException {
 		writeToFile(new File(path), data);
 	}
@@ -56,11 +55,11 @@ public class FileUtils {
 		}
 		return content;
 	}
-
+	
 	public static byte[] readToByteArray(String path) {
 		return readToByteArray(new File(path));
 	}
-
+	
 	public static byte[] readToByteArray(File file) {
 		byte content[] = null;
 		try {
