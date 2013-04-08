@@ -32,6 +32,7 @@ public class ProcessUtils {
             while (sc.hasNext()) {
                 output.append(sc.nextLine());
             }
+            process.waitFor();
         } catch (IOException e) {
             output.append(e.getMessage());
         }
