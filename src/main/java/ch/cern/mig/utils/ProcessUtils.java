@@ -4,6 +4,7 @@
 package ch.cern.mig.utils;
 
 import java.io.IOException;
+import java.lang.InterruptedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -29,11 +30,13 @@ public class ProcessUtils {
         try {
             process = Runtime.getRuntime().exec(command);
             Scanner sc = new Scanner(process.getInputStream());
+            process.waitFor();
             while (sc.hasNext()) {
                 output.append(sc.nextLine());
             }
-            process.waitFor();
         } catch (IOException e) {
+            output.append(e.getMessage());
+        } catch (InterruptedException e) {
             output.append(e.getMessage());
         }
         Map<String, String> result = new HashMap<String, String>();
