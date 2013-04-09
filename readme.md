@@ -3,24 +3,22 @@ java-dirq
 
 [![Build Status](https://secure.travis-ci.org/cern-mig/java-dirq.png)](http://travis-ci.org/cern-mig/java-dirq)
 
+
 Overview
 --------
 
-Directory based queue.
+The goal of this module is to offer a queue system using the underlying
+filesystem for storage, security and to prevent race conditions via atomic
+operations. It focuses on simplicity, robustness and scalability.
 
-The goal of this module is to offer a simple queue system using the
-underlying filesystem for storage, security and to prevent race
-conditions via atomic operations. It focuses on simplicity, robustness
-and scalability.
+This module allows multiple concurrent readers and writers to interact with
+the same queue. A Perl implementation
+([Directory::Queue](http://search.cpan.org/dist/Directory-Queue/))
+and a Python implementation
+([dirq](https://github.com/cern-mig/python-dirq))
+of the same algorithm are available so readers and writers can be
+written in different programming languages.
 
-This module allows multiple concurrent readers and writers to interact
-with the same queue.
-
-A port of Perl module
-[Directory::Queue](http://search.cpan.org/dist/Directory-Queue/)
-and a Python [dirq](https://github.com/cern-mig/python-dirq) implementation of
-the same algorithm are available so readers and writers
-can be written in different programming languages.
 
 Install
 -------
@@ -32,20 +30,21 @@ To install this module, run the following commands:
     mvn package
     # get the jar from target folder
 
-Or simply add it to your `pom.xml` file:
+This module is available in the
+[Central Maven Repository](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22dirq%22)
+so you can simply add to your `pom.xml` file something like:
 
     <dependency>
       <groupId>ch.cern.dirq</groupId>
       <artifactId>dirq</artifactId>
-      <version>X.X</version>
+      <version>1.2</version>
     </dependency>
 
 
 Documentation
 -------------
 
-After installing, you can find documentation at this page:
-
+See:
 [http://cern-mig.github.com/java-dirq/](http://cern-mig.github.com/java-dirq/)
 
 
@@ -71,4 +70,3 @@ License and Copyright
 Apache License, Version 2.0
 
 Copyright (C) 2012-2013 CERN
-
