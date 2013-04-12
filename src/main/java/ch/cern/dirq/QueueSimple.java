@@ -281,7 +281,7 @@ public class QueueSimple implements Queue {
 
     private String addPathHelper(File tmp, String dir) throws IOException {
         String name = null;
-        while (name == null) {
+        while (true) {
             name = name();
             File newFile = new File(queuePath + File.separator + dir
                     + File.separator + name);
