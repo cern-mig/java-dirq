@@ -496,7 +496,7 @@ public class QueueSimple implements Queue {
         long now = System.currentTimeMillis() / 1000;
         long oldtemp = now - maxTemp;
         long oldlock = now - maxLock;
-        if (oldtemp > 0 || oldlock > 0) {
+        if (maxTemp > 0 || maxLock > 0) {
             for (File element : elements) {
                 File[] inElements = element.listFiles(new RegExpFilenameFilter(
                         Pattern.compile("\\."), false));
