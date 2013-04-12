@@ -507,6 +507,8 @@ public class QueueSimple implements Queue {
                     try {
                         stat = posix.stat(inElement.getPath());
                     } catch (LastErrorException e) {
+                        if (Posix.getErrorCode(e) == BasePosix.ENOENT)
+                            continue;
                         throw new IOException(String.format(
                                 "cannot stat(%s): %s", inElement,
                                 e.getMessage()));
@@ -521,6 +523,8 @@ public class QueueSimple implements Queue {
                     try {
                         posix.unlink(inElement.getPath());
                     } catch (LastErrorException e) {
+                        if (Posix.getErrorCode(e) == BasePosix.ENOENT)
+                            continue;
                         throw new IOException(String.format(
                                 "cannot unlink(%s): %s", inElement,
                                 e.getMessage()));
