@@ -302,6 +302,7 @@ public class QueueSimple implements Queue {
                 throw new IOException(String.format("cannot unlink(%s): %s",
                         tmp, e.getMessage()));
             }
+            break;
         }
         return dir + File.separator + name;
     }
