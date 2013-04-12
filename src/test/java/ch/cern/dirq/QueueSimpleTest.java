@@ -241,9 +241,6 @@ public class QueueSimpleTest extends QueueTestBase {
         assertEquals("foo: " + StringUtils.join(list), 1, list.length);
         qs.add("bar");
         assertEquals("foo + bar count", 2, qs.count());
-        list = qsPath.list();
-        assertEquals("foo + bar list: " + StringUtils.join(list), 2,
-                list.length);
         qs.purge();
         assertEquals("still foo + bar count", 2, qs.count());
 
@@ -257,8 +254,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
         qs.add("abc");
         assertEquals("abc + 1 count", 2, qs.count());
-        list = qsPath.list();
-        assertEquals("abc + 1 list: " + StringUtils.join(list), 2, list.length);
         for (String element : qs) {
             qs.lock(element);
         }

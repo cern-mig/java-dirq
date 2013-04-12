@@ -364,7 +364,10 @@ public class QueueSimple implements Queue {
     }
 
     protected String addDir() {
-        return String.format("%08x", System.currentTimeMillis() % granularity);
+        long now = System.currentTimeMillis() / 1000;
+        if (granularity > 0)
+            now -= now % granularity;
+        return String.format("%08x", now);
     }
 
     @Override
