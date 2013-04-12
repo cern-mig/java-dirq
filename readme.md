@@ -37,7 +37,7 @@ so you can simply add to your `pom.xml` file something like:
     <dependency>
       <groupId>ch.cern.dirq</groupId>
       <artifactId>dirq</artifactId>
-      <version>1.2</version>
+      <version>1.3</version>
     </dependency>
 
 
