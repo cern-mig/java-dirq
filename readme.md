@@ -24,7 +24,7 @@ Install
 -------
 
 To install this module, run the following commands:
-```
+```bash
     mvn install
     # or
     mvn package
