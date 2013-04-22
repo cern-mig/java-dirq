@@ -8,3 +8,5 @@ TODO list
   allow to replace jna with it
   http://docs.oracle.com/javase/tutorial/essential/io/fileio.html
   http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html
+- look at using nexus staging maven plugin to avoid manual Nexus steps:
+  https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-8b.AutomatingReleases
