@@ -8,3 +8,5 @@ TODO list
   allow to replace jna with it
   http://docs.oracle.com/javase/tutorial/essential/io/fileio.html
   http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html
+- add support for the rndhex attribute that is (currently undocumented)
+  in Perl's Directory::Queue
