@@ -10,5 +10,4 @@ TODO list
   http://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html
 - look at using nexus staging maven plugin to avoid manual Nexus steps:
   https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide#SonatypeOSSMavenRepositoryUsageGuide-8b.AutomatingReleases
-- add support for the rndhex attribute that is (currently undocumented)
-  in Perl's Directory::Queue
+- add support for the rndhex attribute from Perl's Directory::Queue
