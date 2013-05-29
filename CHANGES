@@ -1,0 +1,10 @@
+Change log for java-dirq:
+
+???	???
+	* [lc] changed the jna tests to use a temporary directory
+
+1.3	Fri Apr 12 2013
+	* [lc] first version recording changes...
+
+[lc] = Lionel Cons <lionel.cons@cern.ch>
+[mp] = Massimo Paladin <massimo.paladin@gmail.com>

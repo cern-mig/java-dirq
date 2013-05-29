@@ -1,9 +1,18 @@
+/**
+ * Copyright (C) CERN 2012-2013
+ *
+ * @author Massimo Paladin <massimo.paladin@gmail.com>
+ * @author Lionel Cons <lionel.cons@cern.ch>
+ */
+
 package ch.cern.dirq;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
 
 import com.sun.jna.LastErrorException;
@@ -11,25 +20,21 @@ import com.sun.jna.LastErrorException;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 
-/**
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- */
 public class JnaPosixTest {
-    private static final String dir = "posixtmp";
-    private static final String f1 = dir + File.separator + "f1";
-    private static final String f2 = dir + File.separator + "f2";
-    private static final String f3 = dir + File.separator + "f3";
-    private static final String x1 = dir + File.separator + "x1";
-    private static final String x2 = dir + File.separator + "x2";
-    private static final String d1 = dir + File.separator + "d1";
-    private static final String d2 = dir + File.separator + "d2";
-    private static final String d3 = dir + File.separator + "d3";
+    @Rule
+    public TemporaryFolder tempDir = new TemporaryFolder();
 
     private static final String line = "################################################";
-
     private static final boolean OK = true;
     private static final boolean FAIL = false;
+
+    private String tmpath(String name) {
+        return tempDir.getRoot().getPath() + File.separator + name;
+    }
+
+    private String tmpath(String parent, String name) {
+        return tempDir.getRoot().getPath() + File.separator + parent + File.separator + name;
+    }
 
     private static Exception mkdir(String name) {
         try {
@@ -85,7 +90,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private Exception unlink(String path) {
+    private static Exception unlink(String path) {
         try {
             Posix.posix.unlink(path);
         } catch (Exception e) {
@@ -112,10 +117,10 @@ public class JnaPosixTest {
         return null;
     }
 
-    private void report(boolean ok, Exception exc, String test) {
+    private static void report(boolean ok, Exception exc, String test) {
         if (ok) {
             if (exc != null)
-                throw new AssertionError("Got error: " + exc);
+                throw new AssertionError("Got error: " + exc.getMessage());
             println(test + ": ok");
         } else {
             if (exc == null)
@@ -130,11 +135,6 @@ public class JnaPosixTest {
         return FileUtils.deleteDir(new File(name));
     }
 
-    private static boolean mkfile(String parent, String child)
-            throws IOException {
-        return new File(parent, child).createNewFile();
-    }
-
     private static boolean mkfile(String name) throws IOException {
         return new File(name).createNewFile();
     }
@@ -144,109 +144,125 @@ public class JnaPosixTest {
     }
 
     @Test
+    public void testInfo() {
+        println("Platform: "
+                + System.getProperty("os.name") + " - "
+                + System.getProperty("os.version") + " - "
+                + System.getProperty("os.arch"));
+        println("Java: "
+                + System.getProperty("java.version") + " - "
+                + System.getProperty("java.vendor"));
+        println("current directory: "
+                + new File(".").getAbsolutePath());
+        println("temporary directory: "
+                + tempDir.getRoot().getPath());
+        println(line);
+    }
+
+    @Test
     public void testMkdir() {
-        report(OK, mkdir(d3), "mkdir(d3)");
-        report(FAIL, mkdir(d1), "mkdir(d1)");
-        report(FAIL, mkdir(x1 + "/d"), "mkdir(x1/d)");
-        rmdir(d3);
+        report(OK,   mkdir(tmpath("d3")),      "mkdir(d3)");
+        report(FAIL, mkdir(tmpath("d1")),      "mkdir(d1)");
+        report(FAIL, mkdir(tmpath("x1", "d")), "mkdir(x1/d)");
+        // cleanup
+        rmdir(tmpath("d3"));
         println(line);
     }
 
     @Test
     public void testRmdir() {
-        report(OK, rmdir(d1), "rmdir(d1)");
-        report(FAIL, rmdir(x1), "rmdir(x1)");
-        report(FAIL, rmdir(x1 + "/d"), "rmdir(x1/d)");
-        Posix.posix.mkdir(d2 + "/d3");
-        report(FAIL, rmdir(d2), "rmdir(d2)");
+        report(OK,   rmdir(tmpath("d1")),      "rmdir(d1)");
+        report(FAIL, rmdir(tmpath("x1")),      "rmdir(x1)");
+        report(FAIL, rmdir(tmpath("x1", "d")), "rmdir(x1/d)");
+        Posix.posix.mkdir(tmpath("d2", "d3"));
+        report(FAIL, rmdir(tmpath("d2")),      "rmdir(d2)");
         // cleanup
-        Posix.posix.mkdir(d1);
-        Posix.posix.rmdir(d2 + "/d3");
+        Posix.posix.mkdir(tmpath("d1"));
+        Posix.posix.rmdir(tmpath("d2", "d3"));
         println(line);
     }
 
     @Test
     public void testOpendir() {
-        report(OK, opendir(d1), "opendir(d1)");
-        report(FAIL, opendir(x1), "opendir(x1)");
-        report(FAIL, opendir(x1 + "/d"), "opendir(x1/d)");
+        report(OK,   opendir(tmpath("d1")),      "opendir(d1)");
+        report(FAIL, opendir(tmpath("x1")),      "opendir(x1)");
+        report(FAIL, opendir(tmpath("x1", "d")), "opendir(x1/d)");
         println(line);
     }
 
     @Test
     public void testRename() throws IOException {
-        // setup
-        mkfile(d1 + "/f");
-        mkfile(d2 + "/f");
+        // additional setup
+        mkfile(tmpath("d1", "f"));
+        mkfile(tmpath("d2", "f"));
         // tests
-        report(OK, rename(d1, d3), "rename(d1, d3)");
-        report(FAIL, rename(x1, x2), "rename(x1, x2)");
-        report(FAIL, rename(d2, d3), "rename(d2, d3)");
-        report(FAIL, rename(x1, d2), "rename(x1, d2)");
+        report(OK,   rename(tmpath("d1"), tmpath("d3")), "rename(d1, d3)");
+        report(FAIL, rename(tmpath("x1"), tmpath("x2")), "rename(x1, x2)");
+        report(FAIL, rename(tmpath("d2"), tmpath("d3")), "rename(d2, d3)");
+        report(FAIL, rename(tmpath("x1"), tmpath("d2")), "rename(x1, d2)");
         // cleanup
-        Posix.posix.rename(d3, d1);
-        Posix.posix.unlink(d1 + "/f");
-        Posix.posix.unlink(d2 + "/f");
+        Posix.posix.rename(tmpath("d3"), tmpath("d1"));
+        Posix.posix.unlink(tmpath("d1", "f"));
+        Posix.posix.unlink(tmpath("d2", "f"));
         println(line);
     }
 
     @Test
     public void testOpen() {
-        // tests
-        report(OK, open(f3), "open(f3)");
-        report(FAIL, open(f1), "open(f1)");
-        report(FAIL, open(x1 + "/f"), "open(x1/f)");
+        report(OK,   open(tmpath("f3")),      "open(f3)");
+        report(FAIL, open(tmpath("f1")),      "open(f1)");
+        report(FAIL, open(tmpath("x1", "f")), "open(x1/f)");
         // cleanup
-        Posix.posix.unlink(f3);
+        Posix.posix.unlink(tmpath("f3"));
         println(line);
     }
 
     @Test
     public void testLink() {
-        report(OK, link(f1, f3), "link(f1, f3)");
-        report(FAIL, link(x1, x2), "link(x1, x2)");
-        report(FAIL, link(f1, f2), "link(f1, f2)");
-        report(FAIL, link(x1, f2), "link(x1, f2)");
-        unlink(f3);
+        report(OK,   link(tmpath("f1"), tmpath("f3")), "link(f1, f3)");
+        report(FAIL, link(tmpath("x1"), tmpath("x2")), "link(x1, x2)");
+        report(FAIL, link(tmpath("f1"), tmpath("f2")), "link(f1, f2)");
+        report(FAIL, link(tmpath("x1"), tmpath("f2")), "link(x1, f2)");
+        // cleanup
+        unlink(tmpath("f3"));
         println(line);
     }
 
     @Test
     public void testUnlink() throws IOException {
-        report(OK, unlink(f1), "unlink(f1)");
-        report(FAIL, unlink(x1), "unlink(x1)");
-        mkfile(f1);
+        report(OK,   unlink(tmpath("f1")), "unlink(f1)");
+        report(FAIL, unlink(tmpath("x1")), "unlink(x1)");
+        // cleanup
+        mkfile(tmpath("f1"));
         println(line);
     }
 
     @Test
     public void testStat() {
-        report(OK, stat(f1), "stat(f1)");
-        report(OK, stat(d1), "stat(d1)");
-        report(FAIL, stat(x1), "stat(x1)");
-        report(FAIL, stat(d1 + "/f"), "stat(d1/f)");
-        report(FAIL, stat(x1 + "/f"), "stat(x1/f)");
+        report(OK,   stat(tmpath("f1")),      "stat(f1)");
+        report(OK,   stat(tmpath("d1")),      "stat(d1)");
+        report(FAIL, stat(tmpath("x1")),      "stat(x1)");
+        report(FAIL, stat(tmpath("d1", "f")), "stat(d1/f)");
+        report(FAIL, stat(tmpath("x1", "f")), "stat(x1/f)");
         println(line);
     }
 
     @Test
     public void testLstat() {
-        report(OK, lstat(f1), "lstat(f1)");
-        report(OK, lstat(d1), "lstat(d1)");
-        report(FAIL, lstat(x1), "lstat(x1)");
-        report(FAIL, lstat(d1 + "/f"), "lstat(d1/f)");
-        report(FAIL, lstat(x1 + "/f"), "lstat(x1/f)");
+        report(OK,   lstat(tmpath("f1")),      "lstat(f1)");
+        report(OK,   lstat(tmpath("d1")),      "lstat(d1)");
+        report(FAIL, lstat(tmpath("x1")),      "lstat(x1)");
+        report(FAIL, lstat(tmpath("d1", "f")), "lstat(d1/f)");
+        report(FAIL, lstat(tmpath("x1", "f")), "lstat(x1/f)");
         println(line);
     }
 
     @Before
     public void init() throws IOException {
-        rmtree(dir);
-        mkdir(dir);
-        mkfile(dir, "f1");
-        mkfile(dir, "f2");
-        mkdir(d1);
-        mkdir(d2);
+        mkfile(tmpath("f1"));
+        mkfile(tmpath("f2"));
+        mkdir(tmpath("d1"));
+        mkdir(tmpath("d2"));
     }
 
     // private void testStatPrint() {
@@ -261,12 +277,6 @@ public class JnaPosixTest {
 
     public static void main(String[] args) throws Exception {
         println(line);
-        println("Platform: " + System.getProperty("os.name") + " - "
-                + System.getProperty("os.version") + " - "
-                + System.getProperty("os.arch"));
-        println("Java: " + System.getProperty("java.version") + " - "
-                + System.getProperty("java.vendor"));
-        println("current dir: " + new File(".").getAbsolutePath());
         println(line);
 
         JnaPosixTest jt = new JnaPosixTest();
@@ -280,6 +290,7 @@ public class JnaPosixTest {
 
     public void runAll() throws Exception {
         println(line);
+        testInfo();
         testLink();
         testUnlink();
         testMkdir();
