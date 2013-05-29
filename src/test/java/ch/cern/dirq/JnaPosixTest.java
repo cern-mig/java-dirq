@@ -1,8 +1,10 @@
 /**
- * Copyright (C) CERN 2012-2013
+ * Unit tests for {@link com.sun.jna} as used in java-dirq.
  *
  * @author Massimo Paladin <massimo.paladin@gmail.com>
  * @author Lionel Cons <lionel.cons@cern.ch>
+ *
+ * Copyright (C) CERN 2012-2013
  */
 
 package ch.cern.dirq;
