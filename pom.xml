@@ -24,6 +24,11 @@
 
     <developers>
         <developer>
+            <name>Lionel Cons</name>
+            <email>lionel.cons@cern.ch</email>
+            <url>http://cern.ch/lionel.cons</url>
+        </developer>
+        <developer>
             <name>Massimo Paladin</name>
             <email>massimo.paladin@gmail.com</email>
             <url>http://mpaladin.com</url>
@@ -38,7 +43,7 @@
 
     <properties>
         <github.global.server>github</github.global.server>
-        <jna.version>3.5.1</jna.version>
+        <jna.version>3.5.2</jna.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -58,7 +63,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -98,7 +103,7 @@
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.7</version>
+                <version>0.8</version>
                 <configuration>
                     <dryRun>false</dryRun>
                     <message>Creating site for ${project.version}</message>
