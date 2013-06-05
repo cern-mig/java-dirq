@@ -1,12 +1,3 @@
-/**
- * Unit tests for {@link ch.cern.dirq.QueueNull}.
- *
- * @author Lionel Cons <lionel.cons@cern.ch>
- * @author Massimo Paladin <massimo.paladin@gmail.com>
- *
- * Copyright (C) CERN 2012-2013
- */
-
 package ch.cern.dirq;
 
 import static org.junit.Assert.*;
@@ -16,6 +7,14 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+/**
+ * Unit tests for {@link ch.cern.dirq.QueueNull}.
+ *
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
+ */
 
 public class QueueNullTest extends QueueTestBase {
     private QueueNull qnObject = null;

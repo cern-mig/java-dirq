@@ -87,9 +87,11 @@ import java.util.Map;
  * umask=0). Then, the permissions of the toplevel directory itself (e.g.
  * group-writable) are enough to control who can access the queue.
  *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
  */
+
 public interface Queue extends Iterable<String> {
 
     /**

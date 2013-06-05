@@ -1,12 +1,3 @@
-/**
- * Unit tests for {@link com.sun.jna} as used in java-dirq.
- *
- * @author Massimo Paladin <massimo.paladin@gmail.com>
- * @author Lionel Cons <lionel.cons@cern.ch>
- *
- * Copyright (C) CERN 2012-2013
- */
-
 package ch.cern.dirq;
 
 import java.io.File;
@@ -21,6 +12,14 @@ import com.sun.jna.LastErrorException;
 
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
+
+/**
+ * Unit tests for {@link com.sun.jna} as used in java-dirq.
+ *
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
+ */
 
 public class JnaPosixTest {
     @Rule

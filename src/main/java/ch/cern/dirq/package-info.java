@@ -4,8 +4,9 @@
  * visit {@link ch.cern.dirq.Queue} page followed by
  * {@link ch.cern.dirq.QueueSimple} and {@link ch.cern.dirq.QueueNull}.
  *
- * @author Massimo Paladin - massimo.paladin@gmail.com
- * <br />Copyright (C) CERN 2012-2013
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
  */
 package ch.cern.dirq;
 

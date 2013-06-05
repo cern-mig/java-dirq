@@ -106,9 +106,11 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
  */
+
 public class QueueSimple implements Queue {
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
@@ -548,8 +550,9 @@ public class QueueSimple implements Queue {
     /**
      * Iterator over QueueSimple implementation.
      *
-     * @author Massimo Paladin - massimo.paladin@gmail.com <br />
-     *         Copyright (C) CERN 2012-2013
+     * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+     * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+     * Copyright (C) CERN 2012-2013
      */
     private static class QueueSimpleIterator implements Iterator<String> {
         private QueueSimple queue = null;

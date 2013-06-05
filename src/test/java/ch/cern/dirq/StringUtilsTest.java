@@ -11,9 +11,11 @@ import ch.cern.mig.utils.StringUtils;
 /**
  * Unit tests for {@link ch.cern.dirq.StringUtils}.
  *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2013
  */
+
 public class StringUtilsTest {
 
     /**
