@@ -1,3 +1,12 @@
+/**
+ * Unit tests for {@link ch.cern.dirq.QueueNull}.
+ *
+ * @author Lionel Cons <lionel.cons@cern.ch>
+ * @author Massimo Paladin <massimo.paladin@gmail.com>
+ *
+ * Copyright (C) CERN 2012-2013
+ */
+
 package ch.cern.dirq;
 
 import static org.junit.Assert.*;
@@ -5,24 +14,24 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 
-/**
- * Unit test for {@link ch.cern.dirq.QueueNull}.
- *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- */
 public class QueueNullTest extends QueueTestBase {
+    private QueueNull qnObject = null;
+
+    @Before
+    public void setUp() {
+        qnObject = new QueueNull();
+    }
 
     /**
      * Test constructor.
      */
     @Test
     public void creation() {
-        QueueNull blackHole = new QueueNull();
-        assertEquals("NULL", blackHole.getId());
-        // assertEquals("NULL", blackHole.getPath());
+        assertEquals("NULL", qnObject.getId());
+        // assertEquals("NULL", qnObject.getPath());
     }
 
     /**
@@ -30,8 +39,7 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test
     public void add() {
-        QueueNull blackHole = new QueueNull();
-        String elem = blackHole.add("foo bar");
+        String elem = qnObject.add("foo bar");
         assertEquals("", elem);
     }
 
@@ -42,12 +50,11 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test
     public void addPath() throws IOException {
-        QueueNull blackHole = new QueueNull();
-        String name = dir + "foo bar";
+        String name = tempPath() + File.separator + "foo bar";
         File file = new File(name);
         file.createNewFile();
         assertTrue(new File(name).exists());
-        blackHole.addPath(name);
+        qnObject.addPath(name);
         assertFalse(new File(name).exists());
     }
 
@@ -56,8 +63,7 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void lock() {
-        QueueNull blackHole = new QueueNull();
-        blackHole.lock("");
+        qnObject.lock("");
     }
 
     /**
@@ -65,8 +71,7 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void unlock() throws Exception {
-        QueueNull blackHole = new QueueNull();
-        blackHole.unlock("");
+        qnObject.unlock("");
     }
 
     /**
@@ -74,8 +79,7 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void get() {
-        QueueNull blackHole = new QueueNull();
-        blackHole.get("");
+        qnObject.get("");
     }
 
     /**
@@ -83,11 +87,10 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test
     public void count() {
-        QueueNull blackHole = new QueueNull();
-        blackHole.add("foo bar 1");
-        assertEquals(0, blackHole.count());
-        blackHole.add("foo bar 2");
-        assertEquals(0, blackHole.count());
+        qnObject.add("foo bar 1");
+        assertEquals(0, qnObject.count());
+        qnObject.add("foo bar 2");
+        assertEquals(0, qnObject.count());
     }
 
     /**
@@ -95,8 +98,7 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test(expected = UnsupportedOperationException.class)
     public void remove() {
-        QueueNull blackHole = new QueueNull();
-        blackHole.remove("");
+        qnObject.remove("");
     }
 
     /**
@@ -104,7 +106,6 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test
     public void purge() {
-        QueueNull blackHole = new QueueNull();
-        blackHole.purge();
+        qnObject.purge();
     }
 }

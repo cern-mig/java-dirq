@@ -1,3 +1,12 @@
+/**
+ * Unit tests for {@link ch.cern.dirq.FileUtils}.
+ *
+ * @author Lionel Cons <lionel.cons@cern.ch>
+ * @author Massimo Paladin <massimo.paladin@gmail.com>
+ *
+ * Copyright (C) CERN 2012-2013
+ */
+
 package ch.cern.dirq;
 
 import static org.junit.Assert.*;
@@ -6,21 +15,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
 
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 
-/**
- * Unit tests for {@link ch.cern.dirq.FileUtils}.
- *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
- */
 public class FileUtilsTest {
-    private static final String dir = Posix.posix.getpid() + "test/";
+    @Rule
+    public TemporaryFolder tempDir = new TemporaryFolder();
+
+    public String tempPath() {
+        return tempDir.getRoot().getPath();
+    }
 
     /**
      * Test read write String.
@@ -30,7 +38,7 @@ public class FileUtilsTest {
     @Test
     public void testReadWriteString() throws IOException {
         String content = "Hello World!";
-        String filePath = dir + "hello_world";
+        String filePath = tempPath() + File.separator + "hello_world";
         FileUtils.writeToFile(filePath, content);
         assertEquals(content, FileUtils.readToString(filePath));
         File file = new File(filePath);
@@ -47,7 +55,7 @@ public class FileUtilsTest {
     public void testReadWriteByteArray() throws IOException {
         String data = "Hello World!";
         byte[] dataAsBytes = data.getBytes();
-        String filePath = dir + "hello_world_byte";
+        String filePath = tempPath() + File.separator + "hello_world_byte";
         FileUtils.writeToFile(filePath, dataAsBytes);
         assertEquals(data, new String(FileUtils.readToByteArray(filePath)));
         File file = new File(filePath);
@@ -63,23 +71,11 @@ public class FileUtilsTest {
     @Test
     public void testReadWriteMix() throws IOException {
         String data = "Hello World!";
-        String filePath = dir + "hello_world_mix";
+        String filePath = tempPath() + File.separator + "hello_world_mix";
         FileUtils.writeToFile(filePath, data);
         assertEquals(data, new String(FileUtils.readToByteArray(filePath)));
         File file = new File(filePath);
         FileUtils.writeToFile(file, data);
         assertEquals(data, new String(FileUtils.readToByteArray(file)));
     }
-
-    @Before
-    public void setUp() {
-        FileUtils.deleteDir(new File(dir));
-        new File(dir).mkdirs();
-    }
-
-    @After
-    public void tearDown() {
-        FileUtils.deleteDir(new File(dir));
-    }
-
 }
