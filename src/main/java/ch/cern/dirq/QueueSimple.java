@@ -126,7 +126,7 @@ public class QueueSimple implements Queue {
 
     private String id = null;
     private String queuePath = null;
-    private String rndHex = null;
+    private int rndHex = 0;
     private int umask = UMASK;
     private int granularity = GRANULARITY;
 
@@ -198,7 +198,7 @@ public class QueueSimple implements Queue {
     public QueueSimple(String queuePath, int umask, int granularity)
             throws IOException {
         this.queuePath = queuePath;
-        this.rndHex =  String.format("%01x", rand.nextInt(0x10));
+        this.rndHex =  rand.nextInt(0x10);
         this.umask = umask;
         this.granularity = granularity;
 
@@ -231,8 +231,8 @@ public class QueueSimple implements Queue {
         }
     }
 
-    private static String name(String r) {
-        return String.format("%013x", System.nanoTime() / 1000) + r;
+    private static String name(int r) {
+        return String.format("%013x%01x", System.nanoTime() / 1000, r);
     }
 
     private static boolean specialMkdir(String path) throws IOException {
