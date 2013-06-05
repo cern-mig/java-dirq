@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import com.sun.jna.LastErrorException;
@@ -109,8 +110,6 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  *         Copyright (C) CERN 2012-2013
  */
 public class QueueSimple implements Queue {
-    private static final String UPID = String.format("%01x",
-            posix.getpid() % 16);
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
     private static final int UMASK = posix.umask();
@@ -123,9 +122,11 @@ public class QueueSimple implements Queue {
             .compile("[0-9a-f]{14}");
 
     private static boolean WARN = false;
+    private static Random rand = new Random();
 
     private String id = null;
     private String queuePath = null;
+    private String rndHex = null;
     private int umask = UMASK;
     private int granularity = GRANULARITY;
 
@@ -197,6 +198,7 @@ public class QueueSimple implements Queue {
     public QueueSimple(String queuePath, int umask, int granularity)
             throws IOException {
         this.queuePath = queuePath;
+        this.rndHex =  String.format("%01x", rand.nextInt(0x10));
         this.umask = umask;
         this.granularity = granularity;
 
@@ -229,8 +231,8 @@ public class QueueSimple implements Queue {
         }
     }
 
-    private static String name() {
-        return String.format("%013x%s", System.nanoTime() / 1000, UPID);
+    private static String name(String r) {
+        return String.format("%013x", System.nanoTime() / 1000) + r;
     }
 
     private static boolean specialMkdir(String path) throws IOException {
@@ -282,7 +284,7 @@ public class QueueSimple implements Queue {
     private String addPathHelper(File tmp, String dir) throws IOException {
         String name = null;
         while (true) {
-            name = name();
+            name = name(rndHex);
             File newFile = new File(queuePath + File.separator + dir
                     + File.separator + name);
             try {
@@ -346,7 +348,7 @@ public class QueueSimple implements Queue {
     private File getNewFile(String dir) throws IOException {
         File newFile = null;
         while (true) {
-            String name = name();
+            String name = name(rndHex);
             newFile = fileCreate(queuePath + File.separator + dir
                     + File.separator + name + TEMPORARY_SUFFIX);
             if (newFile != null)
