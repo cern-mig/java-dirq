@@ -49,17 +49,6 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test addDir.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void addDir() throws IOException {
-        String dirname = qsObject.addDir();
-        assertEquals(8, dirname.length());
-    }
-
-    /**
      * Test queue creation.
      *
      * @throws IOException
@@ -71,7 +60,18 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test add operation.
+     * Test addDir.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void addDir() throws IOException {
+        String dirname = qsObject.addDir();
+        assertEquals(8, dirname.length());
+    }
+
+    /**
+     * Test add.
      *
      * @throws IOException
      */
@@ -90,7 +90,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test addPath operation.
+     * Test addPath.
      *
      * @throws IOException
      */
@@ -113,7 +113,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test lock/unlock operations.
+     * Test lock/unlock.
      *
      * @throws IOException
      */
@@ -129,7 +129,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test get operation.
+     * Test get.
      *
      * @throws IOException
      */
@@ -142,7 +142,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test get as byte array operation.
+     * Test get as byte array.
      *
      * @throws IOException
      */
@@ -155,12 +155,40 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test count operation.
+     * Test count.
+     *
+     */
+    @Test
+    public void count() throws IOException {
+        qsObject.add("foo bar 1");
+        assertEquals(1, qsObject.count());
+        qsObject.add("foo bar 2");
+        assertEquals(2, qsObject.count());
+    }
+
+    /**
+     * Test iterate.
      *
      * @throws IOException
      */
     @Test
-    public void count() throws IOException {
+    public void iterate() throws IOException {
+        qsObject.add("foo bar 1");
+        qsObject.add("foo bar 2");
+        int count = 0;
+        for (String name : qsObject) {
+            count++;
+        }
+        assertEquals(2, count);
+    }
+
+    /**
+     * Test count with junk.
+     *
+     * @throws IOException
+     */
+    @Test
+    public void junkCount() throws IOException {
         String data = "abc";
         qsObject.add(data);
         assertEquals(1, qsObject.count());
@@ -170,7 +198,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test remove operation.
+     * Test remove.
      *
      * @throws IOException
      */
@@ -189,7 +217,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test purge basic operation.
+     * Test purge basic.
      *
      * @throws IOException
      */
@@ -203,7 +231,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test purge one dir operation.
+     * Test purge one dir.
      *
      * @throws IOException
      * @throws InterruptedException
@@ -225,7 +253,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test purge multi dir operation.
+     * Test purge multi dir.
      *
      * @throws IOException
      */

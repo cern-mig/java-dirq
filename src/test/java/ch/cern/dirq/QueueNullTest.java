@@ -82,6 +82,14 @@ public class QueueNullTest extends QueueTestBase {
     }
 
     /**
+     * Test remove.
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void remove() {
+        qnObject.remove("");
+    }
+
+    /**
      * Test count.
      */
     @Test
@@ -93,11 +101,16 @@ public class QueueNullTest extends QueueTestBase {
     }
 
     /**
-     * Test remove.
+     * Test iterate.
      */
-    @Test(expected = UnsupportedOperationException.class)
-    public void remove() {
-        qnObject.remove("");
+    @Test
+    public void iterate() {
+        qnObject.add("foo bar 1");
+        int count = 0;
+        for (String name : qnObject) {
+            count++;
+        }
+        assertEquals(0, count);
     }
 
     /**

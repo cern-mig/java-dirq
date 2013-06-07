@@ -113,23 +113,21 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
 public class QueueSimple implements Queue {
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
-    private static final int UMASK = posix.umask();
-    private static final int GRANULARITY = 60;
-    public static final Pattern DIRECTORY_REGEXP = Pattern
-            .compile("[0-9a-f]{8}");
-    public static final Pattern ELEMENT_REGEXP = Pattern
-            .compile("[0-9a-f]{14}");
+    public static final Pattern DIRECTORY_REGEXP =
+        Pattern.compile("[0-9a-f]{8}");
+    public static final Pattern ELEMENT_REGEXP =
+        Pattern.compile("[0-9a-f]{14}");
 
     private static boolean WARN = false;
     private static Random rand = new Random();
 
     private String id = null;
     private String queuePath = null;
-    private int rndHex = 0;
-    private int umask = UMASK;
-    private int granularity = GRANULARITY;
+    private int granularity = 60;
+    private int umask = 0; /* set in constructor */
     private int defaultMaxLock = 600;
     private int defaultMaxTemp = 300;
+    private int rndHex = 0; /* set in constructor */
 
     private void warn(String string) {
         if (!WARN)
@@ -138,77 +136,125 @@ public class QueueSimple implements Queue {
         System.out.flush();
     }
 
-    /**
-     * Return the granularity value.
-     *
-     * @return granularity value
-     */
-    public int getGranularity() {
-        return granularity;
-    }
-
-    /**
-     * Set the granularity property.
-     *
-     * @param granularity value to be set as granularity
-     */
-    public void setGranularity(int granularity) {
-        this.granularity = granularity;
-    }
-
-    /**
-     * @return the queue id
-     */
     @Override
     public String getId() {
         return id;
     }
 
     /**
-     * @return the queue path
+     * Get the queue path.
+     *
+     * @return queue path
      */
     public String getQueuePath() {
         return queuePath;
     }
 
     /**
-     * Constructor which takes only the path of the queue and set umask and
-     * granularity to default values.
+     * Get the granularity.
+     *
+     * @return granularity (in seconds)
+     */
+    public int getGranularity() {
+        return granularity;
+    }
+
+    /**
+     * Set the granularity.
+     *
+     * @param granularity to be set (in seconds)
+     */
+    public QueueSimple setGranularity(int granularity) {
+        this.granularity = granularity;
+        return this;
+    }
+
+    /**
+     * Get the umask.
+     *
+     * @return numerical umask
+     */
+    public int getUmask() {
+        return umask;
+    }
+
+    /**
+     * Set the umask.
+     *
+     * @param numerical umask to be set
+     */
+    public QueueSimple setUmask(int umask) {
+        this.umask = umask;
+        return this;
+    }
+
+    /**
+     * Get the default maxLock for purge().
+     *
+     * @return maximum lock time (in seconds)
+     */
+    public int getMaxLock() {
+        return defaultMaxLock;
+    }
+
+    /**
+     * Set the default maxLock for purge().
+     *
+     * @param maximum lock time (in seconds)
+     */
+    public QueueSimple setMaxLock(int maxLock) {
+        this.defaultMaxLock = maxLock;
+        return this;
+    }
+
+    /**
+     * Get the default maxTemp for purge().
+     *
+     * @return maximum temporary time (in seconds)
+     */
+    public int getMaxTemp() {
+        return defaultMaxTemp;
+    }
+
+    /**
+     * Set the default maxTemp for purge().
+     *
+     * @param maximum temporary time (in seconds)
+     */
+    public QueueSimple setMaxTemp(int maxTemp) {
+        this.defaultMaxTemp = maxTemp;
+        return this;
+    }
+
+    /**
+     * Get the random hex digit.
+     *
+     * @return numerical hex digit
+     */
+    public int getRndHex() {
+        return rndHex;
+    }
+
+    /**
+     * Set the random hex digit.
+     *
+     * @param numerical hex digit to be set
+     */
+    public QueueSimple setRndHex(int rndHex) {
+        this.rndHex = rndHex % 16;
+        return this;
+    }
+
+    /**
+     * Constructor creating a <b>simple</b> directory queue given a path.
      *
      * @param queuePath the path of the directory queue
      * @throws IOException
      */
     public QueueSimple(String queuePath) throws IOException {
-        this(queuePath, UMASK, GRANULARITY);
-    }
-
-    /**
-     * Constructor which takes the path of the directory queue, its granularity
-     * option and the umask the created folder.
-     *
-     * @param queuePath the path of the directory queue
-     * @param umask     umask the umask value to be set during folder creation
-     * @throws IOException
-     */
-    public QueueSimple(String queuePath, int umask) throws IOException {
-        this(queuePath, umask, GRANULARITY);
-    }
-
-    /**
-     * Constructor which takes the path of the directory queue, its granularity
-     * option and the umask the created folder.
-     *
-     * @param queuePath   the path of the directory queue
-     * @param umask       the umask value to be set during folder creation
-     * @param granularity the granularity of the directory queue
-     * @throws IOException
-     */
-    public QueueSimple(String queuePath, int umask, int granularity)
-            throws IOException {
         this.queuePath = queuePath;
-        this.rndHex =  rand.nextInt(0x10);
-        this.umask = umask;
-        this.granularity = granularity;
+        this.umask = posix.umask();
+        this.rndHex = rand.nextInt(0x10);
 
         // check if directory exists
         File dir = new File(queuePath);
@@ -222,7 +268,7 @@ public class QueueSimple implements Queue {
         // create top level directory
         String tmpPath = "";
         for (String subDir : dir.getPath().split("/+")) {
-            tmpPath += subDir + "/";
+            tmpPath += subDir + File.separator;
             if (new File(tmpPath).exists()) {
                 continue;
             }
@@ -564,9 +610,28 @@ public class QueueSimple implements Queue {
     }
 
     private static class QueueSimpleIterator implements Iterator<String> {
-        private QueueSimple queue = null;
+        private QueueSimple iteratedQueue = null;
         private List<String> dirs = new ArrayList<String>();
         private List<String> elts = new ArrayList<String>();
+
+        private boolean buildElements() {
+            boolean result = false;
+            while (!result && !dirs.isEmpty()) {
+                String dir = dirs.remove(0);
+                File[] content = new File(iteratedQueue.queuePath + File.separator
+                        + dir).listFiles(new RegExpFilenameFilter(
+                        ELEMENT_REGEXP));
+                if (content == null || content.length == 0)
+                    continue;
+                else
+                    result = true;
+                Arrays.sort(content);
+                for (File element : content) {
+                    elts.add(dir + File.separator + element.getName());
+                }
+            }
+            return result;
+        }
 
         /**
          * Constructor which creates an iterator over the given queue.
@@ -574,8 +639,8 @@ public class QueueSimple implements Queue {
          * @param queue queue to be iterated
          */
         public QueueSimpleIterator(QueueSimple queue) {
-            this.queue = queue;
-            File[] content = new File(queue.getQueuePath())
+            iteratedQueue = queue;
+            File[] content = new File(iteratedQueue.getQueuePath())
                     .listFiles(new RegExpFilenameFilter(DIRECTORY_REGEXP));
             for (File dir : content) {
                 dirs.add(dir.getName());
@@ -613,25 +678,6 @@ public class QueueSimple implements Queue {
         @Override
         public void remove() {
             // already removed
-        }
-
-        private boolean buildElements() {
-            boolean result = false;
-            while (!result && !dirs.isEmpty()) {
-                String dir = dirs.remove(0);
-                File[] content = new File(queue.queuePath + File.separator
-                        + dir).listFiles(new RegExpFilenameFilter(
-                        ELEMENT_REGEXP));
-                if (content == null || content.length == 0)
-                    continue;
-                else
-                    result = true;
-                Arrays.sort(content);
-                for (File element : content) {
-                    elts.add(dir + File.separator + element.getName());
-                }
-            }
-            return result;
         }
 
     }
