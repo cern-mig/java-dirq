@@ -181,7 +181,7 @@ public class QueueSimple implements Queue {
     /**
      * Set the umask.
      *
-     * @param numerical umask to be set
+     * @param umask to be set (numerical)
      */
     public QueueSimple setUmask(int umask) {
         this.umask = umask;
@@ -200,7 +200,7 @@ public class QueueSimple implements Queue {
     /**
      * Set the default maxLock for purge().
      *
-     * @param maximum lock time (in seconds)
+     * @param maxLock maximum lock time (in seconds)
      */
     public QueueSimple setMaxLock(int maxLock) {
         this.defaultMaxLock = maxLock;
@@ -219,7 +219,7 @@ public class QueueSimple implements Queue {
     /**
      * Set the default maxTemp for purge().
      *
-     * @param maximum temporary time (in seconds)
+     * @param maxTemp maximum temporary time (in seconds)
      */
     public QueueSimple setMaxTemp(int maxTemp) {
         this.defaultMaxTemp = maxTemp;
@@ -227,18 +227,18 @@ public class QueueSimple implements Queue {
     }
 
     /**
-     * Get the random hex digit.
+     * Get the random hexadecimal digit.
      *
-     * @return numerical hex digit
+     * @return numerical hexadecimal digit
      */
     public int getRndHex() {
         return rndHex;
     }
 
     /**
-     * Set the random hex digit.
+     * Set the random hexadecimal digit.
      *
-     * @param numerical hex digit to be set
+     * @param rndHex hexadecimal digit to be set (numerical)
      */
     public QueueSimple setRndHex(int rndHex) {
         this.rndHex = rndHex % 16;
@@ -599,10 +599,6 @@ public class QueueSimple implements Queue {
 
     /**
      * Iterator over QueueSimple implementation.
-     *
-     * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
-     * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
-     * Copyright (C) CERN 2012-2013
      */
     @Override
     public Iterator<String> iterator() {
