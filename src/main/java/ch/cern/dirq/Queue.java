@@ -1,7 +1,6 @@
 package ch.cern.dirq;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Queue - object oriented interface to a directory based queue
@@ -95,7 +94,7 @@ import java.util.Map;
 public interface Queue extends Iterable<String> {
 
     /**
-     * @return the queue id
+     * Return the queue id.
      */
     public String getId();
 
@@ -225,34 +224,26 @@ public interface Queue extends Iterable<String> {
      * old temporary elements and unlocking too old locked elements (aka staled
      * locks); note: this can take a long time on queues with many elements.
      *
-     * @param options map containing purge options, only <i>maxLock</i> and
-     *                <i>maxTemp</i> values are used, the others are ignored
+     * @param maxLock maximum time for a locked element (in seconds);
+     *                if set to 0, locked elements will not be unlocked;
+     *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fail
      */
-    public void purge(Map<String, Integer> options) throws IOException;
+    public void purge(Integer maxLock) throws IOException;
 
     /**
      * Purge the queue by removing unused intermediate directories, removing too
      * old temporary elements and unlocking too old locked elements (aka staled
      * locks); note: this can take a long time on queues with many elements.
      *
-     * @param maxLock maximum time for a locked element (in seconds, default 600);
-     *                if set to 0, locked elements will not be unlocked
+     * @param maxLock maximum time for a locked element (in seconds);
+     *                if set to 0, locked elements will not be unlocked;
+     *                if set to null, the object's default value will be used
+     * @param maxTemp maximum time for a temporary element (in seconds);
+     *                if set to 0, temporary elements will not be removed
+     *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fail
      */
-    public void purge(int maxLock) throws IOException;
-
-    /**
-     * Purge the queue by removing unused intermediate directories, removing too
-     * old temporary elements and unlocking too old locked elements (aka staled
-     * locks); note: this can take a long time on queues with many elements.
-     *
-     * @param maxTemp maximum time for a temporary element (in seconds, default
-     *                300); if set to 0, temporary elements will not be removed
-     * @param maxLock maximum time for a locked element (in seconds, default 600);
-     *                if set to 0, locked elements will not be unlocked
-     * @throws IOException if any file operation fail
-     */
-    public void purge(int maxTemp, int maxLock) throws IOException;
+    public void purge(Integer maxLock, Integer maxTemp) throws IOException;
 
 }

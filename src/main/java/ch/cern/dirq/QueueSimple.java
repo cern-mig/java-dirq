@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -116,8 +115,6 @@ public class QueueSimple implements Queue {
     public static final String LOCKED_SUFFIX = ".lck";
     private static final int UMASK = posix.umask();
     private static final int GRANULARITY = 60;
-    private static final int MAX_TMP = 300;
-    private static final int MAX_LOCK = 600;
     public static final Pattern DIRECTORY_REGEXP = Pattern
             .compile("[0-9a-f]{8}");
     public static final Pattern ELEMENT_REGEXP = Pattern
@@ -131,6 +128,15 @@ public class QueueSimple implements Queue {
     private int rndHex = 0;
     private int umask = UMASK;
     private int granularity = GRANULARITY;
+    private int defaultMaxLock = 600;
+    private int defaultMaxTemp = 300;
+
+    private void warn(String string) {
+        if (!WARN)
+            return;
+        System.out.println(string);
+        System.out.flush();
+    }
 
     /**
      * Return the granularity value.
@@ -270,14 +276,14 @@ public class QueueSimple implements Queue {
     }
 
     @Override
-    public String add(byte[] data) throws IOException {
+    public String add(String data) throws IOException {
         String dir = addDir();
         File tmp = addData(dir, data);
         return addPathHelper(tmp, dir);
     }
 
     @Override
-    public String add(String data) throws IOException {
+    public String add(byte[] data) throws IOException {
         String dir = addDir();
         File tmp = addData(dir, data);
         return addPathHelper(tmp, dir);
@@ -453,7 +459,6 @@ public class QueueSimple implements Queue {
      * Used to filter directories while listing files.
      */
     private class DirFilter implements FileFilter {
-
         public boolean accept(File file) {
             return file.isDirectory();
         }
@@ -477,30 +482,29 @@ public class QueueSimple implements Queue {
 
     @Override
     public void purge() throws IOException {
-        purge(MAX_TMP, MAX_LOCK);
+        purge(null, null);
     }
 
     @Override
-    public void purge(Map<String, Integer> options) throws IOException {
-        int maxLock = options.get("maxLock") == null ? MAX_LOCK : options
-                .get("maxLock");
-        int maxTemp = options.get("maxTemp") == null ? MAX_TMP : options
-                .get("maxTemp");
-        purge(maxTemp, maxLock);
+    public void purge(Integer maxLock) throws IOException {
+        purge(maxLock, null);
     }
 
     @Override
-    public void purge(int maxLock) throws IOException {
-        purge(MAX_TMP, maxLock);
-    }
-
-    @Override
-    public void purge(int maxTemp, int maxLock) throws IOException {
-        // get list of intermediate directories
-        File[] elements = new File(queuePath).listFiles(new DirFilter());
+    public void purge(Integer maxLock, Integer maxTemp) throws IOException {
         long now = System.currentTimeMillis() / 1000;
-        long oldtemp = now - maxTemp;
-        long oldlock = now - maxLock;
+        long oldtemp = 0;
+        long oldlock = 0;
+        // get the list of intermediate directories
+        File[] elements = new File(queuePath).listFiles(new DirFilter());
+        if (maxLock == null)
+            maxLock = defaultMaxLock;
+        if (maxTemp == null)
+            maxTemp = defaultMaxTemp;
+        if (maxLock > 0)
+            oldlock = now - maxLock;
+        if (maxTemp > 0)
+            oldtemp = now - maxTemp;
         if (maxTemp > 0 || maxLock > 0) {
             for (File element : elements) {
                 File[] inElements = element.listFiles(new RegExpFilenameFilter(
@@ -554,6 +558,11 @@ public class QueueSimple implements Queue {
      * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
      * Copyright (C) CERN 2012-2013
      */
+    @Override
+    public Iterator<String> iterator() {
+        return new QueueSimpleIterator(this);
+    }
+
     private static class QueueSimpleIterator implements Iterator<String> {
         private QueueSimple queue = null;
         private List<String> dirs = new ArrayList<String>();
@@ -624,17 +633,7 @@ public class QueueSimple implements Queue {
             }
             return result;
         }
+
     }
 
-    @Override
-    public Iterator<String> iterator() {
-        return new QueueSimpleIterator(this);
-    }
-
-    private void warn(String string) {
-        if (!WARN)
-            return;
-        System.out.println(string);
-        System.out.flush();
-    }
 }
