@@ -3,7 +3,7 @@
     <groupId>ch.cern.dirq</groupId>
     <artifactId>dirq</artifactId>
     <packaging>jar</packaging>
-    <version>1.4</version>
+    <version>1.5-SNAPSHOT</version>
     <name>dirq</name>
     <description>Directory based queue.</description>
     <url>https://github.com/cern-mig/java-dirq</url>
