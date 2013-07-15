@@ -94,25 +94,27 @@ import java.io.IOException;
 public interface Queue extends Iterable<String> {
 
     /**
-     * Return the queue id.
+     * Return the queue identifier.
+     *
+     * @return unique queue identifier
      */
     public String getId();
 
     /**
-     * Add data as a string to the queue.
+     * Add String data to the queue.
      *
-     * @param data data to be added to the queue
-     * @return return the element name (<directory_name>/<file_name>)
-     * @throws IOException if any file operation fail
+     * @param data data to be added
+     * @return element name (as <directory_name>/<file_name>)
+     * @throws IOException if any file operation fails
      */
     public String add(String data) throws IOException;
 
     /**
-     * Add data as byte array to the queue.
+     * Add byte array data to the queue.
      *
-     * @param data data to be added to the queue
-     * @return return the element name (<directory_name>/<file_name>)
-     * @throws IOException if any file operation fail
+     * @param data data to be added
+     * @return element name (as <directory_name>/<file_name>)
+     * @throws IOException if any file operation fails
      */
     public String add(byte[] data) throws IOException;
 
@@ -121,33 +123,33 @@ public interface Queue extends Iterable<String> {
      * corresponding element name, the file must be on the same filesystem and
      * will be moved to the queue.
      *
-     * @param path the path of the file to be added
-     * @return return the element name (<directory_name>/<file_name>)
-     * @throws IOException if any file operation fail
+     * @param path path of the file to be added
+     * @return element name (as <directory_name>/<file_name>)
+     * @throws IOException if any file operation fails
      */
     public String addPath(String path) throws IOException;
 
     /**
-     * Get locked element as a string.
+     * Get the given locked element as String data.
      *
-     * @param name the name of the element to be returned
-     * @return return the value associated to the given name
+     * @param name name of the element to be retrieved
+     * @return data associated with the given element
      */
     public String get(String name);
 
     /**
-     * Get locked element as a byte array.
+     * Get the given locked element as byte array data.
      *
-     * @param name the name of the element to be returned
-     * @return the value associated to the given name
+     * @param name name of the element to be retrieved
+     * @return data associated with the given element
      */
     public byte[] getAsByteArray(String name);
 
     /**
-     * Return the path given the name of the element.
+     * Get the given locked element's file path.
      *
-     * @param name the name of the element
-     * @return the path of the element
+     * @param name name of the element
+     * @return path of the element
      */
     public String getPath(String name);
 
@@ -157,7 +159,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element to be locked
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be locked
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public boolean lock(String name) throws IOException;
 
@@ -168,28 +170,28 @@ public interface Queue extends Iterable<String> {
      * @param permissive work in permissive mode
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be locked
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public boolean lock(String name, boolean permissive) throws IOException;
 
     /**
      * Unlock an element in non-permissive mode.
      *
-     * @param name name of the element to be locked
+     * @param name name of the element to be unlocked
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be unlocked
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public boolean unlock(String name) throws IOException;
 
     /**
      * Unlock an element.
      *
-     * @param name       name of the element to be locked
+     * @param name       name of the element to be unlocked
      * @param permissive work in permissive mode
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be unlocked
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public boolean unlock(String name, boolean permissive) throws IOException;
 
@@ -204,7 +206,7 @@ public interface Queue extends Iterable<String> {
      * Return the number of elements in the queue, locked or not (but not
      * temporary).
      *
-     * @return the number of elements in the queue
+     * @return number of elements in the queue
      */
     public int count();
 
@@ -215,7 +217,7 @@ public interface Queue extends Iterable<String> {
      * <p/>
      * It uses default value for maxTemp and maxLock
      *
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public void purge() throws IOException;
 
@@ -227,7 +229,7 @@ public interface Queue extends Iterable<String> {
      * @param maxLock maximum time for a locked element (in seconds);
      *                if set to 0, locked elements will not be unlocked;
      *                if set to null, the object's default value will be used
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public void purge(Integer maxLock) throws IOException;
 
@@ -242,7 +244,7 @@ public interface Queue extends Iterable<String> {
      * @param maxTemp maximum time for a temporary element (in seconds);
      *                if set to 0, temporary elements will not be removed
      *                if set to null, the object's default value will be used
-     * @throws IOException if any file operation fail
+     * @throws IOException if any file operation fails
      */
     public void purge(Integer maxLock, Integer maxTemp) throws IOException;
 

@@ -12,6 +12,10 @@ import java.util.NoSuchElementException;
  * a black hole: added data will disappear immediately so the queue will
  * therefore always appear empty.
  * <p/>
+ * All the methods that add data will return an invalid element name.
+ * All the methods that work on elements will throw a
+ * <code>UnsupportedOperationException</code> exception.
+ * <p/>
  * This can be used for testing purposes or to discard data like one would do on
  * Unix by redirecting output to <i>/dev/null</i>.
  * <p/>
@@ -26,46 +30,28 @@ import java.util.NoSuchElementException;
 public class QueueNull implements Queue {
 
     /**
-     * Constructor creating a <b>null</b> directory queue with no parameters.
+     * Constructor creating a null directory queue.
+     *
+     * @return the created object
      */
     public QueueNull() {
     }
 
-    /**
-     * Return the queue id.
-     *
-     * @return the String "NULL"
-     */
     @Override
     public String getId() {
         return "NULL";
     }
 
-    /**
-     * Add data as a string to the queue.
-     *
-     * @return an empty String
-     */
     @Override
     public String add(String data) {
         return "";
     }
 
-    /**
-     * Add data as byte array to the queue.
-     *
-     * @return an empty String
-     */
     @Override
     public String add(byte[] data) {
         return "";
     }
 
-    /**
-     * Add the given file (identified by its path) to the queue.
-     *
-     * @return an empty String
-     */
     @Override
     public String addPath(String path) {
         File file = new File(path);
@@ -74,112 +60,59 @@ public class QueueNull implements Queue {
         return "";
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public String get(String name) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public byte[] getAsByteArray(String name) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public String getPath(String path) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public boolean lock(String name) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
+    @Override
     public boolean lock(String name, boolean permissive) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public boolean unlock(String name) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public boolean unlock(String name, boolean permissive) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Not implemented, always throws UnsupportedOperationException.
-     *
-     * @throws UnsupportedOperationException as it does not make sense for a <b>null</b> queue.
-     */
     @Override
     public void remove(String name) {
         throw new UnsupportedOperationException();
     }
 
-    /**
-     * Return the number of elements in the queue.
-     *
-     * @return zero
-     */
     @Override
     public int count() {
         return 0;
     }
 
-    /**
-     * Does not do anything.
-     */
     @Override
     public void purge() {
     }
 
-    /**
-     * Does not do anything.
-     */
     @Override
     public void purge(Integer maxLock) {
     }
 
-    /**
-     * Does not do anything.
-     */
     @Override
     public void purge(Integer maxLock, Integer maxTemp) {
     }

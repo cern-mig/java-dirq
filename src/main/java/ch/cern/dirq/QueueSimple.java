@@ -163,6 +163,7 @@ public class QueueSimple implements Queue {
      * Set the granularity.
      *
      * @param granularity to be set (in seconds)
+     * @return the object itself
      */
     public QueueSimple setGranularity(int granularity) {
         this.granularity = granularity;
@@ -182,6 +183,7 @@ public class QueueSimple implements Queue {
      * Set the umask.
      *
      * @param umask to be set (numerical)
+     * @return the object itself
      */
     public QueueSimple setUmask(int umask) {
         this.umask = umask;
@@ -201,6 +203,7 @@ public class QueueSimple implements Queue {
      * Set the default maxLock for purge().
      *
      * @param maxLock maximum lock time (in seconds)
+     * @return the object itself
      */
     public QueueSimple setMaxLock(int maxLock) {
         this.defaultMaxLock = maxLock;
@@ -220,6 +223,7 @@ public class QueueSimple implements Queue {
      * Set the default maxTemp for purge().
      *
      * @param maxTemp maximum temporary time (in seconds)
+     * @return the object itself
      */
     public QueueSimple setMaxTemp(int maxTemp) {
         this.defaultMaxTemp = maxTemp;
@@ -239,6 +243,7 @@ public class QueueSimple implements Queue {
      * Set the random hexadecimal digit.
      *
      * @param rndHex hexadecimal digit to be set (numerical)
+     * @return the object itself
      */
     public QueueSimple setRndHex(int rndHex) {
         this.rndHex = rndHex % 16;
@@ -246,9 +251,10 @@ public class QueueSimple implements Queue {
     }
 
     /**
-     * Constructor creating a <b>simple</b> directory queue given a path.
+     * Constructor creating a simple directory queue from the given path.
      *
-     * @param queuePath the path of the directory queue
+     * @param queuePath path of the directory queue
+     * @return the created object
      * @throws IOException
      */
     public QueueSimple(String queuePath) throws IOException {
