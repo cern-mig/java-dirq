@@ -31,8 +31,6 @@ public class QueueNull implements Queue {
 
     /**
      * Constructor creating a null directory queue.
-     *
-     * @return the created object
      */
     public QueueNull() {
     }
