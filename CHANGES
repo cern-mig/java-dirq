@@ -1,6 +1,6 @@
 Change log for java-dirq:
 
-???	???
+1.4	Mon Jul 15 2013
 	* [lc] changed all the tests to use a temporary directory
 	* [lc] cleaned the documentation
 	* [lc] simplified the signature of the purge() methods
