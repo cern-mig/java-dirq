@@ -13,7 +13,7 @@ import java.util.Scanner;
  * Generic process utiitiess.
  *
  * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
+ *         Copyright (C) CERN 2012-2015
  */
 public class ProcessUtils {
 

@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2013
+ *         Copyright (C) CERN 2012-2015
  */
 public class RegExpFilenameFilter implements FilenameFilter {
     private Pattern regexp = null;
