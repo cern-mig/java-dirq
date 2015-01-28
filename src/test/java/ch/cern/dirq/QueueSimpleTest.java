@@ -242,6 +242,7 @@ public class QueueSimpleTest extends QueueTestBase {
         assertEquals(1, qsObject.count());
         String elem = qsObject.iterator().next();
         qsObject.lock(elem);
+        assertEquals(1, qsObject.count());
         String elemPathLock = qsObject.getQueuePath() + File.separator + elem
                 + QueueSimple.LOCKED_SUFFIX;
         assertTrue(new File(elemPathLock).exists());
@@ -249,6 +250,33 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.purge(1);
         assertFalse(new File(elemPathLock).exists());
         assertEquals(1, qsObject.count());
+        assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
+    }
+
+    /**
+     * Test purge one dir with an orphan lock.
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Test
+    public void purgeOneDir2() throws IOException, InterruptedException {
+        qsObject.add("abc");
+        assertEquals(1, qsObject.count());
+        String elem = qsObject.iterator().next();
+        String elemPath = qsObject.getQueuePath() + File.separator + elem;
+        String elemPathLock = elemPath + QueueSimple.LOCKED_SUFFIX;
+        qsObject.lock(elem);
+        assertEquals(1, qsObject.count());
+        assertTrue(new File(elemPathLock).exists());
+        new File(elemPath).delete();
+        assertFalse(new File(elemPath).exists());
+        assertTrue(new File(elemPathLock).exists());
+        assertEquals(0, qsObject.count());
+        Thread.sleep(2000);
+        qsObject.purge(1);
+        assertFalse(new File(elemPathLock).exists());
+        assertEquals(0, qsObject.count());
         assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
     }
 

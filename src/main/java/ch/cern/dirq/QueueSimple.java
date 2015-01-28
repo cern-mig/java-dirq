@@ -114,9 +114,9 @@ public class QueueSimple implements Queue {
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
     public static final Pattern DIRECTORY_REGEXP =
-        Pattern.compile("[0-9a-f]{8}");
+        Pattern.compile("^[0-9a-f]{8}$");
     public static final Pattern ELEMENT_REGEXP =
-        Pattern.compile("[0-9a-f]{14}");
+        Pattern.compile("^[0-9a-f]{14}$");
 
     private static boolean WARN = false;
     private static Random rand = new Random();
