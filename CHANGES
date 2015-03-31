@@ -1,6 +1,6 @@
 Change log for java-dirq:
 
-???	???
+1.5	Tue Mar 31 2015
         * [lc] fixed NPE in QueueSimple's count() method
 
 1.4	Mon Jul 15 2013
