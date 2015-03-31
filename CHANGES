@@ -1,5 +1,8 @@
 Change log for java-dirq:
 
+???	???
+        * [lc] fixed NPE in QueueSimple's count() method
+
 1.4	Mon Jul 15 2013
 	* [lc] changed all the tests to use a temporary directory
 	* [lc] cleaned the documentation

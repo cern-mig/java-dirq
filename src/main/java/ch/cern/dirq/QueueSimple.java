@@ -523,6 +523,8 @@ public class QueueSimple implements Queue {
         // count elements in sub-directories
         for (File element : elements) {
             File[] inElements = element.listFiles();
+            if (inElements == null)
+                continue;
             for (File inElement : inElements) {
                 if (ELEMENT_REGEXP.matcher(inElement.getName()).matches())
                     count += 1;
