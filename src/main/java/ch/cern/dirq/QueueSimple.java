@@ -38,20 +38,20 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * // sample producer
  * QueueSimple dirq = new QueueSimple("/tmp/test");
  * for (int i=0; i < 100; i++) {
- * 	String name = dirq.add("element " + i);
- * 	System.out.println("# added element " + i + " as " + name);
+ *     String name = dirq.add("element " + i);
+ *     System.out.println("# added element " + i + " as " + name);
  * }
  *
  * // sample consumer
  * dirq = QueueSimple('/tmp/test');
  * for (String name:dirq) {
- * 	if (! dirq.lock(name)) {
- * 		continue;
- * 	}
- * 	System.out.println("# reading element " + name);
- * 	String data = dirq.get(name);
- * 	// one could use dirq.unlock(name) to only browse the queue...
- * 	dirq.remove(name);
+ *     if (! dirq.lock(name)) {
+ *         continue;
+ *     }
+ *     System.out.println("# reading element " + name);
+ *     String data = dirq.get(name);
+ *     // one could use dirq.unlock(name) to only browse the queue...
+ *     dirq.remove(name);
  * }
  * }
  * </pre>
