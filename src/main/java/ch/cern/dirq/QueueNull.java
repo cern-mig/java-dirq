@@ -1,6 +1,7 @@
 package ch.cern.dirq;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -52,10 +53,12 @@ public class QueueNull implements Queue {
     }
 
     @Override
-    public String addPath(String path) {
+    public String addPath(String path) throws IOException {
         File file = new File(path);
         if (file.exists()) {
-            file.delete();
+            if (!file.delete()) {
+                throw new IOException("cannot delete: " + path);
+            }
         }
         return "";
     }
