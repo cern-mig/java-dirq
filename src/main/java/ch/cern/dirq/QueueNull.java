@@ -5,22 +5,23 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * QueueNull - object oriented interface to a <b>null</b> directory based queue.
- * <p/>
- * The goal of this module is to offer a <b>null</b> queue system using the same
+ * QueueNull - object oriented interface to a <i>null</i> directory based queue.
+ * <p>
+ * The goal of this module is to offer a <i>null</i> queue system using the same
  * API as the other directory queue implementations. The queue will behave like
  * a black hole: added data will disappear immediately so the queue will
  * therefore always appear empty.
- * <p/>
- * All the methods that add data will return an invalid element name.
- * All the methods that work on elements will throw a
- * <code>UnsupportedOperationException</code> exception.
- * <p/>
- * This can be used for testing purposes or to discard data like one would do on
- * Unix by redirecting output to <i>/dev/null</i>.
- * <p/>
+ * <p>
+ * This can be used for testing purposes or to discard data like one would do
+ * on Unix by redirecting output to <code>/dev/null</code>.
+ * <p>
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
+ * <p>
+ * All the methods that add data will return an invalid element name.
+ * <p>
+ * All the methods that work on elements will throw an
+ * <code>UnsupportedOperationException</code> exception.
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
@@ -30,7 +31,7 @@ import java.util.NoSuchElementException;
 public class QueueNull implements Queue {
 
     /**
-     * Constructor creating a null directory queue.
+     * Constructor for the null directory queue.
      */
     public QueueNull() {
     }
@@ -53,8 +54,9 @@ public class QueueNull implements Queue {
     @Override
     public String addPath(String path) {
         File file = new File(path);
-        if (file.exists())
+        if (file.exists()) {
             file.delete();
+        }
         return "";
     }
 
@@ -116,17 +118,20 @@ public class QueueNull implements Queue {
     }
 
     /**
-     * Iterator over QueueNull implementation.
+     * Iterator for the null directory queue.
      */
     @Override
     public Iterator<String> iterator() {
         return new QueueNullIterator();
     }
 
+    /**
+     * Iterator for the null directory queue (private).
+     */
     private static class QueueNullIterator implements Iterator<String> {
 
         /**
-         * Return true if there are still elements to be iterated.
+         * Returns true if the iteration has more elements.
          */
         @Override
         public boolean hasNext() {
@@ -134,7 +139,7 @@ public class QueueNull implements Queue {
         }
 
         /**
-         * Return the next element to be iterated.
+         * Returns the next element in the iteration.
          */
         @Override
         public String next() {
@@ -142,7 +147,7 @@ public class QueueNull implements Queue {
         }
 
         /**
-         * Make sure visited element is removed from the list of iterable items.
+         * Removes from the underlying collection the last element returned by this iterator.
          */
         @Override
         public void remove() {

@@ -3,8 +3,8 @@ package ch.cern.dirq;
 import java.io.IOException;
 
 /**
- * Queue - object oriented interface to a directory based queue
- * <p/>
+ * Queue - object oriented interface to a directory based queue.
+ * <p>
  * <h3>Description</h3> The goal of this module is to offer a queue system using
  * the underlying filesystem for storage, security and to prevent race
  * conditions via atomic operations. It focuses on simplicity, robustness and
@@ -16,11 +16,11 @@ import java.io.IOException;
  * Different implementations are available so readers and writers can be written
  * in different programming languages:
  * <ul>
- * <li>A Perl implementation of the same algorithms is available at <a
- * href="http://search.cpan.org/dist/Directory-Queue/">
+ * <li>A Perl implementation of the same algorithms is available at
+ * <a href="http://search.cpan.org/dist/Directory-Queue/">
  * http://search.cpan.org/dist/Directory-Queue/</a>
- * <li>A Python implementation of the same algorithms is available at <a
- * href="https://github.com/cern-mig/python-dirq">
+ * <li>A Python implementation of the same algorithms is available at
+ * <a href="https://github.com/cern-mig/python-dirq">
  * https://github.com/cern-mig/python-dirq</a>
  * </ul>
  * <p>
@@ -78,13 +78,15 @@ import java.io.IOException;
  * The elements are stored as plain files and directories. The filesystem
  * security features (owner, group, permissions, ACLs...) should be used to
  * adequately protect the data.
- * </p>
+ * <p>
  * By default, the process' umask is respected. See the class constructor
- * documentation if you want an other behavior. </p> If multiple readers and
- * writers with different uids are expected, the easiest solution is to have all
- * the files and directories inside the toplevel directory world-writable (i.e.
- * umask=0). Then, the permissions of the toplevel directory itself (e.g.
- * group-writable) are enough to control who can access the queue.
+ * documentation if you want an other behavior.
+ * <p>
+ * If multiple readers and writers with different uids are expected, the
+ * easiest solution is to have all the files and directories inside the
+ * toplevel directory world-writable (i.e. umask=0). Then, the permissions of
+ * the toplevel directory itself (e.g. group-writable) are enough to control
+ * who can access the queue.
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
@@ -94,7 +96,7 @@ import java.io.IOException;
 public interface Queue extends Iterable<String> {
 
     /**
-     * Return the queue identifier.
+     * Return a unique identifier for the queue.
      *
      * @return unique queue identifier
      */
@@ -146,7 +148,10 @@ public interface Queue extends Iterable<String> {
     public byte[] getAsByteArray(String name);
 
     /**
-     * Get the given locked element's file path.
+     * Get the path of the given locked element.
+     * <p>
+     * This pathFile can be read but not removed, you must use the remove()
+     * method for this purpose.
      *
      * @param name name of the element
      * @return path of the element
@@ -166,7 +171,7 @@ public interface Queue extends Iterable<String> {
     /**
      * Lock an element.
      *
-     * @param name       name of the element to be locked
+     * @param name name of the element to be locked
      * @param permissive work in permissive mode
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be locked
@@ -187,7 +192,7 @@ public interface Queue extends Iterable<String> {
     /**
      * Unlock an element.
      *
-     * @param name       name of the element to be unlocked
+     * @param name name of the element to be unlocked
      * @param permissive work in permissive mode
      * @return <code>true</code> on success, <code>false</code> if the element
      *         could not be unlocked
@@ -203,8 +208,9 @@ public interface Queue extends Iterable<String> {
     public void remove(String name);
 
     /**
-     * Return the number of elements in the queue, locked or not (but not
-     * temporary).
+     * Return the number of elements in the queue.
+     * <p>
+     * Locked elements are counted but temporary elements are not.
      *
      * @return number of elements in the queue
      */
@@ -214,7 +220,7 @@ public interface Queue extends Iterable<String> {
      * Purge the queue by removing unused intermediate directories, removing too
      * old temporary elements and unlocking too old locked elements (aka staled
      * locks); note: this can take a long time on queues with many elements.
-     * <p/>
+     * <p>
      * It uses default value for maxTemp and maxLock
      *
      * @throws IOException if any file operation fails
