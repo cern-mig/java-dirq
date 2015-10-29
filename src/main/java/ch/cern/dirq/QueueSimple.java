@@ -23,16 +23,15 @@ import ch.cern.mig.utils.FileUtils;
 import ch.cern.mig.utils.RegExpFilenameFilter;
 
 /**
- * QueueSimple - object oriented interface to a simple directory based queue.
- * <p/>
- * A port of Perl module Directory::Queue::Simple <a
- * href="http://search.cpan.org/dist/Directory-Queue/">
+ * QueueSimple - object oriented interface to a <i>simple</i> directory based queue.
+ * <p>
+ * A port of Perl module Directory::Queue::Simple
+ * <a href="http://search.cpan.org/dist/Directory-Queue/">
  * http://search.cpan.org/dist/Directory-Queue/</a>
- * <p/>
- * The documentation from Directory::Queue::Simple module was adapted for Java.
- * <p/>
+ * <p>
+ * The documentation from Directory::Queue::Simple module has been adapted for Java.
+ * <p>
  * <h3>Usage</h3>
- * <p/>
  * <pre>
  * {@code
  * // sample producer
@@ -43,7 +42,7 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * }
  *
  * // sample consumer
- * dirq = QueueSimple('/tmp/test');
+ * dirq = QueueSimple("/tmp/test");
  * for (String name:dirq) {
  *     if (! dirq.lock(name)) {
  *         continue;
@@ -55,13 +54,12 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * }
  * }
  * </pre>
- * <p/>
  * <h3>Description</h3>
- * <p/>
- * This module is very similar to normal dirq, but uses a different way to store
- * data in the filesystem, using less directories. Its API is almost identical.
- * <p/>
- * Compared to normal dirq, this module:
+ * This module is very similar to the normal directory queue, but uses a
+ * different way to store data in the filesystem, using less directories. Its
+ * API is almost identical.
+ * <p>
+ * Compared to normal directory queue, this module:
  * <ul>
  * <li>is simpler
  * <li>is faster
@@ -69,39 +67,38 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  * <li>can be given existing files to store
  * <li>does not support schemas
  * <li>can only store and retrieve byte strings
- * <li>is not compatible (at filesystem level) with Queue
+ * <li>is not compatible (at filesystem level) with the normal directory queue
  * </ul>
- * <p/>
  * <h3>Directory Structure</h3>
- * <p/>
  * The toplevel directory contains intermediate directories that contain the
- * stored elements, each of them in a file.<br />
+ * stored elements, each of them in a file.
+ * <p>
  * The names of the intermediate directories are time based: the element
- * insertion time is used to create a 8-digits long hexadecimal number.<br />
+ * insertion time is used to create a 8-digits long hexadecimal number.
  * The granularity (see the constructor) is used to limit the number of new
  * directories. For instance, with a granularity of 60 (the default), new
  * directories will be created at most once per minute.
- * <p/>
+ * <p>
  * Since there is usually a filesystem limit in the number of directories a
  * directory can hold, there is a trade-off to be made. If you want to support
  * many added elements per second, you should use a low granularity to keep
  * small directories. However, in this case, you will create many directories
  * and this will limit the total number of elements you can store.
- * <p/>
+ * <p>
  * The elements themselves are stored in files (one per element) with a
- * 14-digits long hexadecimal name SSSSSSSSMMMMMR where:
+ * 14-digits long hexadecimal name <i>SSSSSSSSMMMMMR</i> where:
  * <ul>
- * <li>SSSSSSSS represents the number of seconds since the Epoch
- * <li>MMMMM represents the microsecond part of the time since the Epoch
- * <li>R is a random digit used to reduce name collisions
+ * <li><i>SSSSSSSS</i> represents the number of seconds since the Epoch
+ * <li><i>MMMMM</i> represents the microsecond part of the time since the Epoch
+ * <li><i>R</i> is a random hexadecimal digit used to reduce name collisions
  * </ul>
- * <p/>
- * A temporary element (being added to the queue) will have a <i>.tmp</i>
+ * <p>
+ * A temporary element (being added to the queue) will have a <code>.tmp</code>
  * suffix.
- * <p/>
- * A locked element will have a hard link with the same name and the <i>.lck</i>
- * suffix.
- * <p/>
+ * <p>
+ * A locked element will have a hard link with the same name and the
+ * <code>.lck</code> suffix.
+ * <p>
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  *
@@ -605,14 +602,18 @@ public class QueueSimple implements Queue {
     }
 
     /**
-     * Iterator over QueueSimple implementation.
+     * Iterator for the simple directory queue.
      */
     @Override
     public Iterator<String> iterator() {
         return new QueueSimpleIterator(this);
     }
 
+    /**
+     * Iterator for the simple directory queue (private).
+     */
     private static class QueueSimpleIterator implements Iterator<String> {
+
         private QueueSimple iteratedQueue = null;
         private List<String> dirs = new ArrayList<String>();
         private List<String> elts = new ArrayList<String>();
@@ -637,9 +638,9 @@ public class QueueSimple implements Queue {
         }
 
         /**
-         * Constructor which creates an iterator over the given queue.
+         * Constructor for the simple directory queue iterator.
          *
-         * @param queue queue to be iterated
+         * @param queue queue to be iterated on
          */
         public QueueSimpleIterator(QueueSimple queue) {
             iteratedQueue = queue;
@@ -652,7 +653,7 @@ public class QueueSimple implements Queue {
         }
 
         /**
-         * Return true if there are still elements to be iterated.
+         * Returns true if the iteration has more elements.
          */
         @Override
         public boolean hasNext() {
@@ -664,7 +665,7 @@ public class QueueSimple implements Queue {
         }
 
         /**
-         * Return the next element to be iterated.
+         * Returns the next element in the iteration.
          */
         @Override
         public String next() {
@@ -676,11 +677,10 @@ public class QueueSimple implements Queue {
         }
 
         /**
-         * Make sure visited element is removed from the list of iterable items.
+         * Removes from the underlying collection the last element returned by this iterator.
          */
         @Override
         public void remove() {
-            // already removed
         }
 
     }
