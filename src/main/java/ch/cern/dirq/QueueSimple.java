@@ -108,12 +108,15 @@ import ch.cern.mig.utils.RegExpFilenameFilter;
  */
 
 public class QueueSimple implements Queue {
+
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
     public static final Pattern DIRECTORY_REGEXP =
         Pattern.compile("^[0-9a-f]{8}$");
     public static final Pattern ELEMENT_REGEXP =
         Pattern.compile("^[0-9a-f]{14}$");
+    public static final Pattern DOTNAME_REGEXP =
+        Pattern.compile("\\.");
 
     private static boolean WARN = false;
     private static Random rand = new Random();
@@ -558,7 +561,7 @@ public class QueueSimple implements Queue {
         if (maxTemp > 0 || maxLock > 0) {
             for (File element : elements) {
                 File[] inElements = element.listFiles(new RegExpFilenameFilter(
-                        Pattern.compile("\\."), false));
+                        DOTNAME_REGEXP, false));
                 if (inElements == null)
                     continue;
                 for (File inElement : inElements) {
