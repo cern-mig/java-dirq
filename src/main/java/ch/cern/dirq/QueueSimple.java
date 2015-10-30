@@ -255,7 +255,7 @@ public class QueueSimple implements Queue {
      * Constructor creating a simple directory queue from the given path.
      *
      * @param queuePath path of the directory queue
-     * @throws IOException
+     * @throws IOException if any file operation fails
      */
     public QueueSimple(final String queuePath) throws IOException {
 
