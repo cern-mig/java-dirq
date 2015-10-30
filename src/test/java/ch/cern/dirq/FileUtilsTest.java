@@ -36,14 +36,14 @@ public class FileUtilsTest {
      */
     @Test
     public void testReadWriteString() throws IOException {
-        String data = "Hello World!\n";
+        String data = "Hell\u00f6 W\u00f8rld!\n";
         String path = tempPath() + File.separator + "testReadWriteString";
         FileUtils.writeToFile(path, data);
         Assert.assertEquals(data, FileUtils.readToString(path));
         File file = new File(path);
         FileUtils.writeToFile(file, data);
         Assert.assertEquals(data, FileUtils.readToString(file));
-        Assert.assertEquals(13, file.length());
+        Assert.assertEquals(15, file.length());
     }
 
     /**
