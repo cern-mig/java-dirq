@@ -25,7 +25,7 @@ public class JnaPosixTest {
     @Rule
     public TemporaryFolder tempDir = new TemporaryFolder();
 
-    private static final String line = "################################################";
+    private static final String LINE = "################################################";
     private static final boolean OK = true;
     private static final boolean FAIL = false;
 
@@ -37,9 +37,9 @@ public class JnaPosixTest {
         return tempDir.getRoot().getPath() + File.separator + parent + File.separator + name;
     }
 
-    private static Exception mkdir(String name) {
+    private static Exception mkdir(String path) {
         try {
-            Posix.posix.mkdir(name);
+            Posix.posix.mkdir(path);
         } catch (LastErrorException e) {
             return e;
         }
@@ -157,7 +157,7 @@ public class JnaPosixTest {
                 + new File(".").getAbsolutePath());
         println("temporary directory: "
                 + tempDir.getRoot().getPath());
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class JnaPosixTest {
         report(FAIL, mkdir(tmpath("x1", "d")), "mkdir(x1/d)");
         // cleanup
         rmdir(tmpath("d3"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -180,7 +180,7 @@ public class JnaPosixTest {
         // cleanup
         Posix.posix.mkdir(tmpath("d1"));
         Posix.posix.rmdir(tmpath("d2", "d3"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class JnaPosixTest {
         report(OK,   opendir(tmpath("d1")),      "opendir(d1)");
         report(FAIL, opendir(tmpath("x1")),      "opendir(x1)");
         report(FAIL, opendir(tmpath("x1", "d")), "opendir(x1/d)");
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -205,7 +205,7 @@ public class JnaPosixTest {
         Posix.posix.rename(tmpath("d3"), tmpath("d1"));
         Posix.posix.unlink(tmpath("d1", "f"));
         Posix.posix.unlink(tmpath("d2", "f"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -215,7 +215,7 @@ public class JnaPosixTest {
         report(FAIL, open(tmpath("x1", "f")), "open(x1/f)");
         // cleanup
         Posix.posix.unlink(tmpath("f3"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -226,7 +226,7 @@ public class JnaPosixTest {
         report(FAIL, link(tmpath("x1"), tmpath("f2")), "link(x1, f2)");
         // cleanup
         unlink(tmpath("f3"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -235,7 +235,7 @@ public class JnaPosixTest {
         report(FAIL, unlink(tmpath("x1")), "unlink(x1)");
         // cleanup
         mkfile(tmpath("f1"));
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -245,7 +245,7 @@ public class JnaPosixTest {
         report(FAIL, stat(tmpath("x1")),      "stat(x1)");
         report(FAIL, stat(tmpath("d1", "f")), "stat(d1/f)");
         report(FAIL, stat(tmpath("x1", "f")), "stat(x1/f)");
-        println(line);
+        println(LINE);
     }
 
     @Test
@@ -255,7 +255,7 @@ public class JnaPosixTest {
         report(FAIL, lstat(tmpath("x1")),      "lstat(x1)");
         report(FAIL, lstat(tmpath("d1", "f")), "lstat(d1/f)");
         report(FAIL, lstat(tmpath("x1", "f")), "lstat(x1/f)");
-        println(line);
+        println(LINE);
     }
 
     @Before
@@ -266,19 +266,9 @@ public class JnaPosixTest {
         mkdir(tmpath("d2"));
     }
 
-    // private void testStatPrint() {
-    // String nStat = Posix.posix.stat("license.txt").customRepr();
-    // String sStat =
-    // ProcessUtils.executeIt(Posix.posix.stat("license.txt").systemCommand() +
-    // " license.txt").get("out");
-    // assertEquals(sStat, nStat);
-    // System.out.println(
-    // "stat ok: \nnstat: " + nStat + "\nsstat: " + sStat);
-    // }
-
     public static void main(String[] args) throws Exception {
-        println(line);
-        println(line);
+        println(LINE);
+        println(LINE);
 
         JnaPosixTest jt = new JnaPosixTest();
         jt.init();
@@ -290,7 +280,7 @@ public class JnaPosixTest {
     }
 
     public void runAll() throws Exception {
-        println(line);
+        println(LINE);
         testInfo();
         testLink();
         testUnlink();
