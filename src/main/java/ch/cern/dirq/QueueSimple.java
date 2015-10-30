@@ -24,13 +24,13 @@ import static ch.cern.mig.posix.Posix.posix;
 
 /**
  * QueueSimple - object oriented interface to a <i>simple</i> directory based queue.
- * <p>
+ * <br>
  * A port of Perl module Directory::Queue::Simple
  * <a href="http://search.cpan.org/dist/Directory-Queue/">
  * http://search.cpan.org/dist/Directory-Queue/</a>
- * <p>
+ * <br>
  * The documentation from Directory::Queue::Simple module has been adapted for Java.
- * <p>
+ * <br>
  * <h3>Usage</h3>
  * <pre>
  * {@code
@@ -58,7 +58,7 @@ import static ch.cern.mig.posix.Posix.posix;
  * This module is very similar to the normal directory queue, but uses a
  * different way to store data in the filesystem, using less directories. Its
  * API is almost identical.
- * <p>
+ * <br>
  * Compared to normal directory queue, this module:
  * <ul>
  * <li>is simpler
@@ -72,19 +72,19 @@ import static ch.cern.mig.posix.Posix.posix;
  * <h3>Directory Structure</h3>
  * The toplevel directory contains intermediate directories that contain the
  * stored elements, each of them in a file.
- * <p>
+ * <br>
  * The names of the intermediate directories are time based: the element
  * insertion time is used to create a 8-digits long hexadecimal number.
  * The granularity (see the constructor) is used to limit the number of new
  * directories. For instance, with a granularity of 60 (the default), new
  * directories will be created at most once per minute.
- * <p>
+ * <br>
  * Since there is usually a filesystem limit in the number of directories a
  * directory can hold, there is a trade-off to be made. If you want to support
  * many added elements per second, you should use a low granularity to keep
  * small directories. However, in this case, you will create many directories
  * and this will limit the total number of elements you can store.
- * <p>
+ * <br>
  * The elements themselves are stored in files (one per element) with a
  * 14-digits long hexadecimal name <i>SSSSSSSSMMMMMR</i> where:
  * <ul>
@@ -92,13 +92,13 @@ import static ch.cern.mig.posix.Posix.posix;
  * <li><i>MMMMM</i> represents the microsecond part of the time since the Epoch
  * <li><i>R</i> is a random hexadecimal digit used to reduce name collisions
  * </ul>
- * <p>
+ * <br>
  * A temporary element (being added to the queue) will have a <code>.tmp</code>
  * suffix.
- * <p>
+ * <br>
  * A locked element will have a hard link with the same name and the
  * <code>.lck</code> suffix.
- * <p>
+ * <br>
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
  *

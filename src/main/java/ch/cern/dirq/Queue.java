@@ -4,15 +4,15 @@ import java.io.IOException;
 
 /**
  * Queue - object oriented interface to a directory based queue.
- * <p>
+ * <br>
  * <h3>Description</h3> The goal of this module is to offer a queue system using
  * the underlying filesystem for storage, security and to prevent race
  * conditions via atomic operations. It focuses on simplicity, robustness and
  * scalability.
- * <p>
+ * <br>
  * This module allows multiple concurrent readers and writers to interact with
  * the same queue.
- * <p>
+ * <br>
  * Different implementations are available so readers and writers can be written
  * in different programming languages:
  * <ul>
@@ -23,18 +23,18 @@ import java.io.IOException;
  * <a href="https://github.com/cern-mig/python-dirq">
  * https://github.com/cern-mig/python-dirq</a>
  * </ul>
- * <p>
+ * <br>
  * There is no knowledge of priority within a queue. If multiple priorities are
  * needed, multiple queues should be used.
- * <p>
+ * <br>
  * <h3>Terminology</h3>
  * An element is something that contains one or more pieces of data. With
  * {@link ch.cern.dirq.QueueSimple} queues, an element can only contain one
  * binary string.
- * <p>
+ * <br>
  * A queue is a "best effort" FIFO (First In - First Out) collection of
  * elements.
- * <p>
+ * <br>
  * It is very hard to guarantee pure FIFO behavior with multiple writers using
  * the same queue. Consider for instance:
  * <ul>
@@ -44,44 +44,44 @@ import java.io.IOException;
  * <li>Writer1: the add() method returns
  * </ul>
  * Who should be first in the queue, Writer1 or Writer2?
- * <p>
+ * <br>
  * For simplicity, this implementation provides only "best effort" FIFO, i.e.
  * there is a very high probability that elements are processed in FIFO order
  * but this is not guaranteed. This is achieved by using a high-resolution timer
  * and having elements sorted by the time their final directory gets created.
- * <p>
+ * <br>
  * <h3>Locking</h3> Adding an element is not a problem because the add() method
  * is atomic.
- * <p>
+ * <br>
  * In order to support multiple reader processes interacting with the same
  * queue, advisory locking is used. Processes should first lock an element
  * before working with it. In fact, the get() and remove() methods report a
  * fatal error if they are called on unlocked elements.
- * <p>
+ * <br>
  * If the process that created the lock dies without unlocking the element, we
  * end up with a staled lock. The purge() method can be used to remove these
  * staled locks.
- * <p>
+ * <br>
  * An element can basically be in only one of two states: locked or unlocked.
- * <p>
+ * <br>
  * A newly created element is unlocked as a writer usually does not need to do
  * anything more with it.
- * <p>
+ * <br>
  * Iterators return all the elements, regardless of their states.
- * <p>
+ * <br>
  * There is no method to get an element state as this information is usually
  * useless since it may change at any time. Instead, programs should directly
  * try to lock elements to make sure they are indeed locked.
- * <p>
+ * <br>
  * <h3>Security</h3> There are no specific security mechanisms in this module.
- * <p>
+ * <br>
  * The elements are stored as plain files and directories. The filesystem
  * security features (owner, group, permissions, ACLs...) should be used to
  * adequately protect the data.
- * <p>
+ * <br>
  * By default, the process' umask is respected. See the class constructor
  * documentation if you want an other behavior.
- * <p>
+ * <br>
  * If multiple readers and writers with different uids are expected, the
  * easiest solution is to have all the files and directories inside the
  * toplevel directory world-writable (i.e. umask=0). Then, the permissions of
@@ -149,7 +149,7 @@ public interface Queue extends Iterable<String> {
 
     /**
      * Get the path of the given locked element.
-     * <p>
+     * <br>
      * This pathFile can be read but not removed, you must use the remove()
      * method for this purpose.
      *
@@ -209,7 +209,7 @@ public interface Queue extends Iterable<String> {
 
     /**
      * Return the number of elements in the queue.
-     * <p>
+     * <br>
      * Locked elements are counted but temporary elements are not.
      *
      * @return number of elements in the queue
@@ -220,7 +220,7 @@ public interface Queue extends Iterable<String> {
      * Purge the queue by removing unused intermediate directories, removing too
      * old temporary elements and unlocking too old locked elements (aka staled
      * locks); note: this can take a long time on queues with many elements.
-     * <p>
+     * <br>
      * It uses default value for maxTemp and maxLock
      *
      * @throws IOException if any file operation fails

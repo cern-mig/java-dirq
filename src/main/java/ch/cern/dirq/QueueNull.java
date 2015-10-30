@@ -7,20 +7,20 @@ import java.util.NoSuchElementException;
 
 /**
  * QueueNull - object oriented interface to a <i>null</i> directory based queue.
- * <p>
+ * <br>
  * The goal of this module is to offer a <i>null</i> queue system using the same
  * API as the other directory queue implementations. The queue will behave like
  * a black hole: added data will disappear immediately so the queue will
  * therefore always appear empty.
- * <p>
+ * <br>
  * This can be used for testing purposes or to discard data like one would do
  * on Unix by redirecting output to <code>/dev/null</code>.
- * <p>
+ * <br>
  * Please refer to {@link ch.cern.dirq.Queue} for general information about
  * directory queues.
- * <p>
+ * <br>
  * All the methods that add data will return an invalid element name.
- * <p>
+ * <br>
  * All the methods that work on elements will throw an
  * <code>UnsupportedOperationException</code> exception.
  *

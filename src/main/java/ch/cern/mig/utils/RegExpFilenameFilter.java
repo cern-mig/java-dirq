@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 /**
  * Filename filter which can be used to filter by regular expressions.
- * <p>
+ * <br>
  * It can work in two modes:
  * <ul>
  * <li>match mode (default): filename must match the regular expression
