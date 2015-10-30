@@ -106,7 +106,7 @@ public interface Queue extends Iterable<String> {
      * Add String data to the queue.
      *
      * @param data data to be added
-     * @return element name (as <directory_name>/<file_name>)
+     * @return element name (as <i>directory_name</i>/<i>file_name</i>)
      * @throws IOException if any file operation fails
      */
     String add(String data) throws IOException;
@@ -115,7 +115,7 @@ public interface Queue extends Iterable<String> {
      * Add byte array data to the queue.
      *
      * @param data data to be added
-     * @return element name (as <directory_name>/<file_name>)
+     * @return element name (as <i>directory_name</i>/<i>file_name</i>)
      * @throws IOException if any file operation fails
      */
     String add(byte[] data) throws IOException;
@@ -126,7 +126,7 @@ public interface Queue extends Iterable<String> {
      * will be moved to the queue.
      *
      * @param path path of the file to be added
-     * @return element name (as <directory_name>/<file_name>)
+     * @return element name (as <i>directory_name</i>/<i>file_name</i>)
      * @throws IOException if any file operation fails
      */
     String addPath(String path) throws IOException;
