@@ -6,27 +6,29 @@ import java.util.regex.Pattern;
 
 /**
  * Filename filter which can be used to filter by regular expressions.
- * <p/>
+ * <p>
  * It can work in two modes:
  * <ul>
  * <li>match mode (default): filename must match the regular expression
  * <li>find mode: regular expression occurs in the filename
  * </ul>
  *
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2015
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2015
  */
 public class RegExpFilenameFilter implements FilenameFilter {
-    private Pattern regexp = null;
-    private boolean matches = true;
+
+    private Pattern regexp;
+    private boolean matches;
 
     /**
      * Create a FilenameFilter given a Pattern in match mode.
      *
      * @param pattern the pattern to be used during filtering
      */
-    public RegExpFilenameFilter(Pattern pattern) {
-        this(pattern, true);
+    public RegExpFilenameFilter(final Pattern regexp) {
+        this(regexp, true);
     }
 
     /**
@@ -36,16 +38,17 @@ public class RegExpFilenameFilter implements FilenameFilter {
      * @param matches true if match mode should be applied, false if find mode
      *                should be used
      */
-    public RegExpFilenameFilter(Pattern pattern, boolean matches) {
-        this.regexp = pattern;
+    public RegExpFilenameFilter(final Pattern regexp, final boolean matches) {
+        this.regexp = regexp;
         this.matches = matches;
     }
 
-    public boolean accept(File arg0, String arg1) {
+    public boolean accept(final File dir, final String name) {
         if (matches) {
-            return regexp.matcher(arg1).matches();
+            return regexp.matcher(name).matches();
         } else {
-            return regexp.matcher(arg1).find();
+            return regexp.matcher(name).find();
         }
     }
+
 }
