@@ -1,10 +1,9 @@
 package ch.cern.dirq;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,9 +14,9 @@ import org.junit.Test;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
  * Copyright (C) CERN 2012-2015
  */
-
 public class QueueNullTest extends QueueTestBase {
-    private QueueNull qnObject = null;
+
+    private QueueNull qnObject;
 
     @Before
     public void setUp() {
@@ -29,8 +28,8 @@ public class QueueNullTest extends QueueTestBase {
      */
     @Test
     public void creation() {
-        assertEquals("NULL", qnObject.getId());
-        // assertEquals("NULL", qnObject.getPath());
+        Assert.assertEquals("NULL", qnObject.getId());
+        // Assert.assertEquals("NULL", qnObject.getPath());
     }
 
     /**
@@ -39,7 +38,7 @@ public class QueueNullTest extends QueueTestBase {
     @Test
     public void add() {
         String elem = qnObject.add("foo bar");
-        assertEquals("", elem);
+        Assert.assertEquals("", elem);
     }
 
     /**
@@ -52,9 +51,9 @@ public class QueueNullTest extends QueueTestBase {
         String name = tempPath() + File.separator + "foo bar";
         File file = new File(name);
         file.createNewFile();
-        assertTrue(new File(name).exists());
+        Assert.assertTrue(new File(name).exists());
         qnObject.addPath(name);
-        assertFalse(new File(name).exists());
+        Assert.assertFalse(new File(name).exists());
     }
 
     /**
@@ -95,9 +94,9 @@ public class QueueNullTest extends QueueTestBase {
     @Test
     public void count() {
         qnObject.add("foo bar 1");
-        assertEquals(0, qnObject.count());
+        Assert.assertEquals(0, qnObject.count());
         qnObject.add("foo bar 2");
-        assertEquals(0, qnObject.count());
+        Assert.assertEquals(0, qnObject.count());
     }
 
     /**
@@ -110,7 +109,7 @@ public class QueueNullTest extends QueueTestBase {
         for (String name : qnObject) {
             count++;
         }
-        assertEquals(0, count);
+        Assert.assertEquals(0, count);
     }
 
     /**
@@ -120,4 +119,5 @@ public class QueueNullTest extends QueueTestBase {
     public void purge() {
         qnObject.purge();
     }
+
 }

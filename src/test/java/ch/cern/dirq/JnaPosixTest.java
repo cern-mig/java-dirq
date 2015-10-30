@@ -132,8 +132,8 @@ public class JnaPosixTest {
         }
     }
 
-    private static boolean rmtree(String name) throws IOException {
-        return FileUtils.deleteDir(new File(name));
+    private static boolean rmtree(String name) {
+        return FileUtils.recursiveDelete(new File(name));
     }
 
     private static boolean mkfile(String name) throws IOException {

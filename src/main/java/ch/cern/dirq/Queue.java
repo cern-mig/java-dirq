@@ -100,7 +100,7 @@ public interface Queue extends Iterable<String> {
      *
      * @return unique queue identifier
      */
-    public String getId();
+    String getId();
 
     /**
      * Add String data to the queue.
@@ -109,7 +109,7 @@ public interface Queue extends Iterable<String> {
      * @return element name (as <directory_name>/<file_name>)
      * @throws IOException if any file operation fails
      */
-    public String add(String data) throws IOException;
+    String add(String data) throws IOException;
 
     /**
      * Add byte array data to the queue.
@@ -118,7 +118,7 @@ public interface Queue extends Iterable<String> {
      * @return element name (as <directory_name>/<file_name>)
      * @throws IOException if any file operation fails
      */
-    public String add(byte[] data) throws IOException;
+    String add(byte[] data) throws IOException;
 
     /**
      * Add the given file (identified by its path) to the queue and return the
@@ -129,7 +129,7 @@ public interface Queue extends Iterable<String> {
      * @return element name (as <directory_name>/<file_name>)
      * @throws IOException if any file operation fails
      */
-    public String addPath(String path) throws IOException;
+    String addPath(String path) throws IOException;
 
     /**
      * Get the given locked element as String data.
@@ -137,7 +137,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element to be retrieved
      * @return data associated with the given element
      */
-    public String get(String name);
+    String get(String name);
 
     /**
      * Get the given locked element as byte array data.
@@ -145,7 +145,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element to be retrieved
      * @return data associated with the given element
      */
-    public byte[] getAsByteArray(String name);
+    byte[] getAsByteArray(String name);
 
     /**
      * Get the path of the given locked element.
@@ -156,7 +156,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element
      * @return path of the element
      */
-    public String getPath(String name);
+    String getPath(String name);
 
     /**
      * Lock an element in permissive mode.
@@ -166,7 +166,7 @@ public interface Queue extends Iterable<String> {
      *         could not be locked
      * @throws IOException if any file operation fails
      */
-    public boolean lock(String name) throws IOException;
+    boolean lock(String name) throws IOException;
 
     /**
      * Lock an element.
@@ -177,7 +177,7 @@ public interface Queue extends Iterable<String> {
      *         could not be locked
      * @throws IOException if any file operation fails
      */
-    public boolean lock(String name, boolean permissive) throws IOException;
+    boolean lock(String name, boolean permissive) throws IOException;
 
     /**
      * Unlock an element in non-permissive mode.
@@ -187,7 +187,7 @@ public interface Queue extends Iterable<String> {
      *         could not be unlocked
      * @throws IOException if any file operation fails
      */
-    public boolean unlock(String name) throws IOException;
+    boolean unlock(String name) throws IOException;
 
     /**
      * Unlock an element.
@@ -198,14 +198,14 @@ public interface Queue extends Iterable<String> {
      *         could not be unlocked
      * @throws IOException if any file operation fails
      */
-    public boolean unlock(String name, boolean permissive) throws IOException;
+    boolean unlock(String name, boolean permissive) throws IOException;
 
     /**
      * Remove a locked element from the queue.
      *
      * @param name name of the element to be removed
      */
-    public void remove(String name);
+    void remove(String name);
 
     /**
      * Return the number of elements in the queue.
@@ -214,7 +214,7 @@ public interface Queue extends Iterable<String> {
      *
      * @return number of elements in the queue
      */
-    public int count();
+    int count();
 
     /**
      * Purge the queue by removing unused intermediate directories, removing too
@@ -225,7 +225,7 @@ public interface Queue extends Iterable<String> {
      *
      * @throws IOException if any file operation fails
      */
-    public void purge() throws IOException;
+    void purge() throws IOException;
 
     /**
      * Purge the queue by removing unused intermediate directories, removing too
@@ -237,7 +237,7 @@ public interface Queue extends Iterable<String> {
      *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fails
      */
-    public void purge(Integer maxLock) throws IOException;
+    void purge(Integer maxLock) throws IOException;
 
     /**
      * Purge the queue by removing unused intermediate directories, removing too
@@ -252,6 +252,6 @@ public interface Queue extends Iterable<String> {
      *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fails
      */
-    public void purge(Integer maxLock, Integer maxTemp) throws IOException;
+    void purge(Integer maxLock, Integer maxTemp) throws IOException;
 
 }

@@ -43,17 +43,17 @@ public class QueueNull implements Queue {
     }
 
     @Override
-    public String add(String data) {
+    public String add(final String data) {
         return "";
     }
 
     @Override
-    public String add(byte[] data) {
+    public String add(final byte[] data) {
         return "";
     }
 
     @Override
-    public String addPath(String path) throws IOException {
+    public String addPath(final String path) throws IOException {
         File file = new File(path);
         if (file.exists()) {
             if (!file.delete()) {
@@ -64,42 +64,42 @@ public class QueueNull implements Queue {
     }
 
     @Override
-    public String get(String name) {
+    public String get(final String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public byte[] getAsByteArray(String name) {
+    public byte[] getAsByteArray(final String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String getPath(String path) {
+    public String getPath(final String path) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean lock(String name) {
+    public boolean lock(final String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean lock(String name, boolean permissive) {
+    public boolean lock(final String name, final boolean permissive) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean unlock(String name) {
+    public boolean unlock(final String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean unlock(String name, boolean permissive) {
+    public boolean unlock(final String name, final boolean permissive) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove(String name) {
+    public void remove(final String name) {
         throw new UnsupportedOperationException();
     }
 
@@ -113,11 +113,11 @@ public class QueueNull implements Queue {
     }
 
     @Override
-    public void purge(Integer maxLock) {
+    public void purge(final Integer maxLock) {
     }
 
     @Override
-    public void purge(Integer maxLock, Integer maxTemp) {
+    public void purge(final Integer maxLock, final Integer maxTemp) {
     }
 
     /**

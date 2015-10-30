@@ -1,88 +1,138 @@
 package ch.cern.mig.utils;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- * @author Massimo Paladin - massimo.paladin@gmail.com <br />
- *         Copyright (C) CERN 2012-2015
+ * Convenient file related utilities.
+ *
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2015
  */
-public class FileUtils {
+public final class FileUtils {
 
-    public static void writeToFile(File path, byte[] data) throws IOException {
-        FileOutputStream newFileStream = new FileOutputStream(path);
-        BufferedOutputStream newFileOut = new BufferedOutputStream(
-                newFileStream);
-        newFileOut.write(data);
-        newFileOut.close();
-        newFileStream.close();
+    private FileUtils() {
     }
 
-    public static void writeToFile(String path, byte[] data) throws IOException {
-        writeToFile(new File(path), data);
+    /**
+     * Write a UTF-8 string to a file object.
+     */
+    public static void writeToFile(final File file, final String data)
+        throws IOException {
+        writeToFile(file.toPath(), data);
     }
 
-    public static void writeToFile(File path, String data) throws IOException {
-        FileWriter newFileStream = new FileWriter(path);
-        BufferedWriter newFileOut = new BufferedWriter(newFileStream);
-        newFileOut.write(data);
-        newFileOut.close();
-        newFileStream.close();
+    /**
+     * Write a UTF-8 string to a path string.
+     */
+    public static void writeToFile(final String path, final String data)
+        throws IOException {
+        writeToFile(Paths.get(path), data);
     }
 
-    public static void writeToFile(String path, String data) throws IOException {
-        writeToFile(new File(path), data);
+    /**
+     * Write a UTF-8 string to a path object.
+     */
+    public static void writeToFile(final Path path, final String data)
+        throws IOException {
+        writeToFile(path, data.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String readToString(String path) {
-        return readToString(new File(path));
+    /**
+     * Write bytes to a file object.
+     */
+    public static void writeToFile(final File file, final byte[] data)
+        throws IOException {
+        writeToFile(file.toPath(), data);
     }
 
-    public static String readToString(File tmp) {
-        String content = "";
-        try {
-            content = new Scanner(tmp, "UTF-8").useDelimiter("\\A").next();
-        } catch (FileNotFoundException e) {
+    /**
+     * Write bytes to a path string.
+     */
+    public static void writeToFile(final String path, final byte[] data)
+        throws IOException {
+        writeToFile(Paths.get(path), data);
+    }
+
+    /**
+     * Write bytes to a path object.
+     */
+    public static void writeToFile(final Path path, final byte[] data)
+        throws IOException {
+        Files.write(path, data);
+    }
+
+    /**
+     * Read a UTF-8 string from a file object, returning null on error.
+     */
+    public static String readToString(final File file) {
+        return readToString(file.toPath());
+    }
+
+    /**
+     * Read a UTF-8 string from a path string, returning null on error.
+     */
+    public static String readToString(final String path) {
+        return readToString(Paths.get(path));
+    }
+
+    /**
+     * Read a UTF-8 string from a path object, returning null on error.
+     */
+    public static String readToString(final Path path) {
+        byte[] bytes = readToByteArray(path);
+        if (bytes == null) {
             return null;
         }
-        return content;
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
-    public static byte[] readToByteArray(String path) {
-        return readToByteArray(new File(path));
+    /**
+     * Read all the bytes from a file object, returning null on error.
+     */
+    public static byte[] readToByteArray(final File file) {
+        return readToByteArray(file.toPath());
     }
 
-    public static byte[] readToByteArray(File file) {
-        byte content[] = null;
+    /**
+     * Read all the bytes from a path string, returning null on error.
+     */
+    public static byte[] readToByteArray(final String path) {
+        return readToByteArray(Paths.get(path));
+    }
+
+    /**
+     * Read all the bytes from a path object, returning null on error.
+     */
+    public static byte[] readToByteArray(final Path path) {
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            content = new byte[(int) file.length()];
-            fileInputStream.read(content);
-        } catch (FileNotFoundException e) {
-            return null;
-        } catch (IOException ioe) {
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
             return null;
         }
-        return content;
     }
 
-    public static boolean deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
+    /**
+     * Recursively delete the given path, stopping on the first error.
+     */
+    public static boolean recursiveDelete(final File path) {
+        if (path.isDirectory()) {
+            String[] children = path.list();
+            if (children == null) {
+                return false;
+            }
             for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDir(new File(dir, children[i]));
-                if (!success) {
+                if (!recursiveDelete(new File(path, children[i]))) {
                     return false;
                 }
             }
         }
-        return dir.delete();
+        return path.delete();
     }
+
 }

@@ -46,7 +46,7 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject = new QueueSimple(multiPath);
         assertEquals(multiPath, qsObject.getQueuePath());
         assertTrue(new File(multiPath).isDirectory());
-        FileUtils.deleteDir(new File(multiPath));
+        FileUtils.recursiveDelete(new File(multiPath));
     }
 
     /**
