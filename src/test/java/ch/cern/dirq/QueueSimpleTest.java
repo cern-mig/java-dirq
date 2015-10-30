@@ -19,10 +19,11 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.apache.commons.lang3.StringUtils;
+
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.posix.Timeval;
 import ch.cern.mig.utils.FileUtils;
-import ch.cern.mig.utils.StringUtils;
 
 public class QueueSimpleTest extends QueueTestBase {
     private String qsPath = null;
@@ -291,7 +292,7 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.add("foo");
         assertEquals(1, qsObject.count());
         String[] list = qsFile.list();
-        assertEquals("foo: " + StringUtils.join(list), 1, list.length);
+        assertEquals("foo: " + StringUtils.join(list, ", "), 1, list.length);
         qsObject.add("bar");
         assertEquals("foo + bar count", 2, qsObject.count());
         qsObject.purge();
@@ -303,7 +304,7 @@ public class QueueSimpleTest extends QueueTestBase {
         assertEquals(1, qsObject.count());
         qsObject.purge();
         list = qsFile.list();
-        assertEquals("1 foo or bar: " + StringUtils.join(list), 1, list.length);
+        assertEquals("1 foo or bar: " + StringUtils.join(list, ", "), 1, list.length);
 
         qsObject.add("abc");
         assertEquals("abc + 1 count", 2, qsObject.count());
