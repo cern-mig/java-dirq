@@ -113,11 +113,11 @@ public class QueueNull implements Queue {
     }
 
     @Override
-    public void purge(final Integer maxLock) {
+    public void purge(final int maxLock) {
     }
 
     @Override
-    public void purge(final Integer maxLock, final Integer maxTemp) {
+    public void purge(final int maxLock, final int maxTemp) {
     }
 
     /**

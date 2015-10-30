@@ -237,7 +237,7 @@ public interface Queue extends Iterable<String> {
      *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fails
      */
-    void purge(Integer maxLock) throws IOException;
+    void purge(int maxLock) throws IOException;
 
     /**
      * Purge the queue by removing unused intermediate directories, removing too
@@ -252,6 +252,6 @@ public interface Queue extends Iterable<String> {
      *                if set to null, the object's default value will be used
      * @throws IOException if any file operation fails
      */
-    void purge(Integer maxLock, Integer maxTemp) throws IOException;
+    void purge(int maxLock, int maxTemp) throws IOException;
 
 }

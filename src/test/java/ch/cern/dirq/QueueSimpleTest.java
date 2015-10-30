@@ -8,14 +8,13 @@
 
 package ch.cern.dirq;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,8 +43,8 @@ public class QueueSimpleTest extends QueueTestBase {
     public void multiLevelDirectory() throws IOException {
         String multiPath = tempPath() + "/three/ormore//levels";
         qsObject = new QueueSimple(multiPath);
-        assertEquals(multiPath, qsObject.getQueuePath());
-        assertTrue(new File(multiPath).isDirectory());
+        Assert.assertEquals(multiPath, qsObject.getQueuePath());
+        Assert.assertTrue(new File(multiPath).isDirectory());
         FileUtils.recursiveDelete(new File(multiPath));
     }
 
@@ -56,8 +55,8 @@ public class QueueSimpleTest extends QueueTestBase {
      */
     @Test
     public void creation() throws IOException {
-        assertEquals(qsPath, qsObject.getQueuePath());
-        assertTrue(new File(qsPath).isDirectory());
+        Assert.assertEquals(qsPath, qsObject.getQueuePath());
+        Assert.assertTrue(new File(qsPath).isDirectory());
     }
 
     /**
@@ -68,7 +67,7 @@ public class QueueSimpleTest extends QueueTestBase {
     @Test
     public void addDir() throws IOException {
         String dirname = qsObject.addDir();
-        assertEquals(8, dirname.length());
+        Assert.assertEquals(8, dirname.length());
     }
 
     /**
@@ -80,13 +79,13 @@ public class QueueSimpleTest extends QueueTestBase {
     public void add() throws IOException {
         String data = "abc";
         String elem = qsObject.add(data);
-        assertTrue(new File(qsPath + File.separator + elem).exists());
-        assertEquals(data,
+        Assert.assertTrue(new File(qsPath + File.separator + elem).exists());
+        Assert.assertEquals(data,
                 FileUtils.readToString(qsPath + File.separator + elem));
         byte[] binaryData = data.getBytes();
         elem = qsObject.add(binaryData);
-        assertTrue(new File(qsPath + File.separator + elem).exists());
-        assertEquals(data,
+        Assert.assertTrue(new File(qsPath + File.separator + elem).exists());
+        Assert.assertEquals(data,
                 FileUtils.readToString(qsPath + File.separator + elem));
     }
 
@@ -104,12 +103,12 @@ public class QueueSimpleTest extends QueueTestBase {
         File tmpFile = new File(tmpName);
         tmpFile.createNewFile();
         FileUtils.writeToFile(tmpFile, data);
-        assertTrue(new File(tmpName).exists());
+        Assert.assertTrue(new File(tmpName).exists());
         String newName = qsObject.addPath(tmpName);
-        assertFalse(new File(tmpName).exists());
-        assertTrue(new File(qsPath + File.separator + newName).exists());
-        // assertEquals(1, new File(tmpDir).listFiles().length);
-        assertEquals(data,
+        Assert.assertFalse(new File(tmpName).exists());
+        Assert.assertTrue(new File(qsPath + File.separator + newName).exists());
+        // Assert.assertEquals(1, new File(tmpDir).listFiles().length);
+        Assert.assertEquals(data,
                 FileUtils.readToString(qsPath + File.separator + newName));
     }
 
@@ -124,8 +123,8 @@ public class QueueSimpleTest extends QueueTestBase {
         String elemName = "foobar";
         String elemPath = qsPath + File.separator + elemName;
         FileUtils.writeToFile(elemPath, data);
-        assertTrue(qsObject.lock(elemName));
-        assertTrue(new File(elemPath + QueueSimple.LOCKED_SUFFIX).exists());
+        Assert.assertTrue(qsObject.lock(elemName));
+        Assert.assertTrue(new File(elemPath + QueueSimple.LOCKED_SUFFIX).exists());
         qsObject.unlock(elemName);
     }
 
@@ -139,7 +138,7 @@ public class QueueSimpleTest extends QueueTestBase {
         String data = "abc";
         String elem = qsObject.add(data);
         qsObject.lock(elem);
-        assertEquals(data, qsObject.get(elem));
+        Assert.assertEquals(data, qsObject.get(elem));
     }
 
     /**
@@ -152,7 +151,7 @@ public class QueueSimpleTest extends QueueTestBase {
         byte[] dataBytes = "abc".getBytes();
         String elem = qsObject.add(dataBytes);
         qsObject.lock(elem);
-        assertTrue(Arrays.equals(dataBytes, qsObject.getAsByteArray(elem)));
+        Assert.assertTrue(Arrays.equals(dataBytes, qsObject.getAsByteArray(elem)));
     }
 
     /**
@@ -162,9 +161,9 @@ public class QueueSimpleTest extends QueueTestBase {
     @Test
     public void count() throws IOException {
         qsObject.add("foo bar 1");
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         qsObject.add("foo bar 2");
-        assertEquals(2, qsObject.count());
+        Assert.assertEquals(2, qsObject.count());
     }
 
     /**
@@ -180,7 +179,7 @@ public class QueueSimpleTest extends QueueTestBase {
         for (String name : qsObject) {
             count++;
         }
-        assertEquals(2, count);
+        Assert.assertEquals(2, count);
     }
 
     /**
@@ -192,10 +191,10 @@ public class QueueSimpleTest extends QueueTestBase {
     public void junkCount() throws IOException {
         String data = "abc";
         qsObject.add(data);
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         String inDir = new File(qsPath).listFiles()[0].getPath();
         new File(inDir + File.separator + "foo.bar").createNewFile();
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
     }
 
     /**
@@ -209,12 +208,12 @@ public class QueueSimpleTest extends QueueTestBase {
         for (int i = 0; i < 5; i++) {
             qsObject.add(data);
         }
-        assertEquals(5, qsObject.count());
+        Assert.assertEquals(5, qsObject.count());
         for (String element : qsObject) {
             qsObject.lock(element);
             qsObject.remove(element);
         }
-        assertEquals(0, qsObject.count());
+        Assert.assertEquals(0, qsObject.count());
     }
 
     /**
@@ -227,7 +226,7 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.purge();
         qsObject.purge(0, 0);
         qsObject.add("abc");
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         qsObject.purge();
     }
 
@@ -240,18 +239,18 @@ public class QueueSimpleTest extends QueueTestBase {
     @Test
     public void purgeOneDir() throws IOException, InterruptedException {
         qsObject.add("abc");
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         String elem = qsObject.iterator().next();
         qsObject.lock(elem);
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         String elemPathLock = qsObject.getQueuePath() + File.separator + elem
                 + QueueSimple.LOCKED_SUFFIX;
-        assertTrue(new File(elemPathLock).exists());
+        Assert.assertTrue(new File(elemPathLock).exists());
         Thread.sleep(2000);
         qsObject.purge(1);
-        assertFalse(new File(elemPathLock).exists());
-        assertEquals(1, qsObject.count());
-        assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
+        Assert.assertFalse(new File(elemPathLock).exists());
+        Assert.assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
     }
 
     /**
@@ -263,22 +262,22 @@ public class QueueSimpleTest extends QueueTestBase {
     @Test
     public void purgeOneDir2() throws IOException, InterruptedException {
         qsObject.add("abc");
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         String elem = qsObject.iterator().next();
         String elemPath = qsObject.getQueuePath() + File.separator + elem;
         String elemPathLock = elemPath + QueueSimple.LOCKED_SUFFIX;
         qsObject.lock(elem);
-        assertEquals(1, qsObject.count());
-        assertTrue(new File(elemPathLock).exists());
+        Assert.assertEquals(1, qsObject.count());
+        Assert.assertTrue(new File(elemPathLock).exists());
         new File(elemPath).delete();
-        assertFalse(new File(elemPath).exists());
-        assertTrue(new File(elemPathLock).exists());
-        assertEquals(0, qsObject.count());
+        Assert.assertFalse(new File(elemPath).exists());
+        Assert.assertTrue(new File(elemPathLock).exists());
+        Assert.assertEquals(0, qsObject.count());
         Thread.sleep(2000);
         qsObject.purge(1);
-        assertFalse(new File(elemPathLock).exists());
-        assertEquals(0, qsObject.count());
-        assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
+        Assert.assertFalse(new File(elemPathLock).exists());
+        Assert.assertEquals(0, qsObject.count());
+        Assert.assertEquals(1, new File(qsObject.getQueuePath()).listFiles().length);
     }
 
     /**
@@ -290,24 +289,24 @@ public class QueueSimpleTest extends QueueTestBase {
     public void purgeMultiDir() throws IOException {
         File qsFile = new File(qsObject.getQueuePath());
         qsObject.add("foo");
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         String[] list = qsFile.list();
-        assertEquals("foo: " + StringUtils.join(list, ", "), 1, list.length);
+        Assert.assertEquals("foo: " + StringUtils.join(list, ", "), 1, list.length);
         qsObject.add("bar");
-        assertEquals("foo + bar count", 2, qsObject.count());
+        Assert.assertEquals("foo + bar count", 2, qsObject.count());
         qsObject.purge();
-        assertEquals("still foo + bar count", 2, qsObject.count());
+        Assert.assertEquals("still foo + bar count", 2, qsObject.count());
 
         String elem = qsObject.iterator().next();
         qsObject.lock(elem);
         qsObject.remove(elem);
-        assertEquals(1, qsObject.count());
+        Assert.assertEquals(1, qsObject.count());
         qsObject.purge();
         list = qsFile.list();
-        assertEquals("1 foo or bar: " + StringUtils.join(list, ", "), 1, list.length);
+        Assert.assertEquals("1 foo or bar: " + StringUtils.join(list, ", "), 1, list.length);
 
         qsObject.add("abc");
-        assertEquals("abc + 1 count", 2, qsObject.count());
+        Assert.assertEquals("abc + 1 count", 2, qsObject.count());
         for (String element : qsObject) {
             qsObject.lock(element);
         }
@@ -315,7 +314,7 @@ public class QueueSimpleTest extends QueueTestBase {
         String elem1 = it.next();
         String lockPath1 = qsObject.getQueuePath() + File.separator + elem1
                 + QueueSimple.LOCKED_SUFFIX;
-        assertTrue(new File(lockPath1).exists());
+        Assert.assertTrue(new File(lockPath1).exists());
         long[] backInTime = new long[]{
                 (System.currentTimeMillis() / 1000) - 25, 0};
         Timeval[] timeval = (Timeval[]) new Timeval().toArray(2);
@@ -323,13 +322,13 @@ public class QueueSimpleTest extends QueueTestBase {
         timeval[1].setTime(backInTime);
         Posix.posix.utimes(lockPath1, timeval);
         qsObject.purge(10);
-        assertFalse(new File(lockPath1).exists());
+        Assert.assertFalse(new File(lockPath1).exists());
 
-        assertEquals("2 left count", 2, qsObject.count());
+        Assert.assertEquals("2 left count", 2, qsObject.count());
         String elem2 = it.next();
         String lockPath2 = qsObject.getQueuePath() + File.separator + elem2
                 + QueueSimple.LOCKED_SUFFIX;
-        assertTrue(new File(lockPath2).exists());
+        Assert.assertTrue(new File(lockPath2).exists());
     }
 
 }
