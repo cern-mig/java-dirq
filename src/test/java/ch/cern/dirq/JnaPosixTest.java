@@ -3,12 +3,12 @@ package ch.cern.dirq;
 import java.io.File;
 import java.io.IOException;
 
+import com.sun.jna.LastErrorException;
+
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 import org.junit.Test;
-
-import com.sun.jna.LastErrorException;
+import org.junit.rules.TemporaryFolder;
 
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
@@ -29,15 +29,15 @@ public class JnaPosixTest {
     private static final boolean OK = true;
     private static final boolean FAIL = false;
 
-    private String tmpath(String name) {
+    private String tmpath(final String name) {
         return tempDir.getRoot().getPath() + File.separator + name;
     }
 
-    private String tmpath(String parent, String name) {
+    private String tmpath(final String parent, final String name) {
         return tempDir.getRoot().getPath() + File.separator + parent + File.separator + name;
     }
 
-    private static Exception mkdir(String path) {
+    private static Exception mkdir(final String path) {
         try {
             Posix.posix.mkdir(path);
         } catch (LastErrorException e) {
@@ -46,7 +46,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception rmdir(String path) {
+    private static Exception rmdir(final String path) {
         try {
             Posix.posix.rmdir(path);
         } catch (LastErrorException e) {
@@ -55,7 +55,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception opendir(String path) {
+    private static Exception opendir(final String path) {
         try {
             Posix.posix.opendir(path);
         } catch (LastErrorException e) {
@@ -64,7 +64,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception open(String path) {
+    private static Exception open(final String path) {
         try {
             Posix.posix.open(path);
         } catch (LastErrorException e) {
@@ -73,7 +73,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception rename(String from, String to) {
+    private static Exception rename(final String from, final String to) {
         try {
             Posix.posix.rename(from, to);
         } catch (LastErrorException e) {
@@ -82,7 +82,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception link(String from, String to) {
+    private static Exception link(final String from, final String to) {
         try {
             Posix.posix.link(from, to);
         } catch (LastErrorException e) {
@@ -91,7 +91,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception unlink(String path) {
+    private static Exception unlink(final String path) {
         try {
             Posix.posix.unlink(path);
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception stat(String path) {
+    private static Exception stat(final String path) {
         try {
             Posix.posix.stat(path);
         } catch (LastErrorException e) {
@@ -109,7 +109,7 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static Exception lstat(String path) {
+    private static Exception lstat(final String path) {
         try {
             Posix.posix.lstat(path);
         } catch (LastErrorException e) {
@@ -118,29 +118,31 @@ public class JnaPosixTest {
         return null;
     }
 
-    private static void report(boolean ok, Exception exc, String test) {
+    private static void report(final boolean ok, final Exception exc, final String test) {
         if (ok) {
-            if (exc != null)
+            if (exc != null) {
                 throw new AssertionError("Got error: " + exc.getMessage());
+            }
             println(test + ": ok");
         } else {
-            if (exc == null)
+            if (exc == null) {
                 throw new AssertionError("Error expected");
+            }
             println(test + ": " + exc.getMessage());
             // if (exc instanceof LastErrorException)
             // println("" + ((LastErrorException)exc).getErrorCode());
         }
     }
 
-    private static boolean rmtree(String name) {
+    private static boolean rmtree(final String name) {
         return FileUtils.recursiveDelete(new File(name));
     }
 
-    private static boolean mkfile(String name) throws IOException {
+    private static boolean mkfile(final String name) throws IOException {
         return new File(name).createNewFile();
     }
 
-    private static void println(String string) {
+    private static void println(final String string) {
         System.out.println(string);
     }
 
@@ -266,7 +268,7 @@ public class JnaPosixTest {
         mkdir(tmpath("d2"));
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         println(LINE);
         println(LINE);
 
@@ -292,4 +294,5 @@ public class JnaPosixTest {
         testLstat();
         testRename();
     }
+
 }

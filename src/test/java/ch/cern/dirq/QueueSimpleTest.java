@@ -12,21 +12,27 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Random;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.commons.lang3.StringUtils;
-
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.posix.Timeval;
 import ch.cern.mig.utils.FileUtils;
 
+/**
+ * Unit tests for {@link ch.cern.dirq.QueueSimple}.
+ *
+ * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
+ * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
+ * Copyright (C) CERN 2012-2015
+ */
 public class QueueSimpleTest extends QueueTestBase {
-    private String qsPath = null;
-    private QueueSimple qsObject = null;
+    private String qsPath;
+    private QueueSimple qsObject;
 
     @Before
     public void setUp() throws IOException {
