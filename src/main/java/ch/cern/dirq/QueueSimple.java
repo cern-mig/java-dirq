@@ -18,7 +18,6 @@ import ch.cern.mig.posix.BasePosix;
 import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
-import ch.cern.mig.utils.RegExpFilenameFilter;
 
 import static ch.cern.mig.posix.Posix.posix;
 
@@ -43,7 +42,7 @@ import static ch.cern.mig.posix.Posix.posix;
  *
  * // sample consumer
  * dirq = QueueSimple("/tmp/test");
- * for (String name:dirq) {
+ * for (String name: dirq) {
  *     if (! dirq.lock(name)) {
  *         continue;
  *     }
@@ -115,8 +114,13 @@ public class QueueSimple implements Queue {
         Pattern.compile("^[0-9a-f]{8}$");
     public static final Pattern ELEMENT_REGEXP =
         Pattern.compile("^[0-9a-f]{14}$");
-    public static final Pattern DOTNAME_REGEXP =
-        Pattern.compile("\\.");
+
+    private static final FileFilter INTERMEDIATE_DIRECTORY_FF =
+        new IntermediateDirectoryFF();
+    private static final FileFilter ELEMENT_FF =
+        new ElementFF();
+    private static final FileFilter DOT_ELEMENT_FF =
+        new DotElementFF();
 
     private static boolean WARN = false;
     private static Random rand = new Random();
@@ -276,7 +280,7 @@ public class QueueSimple implements Queue {
 
         // create top level directory
         String tmpPath = "";
-        for (String subDir : dir.getPath().split("/+")) {
+        for (String subDir: dir.getPath().split("/+")) {
             tmpPath += subDir + File.separator;
             if (new File(tmpPath).exists()) {
                 continue;
@@ -518,30 +522,19 @@ public class QueueSimple implements Queue {
         posix.unlink(queuePath + File.separator + name + LOCKED_SUFFIX);
     }
 
-    /**
-     * Used to filter directories while listing files.
-     */
-    private class DirFilter implements FileFilter {
-        public boolean accept(final File file) {
-            return file.isDirectory();
-        }
-    }
-
     @Override
     public int count() {
+        // get the list of intermediate directories
+        File[] idirs = new File(queuePath).listFiles(INTERMEDIATE_DIRECTORY_FF);
+        if (idirs == null) {
+            return 0;
+        }
+        // count the elements in each intermediate directory
         int count = 0;
-        // get list of intermediate directories
-        File[] elements = new File(queuePath).listFiles(new DirFilter());
-        // count elements in sub-directories
-        for (File element : elements) {
-            File[] inElements = element.listFiles();
-            if (inElements == null) {
-                continue;
-            }
-            for (File inElement : inElements) {
-                if (ELEMENT_REGEXP.matcher(inElement.getName()).matches()) {
-                    count += 1;
-                }
+        for (File idir: idirs) {
+            File[] elts = idir.listFiles(ELEMENT_FF);
+            if (elts != null) {
+                count += elts.length;
             }
         }
         return count;
@@ -563,7 +556,10 @@ public class QueueSimple implements Queue {
         long oldtemp = 0;
         long oldlock = 0;
         // get the list of intermediate directories
-        File[] elements = new File(queuePath).listFiles(new DirFilter());
+        File[] idirs = new File(queuePath).listFiles(INTERMEDIATE_DIRECTORY_FF);
+        if (idirs == null) {
+            return;
+        }
         if (maxLock > 0) {
             oldlock = now - maxLock;
         }
@@ -571,54 +567,100 @@ public class QueueSimple implements Queue {
             oldtemp = now - maxTemp;
         }
         if (maxTemp > 0 || maxLock > 0) {
-            for (File element : elements) {
-                File[] inElements = element.listFiles(new RegExpFilenameFilter(
-                        DOTNAME_REGEXP, false));
-                if (inElements == null) {
+            for (File idir: idirs) {
+                File[] elts = idir.listFiles(DOT_ELEMENT_FF);
+                if (elts == null) {
                     continue;
                 }
-                for (File inElement : inElements) {
+                for (File elt: elts) {
                     FileStat stat = null;
                     try {
-                        stat = posix.stat(inElement.getPath());
+                        stat = posix.stat(elt.getPath());
                     } catch (LastErrorException e) {
                         if (Posix.getErrorCode(e) == BasePosix.ENOENT) {
                             continue;
                         }
                         throw new IOException(String.format(
-                                "cannot stat(%s): %s", inElement,
-                                e.getMessage()));
+                            "cannot stat(%s): %s", elt, e.getMessage()));
                     }
-                    if (inElement.getName().endsWith(TEMPORARY_SUFFIX)
+                    if (elt.getName().endsWith(TEMPORARY_SUFFIX)
                         && stat.mtime() >= oldtemp) {
                         continue;
                     }
-                    if (inElement.getName().endsWith(LOCKED_SUFFIX)
+                    if (elt.getName().endsWith(LOCKED_SUFFIX)
                         && stat.mtime() >= oldlock) {
                         continue;
                     }
-                    warn("removing too old volatile file: " + inElement);
+                    warn("removing too old volatile file: " + elt);
                     try {
-                        posix.unlink(inElement.getPath());
+                        posix.unlink(elt.getPath());
                     } catch (LastErrorException e) {
                         if (Posix.getErrorCode(e) == BasePosix.ENOENT) {
                             continue;
                         }
                         throw new IOException(String.format(
-                                "cannot unlink(%s): %s", inElement,
-                                e.getMessage()));
+                            "cannot unlink(%s): %s", elt, e.getMessage()));
                     }
                 }
             }
         }
         // try to purge all but the last intermediate directory
-        if (elements.length > 1) {
-            Arrays.sort(elements);
-            for (int c = 0; c < elements.length - 1; c++) {
-                if (elements[c].exists() && elements[c].listFiles().length == 0) {
-                    specialRmdir(elements[c].getPath());
+        if (idirs.length > 1) {
+            Arrays.sort(idirs);
+            for (int i = 0; i < idirs.length - 1; i++) {
+                File idir = idirs[i];
+                if (idir.exists()) {
+                    File[] elts = idir.listFiles();
+                    if (elts != null && elts.length == 0) {
+                        specialRmdir(idir.getPath());
+                    }
                 }
             }
+        }
+    }
+
+    /**
+     * FileFilter class to iterate over intermediate directories.
+     */
+    private static class IntermediateDirectoryFF implements FileFilter {
+        public boolean accept(final File file) {
+            if (!file.isDirectory()) {
+                return false;
+            }
+            if (!DIRECTORY_REGEXP.matcher(file.getName()).matches()) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * FileFilter class to iterate over (normal) elements.
+     */
+    private static class ElementFF implements FileFilter {
+        public boolean accept(final File file) {
+            if (file.isDirectory()) {
+                return false;
+            }
+            if (!ELEMENT_REGEXP.matcher(file.getName()).matches()) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * FileFilter class to iterate over temporary or locked elements.
+     */
+    private static class DotElementFF implements FileFilter {
+        public boolean accept(final File file) {
+            if (file.isDirectory()) {
+                return false;
+            }
+            if (!file.getName().contains(".")) {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -635,26 +677,28 @@ public class QueueSimple implements Queue {
      */
     private static class QueueSimpleIterator implements Iterator<String> {
 
-        private QueueSimple iteratedQueue = null;
-        private List<String> dirs = new ArrayList<String>();
-        private List<String> elts = new ArrayList<String>();
+        private QueueSimple itQueue = null;
+        private List<String> itDirs = new ArrayList<String>();
+        private List<String> itElts = new ArrayList<String>();
 
+        /**
+         * Helper method to build the list of elements to iterate over.
+         */
         private boolean buildElements() {
             boolean result = false;
-            while (!result && !dirs.isEmpty()) {
-                String dir = dirs.remove(0);
-                File[] content = new File(iteratedQueue.queuePath + File.separator
-                        + dir).listFiles(new RegExpFilenameFilter(
-                        ELEMENT_REGEXP));
-                if (content == null || content.length == 0) {
+            while (!result && !itDirs.isEmpty()) {
+                String iname = itDirs.remove(0);
+                File idir = new File(itQueue.getQueuePath() + File.separator + iname);
+                File[] elts = idir.listFiles(ELEMENT_FF);
+                if (elts == null || elts.length == 0) {
                     continue;
                 } else {
                     result = true;
                 }
-                Arrays.sort(content);
-                for (File element : content) {
-                    elts.add(dir + File.separator + element.getName());
+                for (File elt: elts) {
+                    itElts.add(iname + File.separator + elt.getName());
                 }
+                Collections.sort(itElts);
             }
             return result;
         }
@@ -665,13 +709,15 @@ public class QueueSimple implements Queue {
          * @param queue queue to be iterated on
          */
         public QueueSimpleIterator(final QueueSimple queue) {
-            iteratedQueue = queue;
-            File[] content = new File(iteratedQueue.getQueuePath())
-                    .listFiles(new RegExpFilenameFilter(DIRECTORY_REGEXP));
-            for (File dir : content) {
-                dirs.add(dir.getName());
+            itQueue = queue;
+            File[] idirs = new File(itQueue.getQueuePath())
+                .listFiles(INTERMEDIATE_DIRECTORY_FF);
+            if (idirs != null) {
+                for (File idir: idirs) {
+                    itDirs.add(idir.getName());
+                }
+                Collections.sort(itDirs);
             }
-            Collections.sort(dirs);
         }
 
         /**
@@ -679,7 +725,7 @@ public class QueueSimple implements Queue {
          */
         @Override
         public boolean hasNext() {
-            if (!elts.isEmpty()) {
+            if (!itElts.isEmpty()) {
                 return true;
             }
             if (buildElements()) {
@@ -693,11 +739,11 @@ public class QueueSimple implements Queue {
          */
         @Override
         public String next() {
-            if (!elts.isEmpty()) {
-                return elts.remove(0);
+            if (!itElts.isEmpty()) {
+                return itElts.remove(0);
             }
             if (buildElements()) {
-                return elts.remove(0);
+                return itElts.remove(0);
             }
             throw new NoSuchElementException();
         }
