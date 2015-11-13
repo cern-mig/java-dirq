@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import com.sun.jna.LastErrorException;
 
 import ch.cern.mig.posix.BasePosix;
-import ch.cern.mig.posix.FileStat;
 import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 

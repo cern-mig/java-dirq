@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.cern.mig.posix.Posix;
-import ch.cern.mig.posix.Timeval;
 import ch.cern.mig.utils.FileUtils;
 
 /**
