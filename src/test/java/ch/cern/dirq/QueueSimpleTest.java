@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.apache.commons.lang3.StringUtils;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -296,7 +294,7 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.add("foo");
         Assert.assertEquals(1, qsObject.count());
         String[] list = qsFile.list();
-        Assert.assertEquals("foo: " + StringUtils.join(list, ", "), 1, list.length);
+        Assert.assertEquals("foo list", 1, list.length);
         qsObject.add("bar");
         Assert.assertEquals("foo + bar count", 2, qsObject.count());
         qsObject.purge();
@@ -308,7 +306,7 @@ public class QueueSimpleTest extends QueueTestBase {
         Assert.assertEquals(1, qsObject.count());
         qsObject.purge();
         list = qsFile.list();
-        Assert.assertEquals("1 foo or bar: " + StringUtils.join(list, ", "), 1, list.length);
+        Assert.assertEquals("foo or bar list", 1, list.length);
 
         qsObject.add("abc");
         Assert.assertEquals("abc + 1 count", 2, qsObject.count());
