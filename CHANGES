@@ -1,5 +1,11 @@
 Change log for java-dirq:
 
+???	???
+	* [lc] reduced reliance on the posix package
+
+1.6	Tue Nov  3 2015
+	* [lc] major code cleanup
+
 1.5	Tue Mar 31 2015
         * [lc] fixed NPE in QueueSimple's count() method
 

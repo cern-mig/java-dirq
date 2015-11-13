@@ -319,22 +319,19 @@ public class QueueSimpleTest extends QueueTestBase {
         Iterator<String> it = qsObject.iterator();
         String elem1 = it.next();
         String lockPath1 = qsObject.getQueuePath() + File.separator + elem1
-                + QueueSimple.LOCKED_SUFFIX;
-        Assert.assertTrue(new File(lockPath1).exists());
-        long[] backInTime = new long[]{
-                (System.currentTimeMillis() / 1000) - 25, 0};
-        Timeval[] timeval = (Timeval[]) new Timeval().toArray(2);
-        timeval[0].setTime(backInTime);
-        timeval[1].setTime(backInTime);
-        Posix.posix.utimes(lockPath1, timeval);
+            + QueueSimple.LOCKED_SUFFIX;
+        File lockFile1 = new File(lockPath1);
+        Assert.assertTrue(lockFile1.exists());
+        Assert.assertTrue(lockFile1.setLastModified(System.currentTimeMillis() - 25000));
         qsObject.purge(10);
-        Assert.assertFalse(new File(lockPath1).exists());
+        Assert.assertFalse(lockFile1.exists());
 
         Assert.assertEquals("2 left count", 2, qsObject.count());
         String elem2 = it.next();
         String lockPath2 = qsObject.getQueuePath() + File.separator + elem2
-                + QueueSimple.LOCKED_SUFFIX;
-        Assert.assertTrue(new File(lockPath2).exists());
+            + QueueSimple.LOCKED_SUFFIX;
+        File lockFile2 = new File(lockPath2);
+        Assert.assertTrue(lockFile2.exists());
     }
 
 }

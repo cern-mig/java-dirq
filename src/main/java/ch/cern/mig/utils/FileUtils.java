@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Convenient file related utilities.
@@ -17,6 +18,31 @@ import java.nio.file.Paths;
 public final class FileUtils {
 
     private FileUtils() {
+    }
+
+    /**
+     * Return a unique string identifying the given file object.
+     */
+    public static String fileKey(final File file)
+        throws IOException {
+        return fileKey(file.toPath());
+    }
+
+    /**
+     * Return a unique string identifying the given path string.
+     */
+    public static String fileKey(final String path)
+        throws IOException {
+        return fileKey(Paths.get(path));
+    }
+
+    /**
+     * Return a unique string identifying the given path object.
+     */
+    public static String fileKey(final Path path)
+        throws IOException {
+        BasicFileAttributes attrs = Files.readAttributes(path, BasicFileAttributes.class);
+        return attrs.fileKey().toString();
     }
 
     /**

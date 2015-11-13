@@ -289,13 +289,7 @@ public class QueueSimple implements Queue {
         }
 
         // store the queue unique identifier
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            id = queuePath;
-        } else {
-            // set id to stat->st_dev + stat->st_ino
-            FileStat stat = posix.stat(queuePath);
-            id = "" + stat.dev() + ":" + stat.ino();
-        }
+        this.id = FileUtils.fileKey(queuePath);
     }
 
     private static String name(final int r) {
@@ -483,17 +477,15 @@ public class QueueSimple implements Queue {
             throw new IOException(String.format("cannot link(%s, %s): %s",
                                                 file, lock, e.getMessage()));
         }
-        try {
-            posix.utimes(file.getPath(), null);
-        } catch (LastErrorException e) {
-            if (permissive && Posix.getErrorCode(e) == BasePosix.ENOENT) {
-                posix.unlink(lock.getPath());
-                return false;
-            }
-            throw new IOException(String.format("cannot utime(%s, null): %s",
-                                                file, e.getMessage()));
+        if (file.setLastModified(System.currentTimeMillis())) {
+            return true;
         }
-        return true;
+        if (permissive && !file.exists()) {
+            // RACE: the file probably has been removed by someone else
+            posix.unlink(lock.getPath());
+            return false;
+        }
+        throw new IOException(String.format("cannot touch(%s)", file));
     }
 
     @Override
@@ -552,7 +544,7 @@ public class QueueSimple implements Queue {
 
     @Override
     public void purge(final int maxLock, final int maxTemp) throws IOException {
-        long now = System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis();
         long oldtemp = 0;
         long oldlock = 0;
         // get the list of intermediate directories
@@ -561,10 +553,10 @@ public class QueueSimple implements Queue {
             return;
         }
         if (maxLock > 0) {
-            oldlock = now - maxLock;
+            oldlock = now - maxLock * 1000L;
         }
         if (maxTemp > 0) {
-            oldtemp = now - maxTemp;
+            oldtemp = now - maxTemp * 1000L;
         }
         if (maxTemp > 0 || maxLock > 0) {
             for (File idir: idirs) {
@@ -573,22 +565,18 @@ public class QueueSimple implements Queue {
                     continue;
                 }
                 for (File elt: elts) {
-                    FileStat stat = null;
-                    try {
-                        stat = posix.stat(elt.getPath());
-                    } catch (LastErrorException e) {
-                        if (Posix.getErrorCode(e) == BasePosix.ENOENT) {
+                    long mtime = elt.lastModified();
+                    if (mtime == 0L) {
+                        if (elt.exists()) {
+                            throw new IOException(String.format("cannot stat(%s)", elt));
+                        } else {
                             continue;
                         }
-                        throw new IOException(String.format(
-                            "cannot stat(%s): %s", elt, e.getMessage()));
                     }
-                    if (elt.getName().endsWith(TEMPORARY_SUFFIX)
-                        && stat.mtime() >= oldtemp) {
+                    if (elt.getName().endsWith(TEMPORARY_SUFFIX) && mtime >= oldtemp) {
                         continue;
                     }
-                    if (elt.getName().endsWith(LOCKED_SUFFIX)
-                        && stat.mtime() >= oldlock) {
+                    if (elt.getName().endsWith(LOCKED_SUFFIX) && mtime >= oldlock) {
                         continue;
                     }
                     warn("removing too old volatile file: " + elt);
