@@ -441,14 +441,22 @@ public class QueueSimple implements Queue {
 
     @Override
     public String get(final String name) {
-        return FileUtils.readToString(queuePath + File.separator + name
-                + LOCKED_SUFFIX);
+        try {
+            return FileUtils.readToString(queuePath + File.separator + name
+                                          + LOCKED_SUFFIX);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override
     public byte[] getAsByteArray(final String name) {
-        return FileUtils.readToByteArray(queuePath + File.separator + name
-                + LOCKED_SUFFIX);
+        try {
+            return FileUtils.readToByteArray(queuePath + File.separator + name
+                                             + LOCKED_SUFFIX);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override

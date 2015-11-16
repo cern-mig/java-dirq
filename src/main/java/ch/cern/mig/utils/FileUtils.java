@@ -94,53 +94,52 @@ public final class FileUtils {
     }
 
     /**
-     * Read a UTF-8 string from a file object, returning null on error.
+     * Read a UTF-8 string from a file object.
      */
-    public static String readToString(final File file) {
+    public static String readToString(final File file)
+        throws IOException {
         return readToString(file.toPath());
     }
 
     /**
-     * Read a UTF-8 string from a path string, returning null on error.
+     * Read a UTF-8 string from a path string.
      */
-    public static String readToString(final String path) {
+    public static String readToString(final String path)
+        throws IOException {
         return readToString(Paths.get(path));
     }
 
     /**
-     * Read a UTF-8 string from a path object, returning null on error.
+     * Read a UTF-8 string from a path object.
      */
-    public static String readToString(final Path path) {
+    public static String readToString(final Path path)
+        throws IOException {
         byte[] bytes = readToByteArray(path);
-        if (bytes == null) {
-            return null;
-        }
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
     /**
-     * Read all the bytes from a file object, returning null on error.
+     * Read all the bytes from a file object.
      */
-    public static byte[] readToByteArray(final File file) {
+    public static byte[] readToByteArray(final File file)
+        throws IOException {
         return readToByteArray(file.toPath());
     }
 
     /**
-     * Read all the bytes from a path string, returning null on error.
+     * Read all the bytes from a path string.
      */
-    public static byte[] readToByteArray(final String path) {
+    public static byte[] readToByteArray(final String path)
+        throws IOException {
         return readToByteArray(Paths.get(path));
     }
 
     /**
-     * Read all the bytes from a path object, returning null on error.
+     * Read all the bytes from a path object.
      */
-    public static byte[] readToByteArray(final Path path) {
-        try {
-            return Files.readAllBytes(path);
-        } catch (IOException e) {
-            return null;
-        }
+    public static byte[] readToByteArray(final Path path)
+        throws IOException {
+        return Files.readAllBytes(path);
     }
 
     /**
