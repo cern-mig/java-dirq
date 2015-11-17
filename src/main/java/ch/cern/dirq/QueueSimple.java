@@ -198,6 +198,11 @@ public class QueueSimple implements Queue {
     //
 
     @Override
+    public String getQueuePath() {
+        return queuePath;
+    }
+
+    @Override
     public String getId() {
         return id;
     }
@@ -397,15 +402,6 @@ public class QueueSimple implements Queue {
     //
     // QueueSimple specific methods
     //
-
-    /**
-     * Get the queue path.
-     *
-     * @return queue path
-     */
-    public String getQueuePath() {
-        return queuePath;
-    }
 
     /**
      * Get the granularity.

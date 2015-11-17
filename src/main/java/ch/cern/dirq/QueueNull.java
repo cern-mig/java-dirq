@@ -38,6 +38,11 @@ public class QueueNull implements Queue {
     }
 
     @Override
+    public String getQueuePath() {
+        return null;
+    }
+
+    @Override
     public String getId() {
         return "NULL";
     }

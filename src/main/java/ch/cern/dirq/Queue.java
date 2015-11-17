@@ -96,6 +96,13 @@ import java.io.IOException;
 public interface Queue extends Iterable<String> {
 
     /**
+     * Return the path of the queue.
+     *
+     * @return queue path
+     */
+    String getQueuePath();
+
+    /**
      * Return a unique identifier for the queue.
      *
      * @return unique queue identifier
