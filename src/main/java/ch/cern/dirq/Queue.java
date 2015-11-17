@@ -204,8 +204,9 @@ public interface Queue extends Iterable<String> {
      * Remove a locked element from the queue.
      *
      * @param name name of the element to be removed
+     * @throws IOException if any file operation fails
      */
-    void remove(String name);
+    void remove(String name) throws IOException;
 
     /**
      * Return the number of elements in the queue.

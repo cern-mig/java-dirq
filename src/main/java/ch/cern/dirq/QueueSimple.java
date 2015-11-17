@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -350,12 +352,7 @@ public class QueueSimple implements Queue {
                     continue;
                 }
             }
-            try {
-                posix.unlink(tmp.getPath());
-            } catch (LastErrorException e) {
-                throw new IOException(String.format("cannot unlink(%s): %s",
-                        tmp, e.getMessage()));
-            }
+            Files.delete(tmp.toPath());
             break;
         }
         return dir + File.separator + name;
@@ -479,7 +476,7 @@ public class QueueSimple implements Queue {
         }
         if (permissive && !file.exists()) {
             // RACE: the file probably has been removed by someone else
-            posix.unlink(lock.getPath());
+            lock.delete();
             return false;
         }
         throw new IOException(String.format("cannot touch(%s)", file));
@@ -492,23 +489,18 @@ public class QueueSimple implements Queue {
 
     @Override
     public boolean unlock(final String name, final boolean permissive) throws IOException {
-        String lock = queuePath + File.separator + name + LOCKED_SUFFIX;
-        try {
-            posix.unlink(lock);
-        } catch (LastErrorException e) {
-            if (permissive && Posix.getErrorCode(e) == BasePosix.ENOENT) {
-                return false;
-            }
-            throw new IOException(String.format("cannot unlink(%s): %s", lock,
-                                                e.getMessage()));
+        Path lock = Paths.get(queuePath + File.separator + name + LOCKED_SUFFIX);
+        if (permissive) {
+            return Files.deleteIfExists(lock);
         }
+        Files.delete(lock);
         return true;
     }
 
     @Override
-    public void remove(final String name) {
-        posix.unlink(queuePath + File.separator + name);
-        posix.unlink(queuePath + File.separator + name + LOCKED_SUFFIX);
+    public void remove(final String name) throws IOException {
+        Files.delete(Paths.get(queuePath + File.separator + name));
+        Files.delete(Paths.get(queuePath + File.separator + name + LOCKED_SUFFIX));
     }
 
     @Override
@@ -577,15 +569,7 @@ public class QueueSimple implements Queue {
                         continue;
                     }
                     warn("removing too old volatile file: " + elt);
-                    try {
-                        posix.unlink(elt.getPath());
-                    } catch (LastErrorException e) {
-                        if (Posix.getErrorCode(e) == BasePosix.ENOENT) {
-                            continue;
-                        }
-                        throw new IOException(String.format(
-                            "cannot unlink(%s): %s", elt, e.getMessage()));
-                    }
+                    Files.deleteIfExists(elt.toPath());
                 }
             }
         }
