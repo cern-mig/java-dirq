@@ -56,17 +56,6 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test addDir.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void addDir() throws IOException {
-        String dirname = qsObject.addDir();
-        Assert.assertEquals(8, dirname.length());
-    }
-
-    /**
      * Test add.
      *
      * @throws IOException
@@ -173,6 +162,10 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.add("foo bar 2");
         int count = 0;
         for (String name : qsObject) {
+            String[] parts = name.split(File.separator);
+            Assert.assertEquals(2, parts.length);
+            Assert.assertTrue(QueueSimple.DIRECTORY_REGEXP.matcher(parts[0]).matches());
+            Assert.assertTrue(QueueSimple.ELEMENT_REGEXP.matcher(parts[1]).matches());
             count++;
         }
         Assert.assertEquals(2, count);

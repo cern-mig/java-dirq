@@ -532,7 +532,7 @@ public class QueueSimple implements Queue {
         return String.format("%013x%01x", System.nanoTime() / 1000, r);
     }
 
-    protected String addDir() {
+    private String addDir() {
         long now = System.currentTimeMillis() / 1000;
         if (granularity > 0) {
             now -= now % granularity;
