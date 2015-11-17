@@ -7,6 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Convenient file related utilities.
@@ -18,6 +23,46 @@ import java.nio.file.attribute.BasicFileAttributes;
 public final class FileUtils {
 
     private FileUtils() {
+    }
+
+    // helper for permToFileAttrs()
+    private static boolean isSet(int mode, int bit) {
+        return (mode & bit) == bit;
+    }
+
+    /**
+     * Create NIO file attributes from numerical POSIX permissions.
+     */
+    public static FileAttribute<?> fileAttributesFromInteger(final int perm) {
+        Set<PosixFilePermission> result = EnumSet.noneOf(PosixFilePermission.class);
+        if (isSet(perm, 0400)) {
+            result.add(PosixFilePermission.OWNER_READ);
+        }
+        if (isSet(perm, 0200)) {
+            result.add(PosixFilePermission.OWNER_WRITE);
+        }
+        if (isSet(perm, 0100)) {
+            result.add(PosixFilePermission.OWNER_EXECUTE);
+        }
+        if (isSet(perm, 040)) {
+            result.add(PosixFilePermission.GROUP_READ);
+        }
+        if (isSet(perm, 020)) {
+            result.add(PosixFilePermission.GROUP_WRITE);
+        }
+        if (isSet(perm, 010)) {
+            result.add(PosixFilePermission.GROUP_EXECUTE);
+        }
+        if (isSet(perm, 04)) {
+            result.add(PosixFilePermission.OTHERS_READ);
+        }
+        if (isSet(perm, 02)) {
+            result.add(PosixFilePermission.OTHERS_WRITE);
+        }
+        if (isSet(perm, 01)) {
+            result.add(PosixFilePermission.OTHERS_EXECUTE);
+        }
+        return PosixFilePermissions.asFileAttribute(result);
     }
 
     /**

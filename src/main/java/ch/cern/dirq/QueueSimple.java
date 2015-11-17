@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -137,6 +138,8 @@ public class QueueSimple implements Queue {
     private int defaultMaxTemp = 300;
     private int rndHex = 0; /* set in constructor */
 
+    private FileAttribute<?> directoryFileAttributes = null;
+
     private void warn(final String string) {
         if (!WARN) {
             return;
@@ -195,6 +198,13 @@ public class QueueSimple implements Queue {
      * @return the object itself
      */
     public QueueSimple setUmask(final int umask) {
+        if (umask == -1) {
+            directoryFileAttributes = null;
+        } else if (0 <= umask && umask <= 0777) {
+            directoryFileAttributes = FileUtils.fileAttributesFromInteger(0777 - umask);
+        } else {
+            throw new IllegalArgumentException("invalid umask: " + umask);
+        }
         this.umask = umask;
         return this;
     }
@@ -266,59 +276,46 @@ public class QueueSimple implements Queue {
      * @throws IOException if any file operation fails
      */
     public QueueSimple(final String queuePath) throws IOException {
+        this(queuePath, -1);
+    }
 
+    /**
+     * Constructor creating a simple directory queue from the given path and umask.
+     *
+     * @param queuePath path of the directory queue
+     * @param umask umask of the directory queue
+     * @throws IOException if any file operation fails
+     */
+    public QueueSimple(final String queuePath, final int umask) throws IOException {
         this.queuePath = queuePath;
-        this.umask = posix.umask();
-        this.rndHex = rand.nextInt(0x10);
-
-        // check if directory exists
-        File dir = new File(queuePath);
-        if (dir.exists() && !dir.isDirectory()) {
-            throw new IllegalArgumentException("not a directory: " + queuePath);
-        }
-
-        // check umask option
-        if (umask >= 512) {
+        if (umask == -1) {
+            directoryFileAttributes = null;
+        } else if (0 <= umask && umask <= 0777) {
+            directoryFileAttributes = FileUtils.fileAttributesFromInteger(0777 - umask);
+        } else {
             throw new IllegalArgumentException("invalid umask: " + umask);
         }
-
-        // create top level directory
-        String tmpPath = "";
-        for (String subDir: dir.getPath().split("/+")) {
-            tmpPath += subDir + File.separator;
-            if (new File(tmpPath).exists()) {
-                continue;
+        this.umask = umask;
+        this.rndHex = rand.nextInt(0x10);
+        // check if the directory exists, create it otherwise
+        File dir = new File(queuePath);
+        if (dir.exists()) {
+            if (!dir.isDirectory()) {
+                throw new IllegalArgumentException("not a directory: " + queuePath);
             }
-            specialMkdir(tmpPath, umask);
+        } else {
+            if (directoryFileAttributes == null) {
+                Files.createDirectories(dir.toPath());
+            } else {
+                Files.createDirectories(dir.toPath(), directoryFileAttributes);
+            }
         }
-
-        // store the queue unique identifier
-        this.id = FileUtils.fileKey(queuePath);
+        // we can now set the unique id from the path
+        this.id = FileUtils.fileKey(dir);
     }
 
     private static String name(final int r) {
         return String.format("%013x%01x", System.nanoTime() / 1000, r);
-    }
-
-    private static boolean specialMkdir(final String path) throws IOException {
-        return specialMkdir(path, posix.umask());
-    }
-
-    private static boolean specialMkdir(final String path, final int umask)
-            throws IOException {
-        try {
-            posix.mkdir(path, 0777 - umask);
-        } catch (LastErrorException e) {
-            if (Posix.getErrorCode(e) == BasePosix.EEXIST
-                && !new File(path).isFile()) {
-                return false;
-            } else if (Posix.getErrorCode(e) == BasePosix.EISDIR) {
-                return false;
-            }
-            throw new IOException(String.format("cannot mkdir(%s): %s", path,
-                    e.getMessage()));
-        }
-        return true;
     }
 
     @Override
@@ -396,16 +393,21 @@ public class QueueSimple implements Queue {
     }
 
     private File getNewFile(final String dir) throws IOException {
+        File dirFile = new File(queuePath + File.separator + dir);
         File newFile = null;
         while (true) {
             String name = name(rndHex);
             newFile = fileCreate(queuePath + File.separator + dir
-                    + File.separator + name + TEMPORARY_SUFFIX);
+                                 + File.separator + name + TEMPORARY_SUFFIX);
             if (newFile != null) {
                 break;
             }
-            if (!new File(queuePath + File.separator + dir).exists()) {
-                specialMkdir(queuePath + File.separator + dir);
+            if (!dirFile.exists()) {
+                if (directoryFileAttributes == null) {
+                    Files.createDirectories(dirFile.toPath());
+                } else {
+                    Files.createDirectories(dirFile.toPath(), directoryFileAttributes);
+                }
             }
         }
         return newFile;
@@ -414,7 +416,12 @@ public class QueueSimple implements Queue {
     @Override
     public String addPath(final String path) throws IOException {
         String dir = addDir();
-        specialMkdir(this.queuePath + File.separator + dir, umask);
+        Path dirPath = Paths.get(this.queuePath + File.separator + dir);
+        if (directoryFileAttributes == null) {
+            Files.createDirectories(dirPath);
+        } else {
+            Files.createDirectories(dirPath, directoryFileAttributes);
+        }
         return addPathHelper(new File(path), dir);
     }
 

@@ -2,6 +2,8 @@ package ch.cern.dirq;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -9,7 +11,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
 
 /**
@@ -93,7 +94,7 @@ public class QueueSimpleTest extends QueueTestBase {
     public void addPath() throws IOException {
         String data = "abc";
         String tmpDir = qsPath + File.separator + "elems";
-        Posix.posix.mkdir(tmpDir);
+        Files.createDirectories(Paths.get(tmpDir));
         String tmpName = tmpDir + File.separator + "elem.tmp";
         File tmpFile = new File(tmpName);
         tmpFile.createNewFile();
