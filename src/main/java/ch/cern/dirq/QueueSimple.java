@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -130,15 +131,16 @@ public class QueueSimple implements Queue {
     private static boolean WARN = false;
     private static Random rand = new Random();
 
-    private String id = null;
-    private String queuePath = null;
     private int granularity = 60;
-    private int umask = 0; /* set in constructor */
+    private int umask = -1;
     private int defaultMaxLock = 600;
     private int defaultMaxTemp = 300;
-    private int rndHex = 0; /* set in constructor */
+    private int rndHex = 0;
 
-    private FileAttribute<?> directoryFileAttributes = null;
+    private String id = null;
+    private String queuePath = null;
+    private FileAttribute<?> directoryAttributes = null;
+    private FileAttribute<?> fileAttributes = null;
 
     private void warn(final String string) {
         if (!WARN) {
@@ -199,9 +201,11 @@ public class QueueSimple implements Queue {
      */
     public QueueSimple setUmask(final int umask) {
         if (umask == -1) {
-            directoryFileAttributes = null;
+            directoryAttributes = null;
+            fileAttributes = null;
         } else if (0 <= umask && umask <= 0777) {
-            directoryFileAttributes = FileUtils.fileAttributesFromInteger(0777 - umask);
+            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
+            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
         } else {
             throw new IllegalArgumentException("invalid umask: " + umask);
         }
@@ -289,9 +293,11 @@ public class QueueSimple implements Queue {
     public QueueSimple(final String queuePath, final int umask) throws IOException {
         this.queuePath = queuePath;
         if (umask == -1) {
-            directoryFileAttributes = null;
+            directoryAttributes = null;
+            fileAttributes = null;
         } else if (0 <= umask && umask <= 0777) {
-            directoryFileAttributes = FileUtils.fileAttributesFromInteger(0777 - umask);
+            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
+            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
         } else {
             throw new IllegalArgumentException("invalid umask: " + umask);
         }
@@ -304,10 +310,10 @@ public class QueueSimple implements Queue {
                 throw new IllegalArgumentException("not a directory: " + queuePath);
             }
         } else {
-            if (directoryFileAttributes == null) {
+            if (directoryAttributes == null) {
                 Files.createDirectories(dir.toPath());
             } else {
-                Files.createDirectories(dir.toPath(), directoryFileAttributes);
+                Files.createDirectories(dir.toPath(), directoryAttributes);
             }
         }
         // we can now set the unique id from the path
@@ -355,21 +361,23 @@ public class QueueSimple implements Queue {
         return dir + File.separator + name;
     }
 
+    // FIXME: to return a Path?
     private File fileCreate(final String path) throws IOException {
-        File file = null;
+        Path newPath;
         try {
-            file = posix.open(path);
-        } catch (LastErrorException e) {
-            // RACE: someone else may have created the file (EEXIST)
-            // RACE: the containing directory may be mising (ENOENT)
-            if (Posix.getErrorCode(e) != BasePosix.EEXIST
-                && Posix.getErrorCode(e) != BasePosix.ENOENT) {
-                throw new IOException(String.format("cannot create %s: %s",
-                                                    path, e.getMessage()));
+            if (fileAttributes == null) {
+                newPath = Files.createFile(Paths.get(path));
+            } else {
+                newPath = Files.createFile(Paths.get(path), fileAttributes);
             }
+        } catch (NoSuchFileException e) {
+            // RACE: the containing directory may be mising (ENOENT)
+            return null;
+        } catch (FileAlreadyExistsException e) {
+            // RACE: someone else may have created the file (EEXIST)
             return null;
         }
-        return file;
+        return newPath.toFile();
     }
 
     private File addData(final String dir, final byte[] data) throws IOException {
@@ -394,19 +402,19 @@ public class QueueSimple implements Queue {
 
     private File getNewFile(final String dir) throws IOException {
         File dirFile = new File(queuePath + File.separator + dir);
+        String dirPrefix = queuePath + File.separator + dir + File.separator;
         File newFile = null;
         while (true) {
             String name = name(rndHex);
-            newFile = fileCreate(queuePath + File.separator + dir
-                                 + File.separator + name + TEMPORARY_SUFFIX);
+            newFile = fileCreate(dirPrefix + name + TEMPORARY_SUFFIX);
             if (newFile != null) {
                 break;
             }
             if (!dirFile.exists()) {
-                if (directoryFileAttributes == null) {
+                if (directoryAttributes == null) {
                     Files.createDirectories(dirFile.toPath());
                 } else {
-                    Files.createDirectories(dirFile.toPath(), directoryFileAttributes);
+                    Files.createDirectories(dirFile.toPath(), directoryAttributes);
                 }
             }
         }
@@ -417,10 +425,10 @@ public class QueueSimple implements Queue {
     public String addPath(final String path) throws IOException {
         String dir = addDir();
         Path dirPath = Paths.get(this.queuePath + File.separator + dir);
-        if (directoryFileAttributes == null) {
+        if (directoryAttributes == null) {
             Files.createDirectories(dirPath);
         } else {
-            Files.createDirectories(dirPath, directoryFileAttributes);
+            Files.createDirectories(dirPath, directoryAttributes);
         }
         return addPathHelper(new File(path), dir);
     }

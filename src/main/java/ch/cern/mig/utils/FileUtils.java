@@ -25,9 +25,9 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    // helper for permToFileAttrs()
-    private static boolean isSet(int mode, int bit) {
-        return (mode & bit) == bit;
+    // helper for fileAttributesFromInteger()
+    private static boolean isSet(final int perm, final int bit) {
+        return (perm & bit) == bit;
     }
 
     /**
