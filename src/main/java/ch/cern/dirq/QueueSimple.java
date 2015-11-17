@@ -3,6 +3,9 @@ package ch.cern.dirq;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -316,19 +319,6 @@ public class QueueSimple implements Queue {
         return true;
     }
 
-    private boolean specialRmdir(final String path) throws IOException {
-        try {
-            posix.rmdir(path);
-        } catch (LastErrorException e) {
-            if (!(Posix.getErrorCode(e) == BasePosix.ENOENT)) {
-                throw new IOException(String.format("cannot rmdir(%s): %s",
-                                                    path, e.getMessage()));
-            }
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String add(final String data) throws IOException {
         String dir = addDir();
@@ -607,7 +597,11 @@ public class QueueSimple implements Queue {
                 if (idir.exists()) {
                     File[] elts = idir.listFiles();
                     if (elts != null && elts.length == 0) {
-                        specialRmdir(idir.getPath());
+                        try {
+                            Files.delete(idir.toPath());
+                        } catch (DirectoryNotEmptyException | NoSuchFileException e) {
+                            // RACE: the directory has been reused or purged
+                        }
                     }
                 }
             }
