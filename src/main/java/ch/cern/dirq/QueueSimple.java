@@ -137,7 +137,7 @@ public class QueueSimple implements Queue {
     private int defaultMaxTemp = 300;
     private int rndHex = 0;
 
-    private String id = null;
+    private String queueId = null;
     private String queuePath = null;
     private FileAttribute<?> directoryAttributes = null;
     private FileAttribute<?> fileAttributes = null;
@@ -175,7 +175,7 @@ public class QueueSimple implements Queue {
             throw new IllegalArgumentException("invalid umask: " + umask);
         }
         this.umask = umask;
-        this.rndHex = rand.nextInt(0x10);
+        rndHex = rand.nextInt(0x10);
         // check if the directory exists, create it otherwise
         File dir = new File(queuePath);
         if (dir.exists()) {
@@ -190,7 +190,7 @@ public class QueueSimple implements Queue {
             }
         }
         // we can now set the unique id from the path
-        this.id = FileUtils.fileKey(dir);
+        queueId = FileUtils.fileKey(dir);
     }
 
     //
@@ -204,7 +204,7 @@ public class QueueSimple implements Queue {
 
     @Override
     public String getId() {
-        return id;
+        return queueId;
     }
 
     @Override
@@ -224,7 +224,7 @@ public class QueueSimple implements Queue {
     @Override
     public String addPath(final String path) throws IOException {
         String dir = addDir();
-        Path dirPath = Paths.get(this.queuePath + File.separator + dir);
+        Path dirPath = Paths.get(queuePath + File.separator + dir);
         if (directoryAttributes == null) {
             Files.createDirectories(dirPath);
         } else {
@@ -415,11 +415,11 @@ public class QueueSimple implements Queue {
     /**
      * Set the granularity.
      *
-     * @param granularity to be set (in seconds)
+     * @param value granularity to be set (in seconds)
      * @return the object itself
      */
-    public QueueSimple setGranularity(final int granularity) {
-        this.granularity = granularity;
+    public QueueSimple setGranularity(final int value) {
+        granularity = value;
         return this;
     }
 
@@ -435,20 +435,20 @@ public class QueueSimple implements Queue {
     /**
      * Set the umask.
      *
-     * @param umask to be set (numerical)
+     * @param value umask to be set (numerical)
      * @return the object itself
      */
-    public QueueSimple setUmask(final int umask) {
-        if (umask == -1) {
+    public QueueSimple setUmask(final int value) {
+        if (value == -1) {
             directoryAttributes = null;
             fileAttributes = null;
-        } else if (0 <= umask && umask <= 0777) {
-            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
-            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
+        } else if (0 <= value && value <= 0777) {
+            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~value);
+            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~value);
         } else {
-            throw new IllegalArgumentException("invalid umask: " + umask);
+            throw new IllegalArgumentException("invalid umask: " + value);
         }
-        this.umask = umask;
+        umask = value;
         return this;
     }
 
@@ -464,11 +464,11 @@ public class QueueSimple implements Queue {
     /**
      * Set the default maxLock for purge().
      *
-     * @param maxLock maximum lock time (in seconds)
+     * @param value maximum lock time (in seconds)
      * @return the object itself
      */
-    public QueueSimple setMaxLock(final int maxLock) {
-        this.defaultMaxLock = maxLock;
+    public QueueSimple setMaxLock(final int value) {
+        defaultMaxLock = value;
         return this;
     }
 
@@ -484,11 +484,11 @@ public class QueueSimple implements Queue {
     /**
      * Set the default maxTemp for purge().
      *
-     * @param maxTemp maximum temporary time (in seconds)
+     * @param value maximum temporary time (in seconds)
      * @return the object itself
      */
-    public QueueSimple setMaxTemp(final int maxTemp) {
-        this.defaultMaxTemp = maxTemp;
+    public QueueSimple setMaxTemp(final int value) {
+        defaultMaxTemp = value;
         return this;
     }
 
@@ -504,11 +504,11 @@ public class QueueSimple implements Queue {
     /**
      * Set the random hexadecimal digit.
      *
-     * @param rndHex hexadecimal digit to be set (numerical)
+     * @param value hexadecimal digit to be set (numerical)
      * @return the object itself
      */
-    public QueueSimple setRndHex(final int rndHex) {
-        this.rndHex = rndHex % 16;
+    public QueueSimple setRndHex(final int value) {
+        rndHex = value % 16;
         return this;
     }
 
