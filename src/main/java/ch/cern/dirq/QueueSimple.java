@@ -142,136 +142,9 @@ public class QueueSimple implements Queue {
     private FileAttribute<?> directoryAttributes = null;
     private FileAttribute<?> fileAttributes = null;
 
-    private void warn(final String string) {
-        if (!WARN) {
-            return;
-        }
-        System.out.println(string);
-        System.out.flush();
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Get the queue path.
-     *
-     * @return queue path
-     */
-    public String getQueuePath() {
-        return queuePath;
-    }
-
-    /**
-     * Get the granularity.
-     *
-     * @return granularity (in seconds)
-     */
-    public int getGranularity() {
-        return granularity;
-    }
-
-    /**
-     * Set the granularity.
-     *
-     * @param granularity to be set (in seconds)
-     * @return the object itself
-     */
-    public QueueSimple setGranularity(final int granularity) {
-        this.granularity = granularity;
-        return this;
-    }
-
-    /**
-     * Get the umask.
-     *
-     * @return numerical umask
-     */
-    public int getUmask() {
-        return umask;
-    }
-
-    /**
-     * Set the umask.
-     *
-     * @param umask to be set (numerical)
-     * @return the object itself
-     */
-    public QueueSimple setUmask(final int umask) {
-        if (umask == -1) {
-            directoryAttributes = null;
-            fileAttributes = null;
-        } else if (0 <= umask && umask <= 0777) {
-            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
-            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
-        } else {
-            throw new IllegalArgumentException("invalid umask: " + umask);
-        }
-        this.umask = umask;
-        return this;
-    }
-
-    /**
-     * Get the default maxLock for purge().
-     *
-     * @return maximum lock time (in seconds)
-     */
-    public int getMaxLock() {
-        return defaultMaxLock;
-    }
-
-    /**
-     * Set the default maxLock for purge().
-     *
-     * @param maxLock maximum lock time (in seconds)
-     * @return the object itself
-     */
-    public QueueSimple setMaxLock(final int maxLock) {
-        this.defaultMaxLock = maxLock;
-        return this;
-    }
-
-    /**
-     * Get the default maxTemp for purge().
-     *
-     * @return maximum temporary time (in seconds)
-     */
-    public int getMaxTemp() {
-        return defaultMaxTemp;
-    }
-
-    /**
-     * Set the default maxTemp for purge().
-     *
-     * @param maxTemp maximum temporary time (in seconds)
-     * @return the object itself
-     */
-    public QueueSimple setMaxTemp(final int maxTemp) {
-        this.defaultMaxTemp = maxTemp;
-        return this;
-    }
-
-    /**
-     * Get the random hexadecimal digit.
-     *
-     * @return numerical hexadecimal digit
-     */
-    public int getRndHex() {
-        return rndHex;
-    }
-
-    /**
-     * Set the random hexadecimal digit.
-     *
-     * @param rndHex hexadecimal digit to be set (numerical)
-     * @return the object itself
-     */
-    public QueueSimple setRndHex(final int rndHex) {
-        this.rndHex = rndHex % 16;
-        return this;
-    }
+    //
+    // constructors
+    //
 
     /**
      * Constructor creating a simple directory queue from the given path.
@@ -320,8 +193,13 @@ public class QueueSimple implements Queue {
         this.id = FileUtils.fileKey(dir);
     }
 
-    private static String name(final int r) {
-        return String.format("%013x%01x", System.nanoTime() / 1000, r);
+    //
+    // Queue interface implementation
+    //
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -338,89 +216,6 @@ public class QueueSimple implements Queue {
         return addPathHelper(tmp, dir);
     }
 
-    private String addPathHelper(final File tmp, final String dir) throws IOException {
-        String name = null;
-        while (true) {
-            name = name(rndHex);
-            File newFile = new File(queuePath + File.separator + dir
-                    + File.separator + name);
-            try {
-                posix.link(tmp.getPath(), newFile.getPath());
-            } catch (LastErrorException e) {
-                if (Posix.getErrorCode(e) != BasePosix.EEXIST) {
-                    throw new IOException(String.format(
-                            "cannot link(%s, %s): %s", tmp, newFile,
-                            e.getMessage()));
-                } else {
-                    continue;
-                }
-            }
-            Files.delete(tmp.toPath());
-            break;
-        }
-        return dir + File.separator + name;
-    }
-
-    // FIXME: to return a Path?
-    private File fileCreate(final String path) throws IOException {
-        Path newPath;
-        try {
-            if (fileAttributes == null) {
-                newPath = Files.createFile(Paths.get(path));
-            } else {
-                newPath = Files.createFile(Paths.get(path), fileAttributes);
-            }
-        } catch (NoSuchFileException e) {
-            // RACE: the containing directory may be mising (ENOENT)
-            return null;
-        } catch (FileAlreadyExistsException e) {
-            // RACE: someone else may have created the file (EEXIST)
-            return null;
-        }
-        return newPath.toFile();
-    }
-
-    private File addData(final String dir, final byte[] data) throws IOException {
-        File newFile = getNewFile(dir);
-        try {
-            FileUtils.writeToFile(newFile, data);
-        } catch (IOException e) {
-            throw new IOException("cannot write to file: " + newFile);
-        }
-        return newFile;
-    }
-
-    private File addData(final String dir, final String data) throws IOException {
-        File newFile = getNewFile(dir);
-        try {
-            FileUtils.writeToFile(newFile, data);
-        } catch (IOException e) {
-            throw new IOException("cannot write to file: " + newFile);
-        }
-        return newFile;
-    }
-
-    private File getNewFile(final String dir) throws IOException {
-        File dirFile = new File(queuePath + File.separator + dir);
-        String dirPrefix = queuePath + File.separator + dir + File.separator;
-        File newFile = null;
-        while (true) {
-            String name = name(rndHex);
-            newFile = fileCreate(dirPrefix + name + TEMPORARY_SUFFIX);
-            if (newFile != null) {
-                break;
-            }
-            if (!dirFile.exists()) {
-                if (directoryAttributes == null) {
-                    Files.createDirectories(dirFile.toPath());
-                } else {
-                    Files.createDirectories(dirFile.toPath(), directoryAttributes);
-                }
-            }
-        }
-        return newFile;
-    }
-
     @Override
     public String addPath(final String path) throws IOException {
         String dir = addDir();
@@ -431,14 +226,6 @@ public class QueueSimple implements Queue {
             Files.createDirectories(dirPath, directoryAttributes);
         }
         return addPathHelper(new File(path), dir);
-    }
-
-    protected String addDir() {
-        long now = System.currentTimeMillis() / 1000;
-        if (granularity > 0) {
-            now -= now % granularity;
-        }
-        return String.format("%08x", now);
     }
 
     @Override
@@ -607,6 +394,239 @@ public class QueueSimple implements Queue {
         }
     }
 
+    //
+    // QueueSimple specific methods
+    //
+
+    /**
+     * Get the queue path.
+     *
+     * @return queue path
+     */
+    public String getQueuePath() {
+        return queuePath;
+    }
+
+    /**
+     * Get the granularity.
+     *
+     * @return granularity (in seconds)
+     */
+    public int getGranularity() {
+        return granularity;
+    }
+
+    /**
+     * Set the granularity.
+     *
+     * @param granularity to be set (in seconds)
+     * @return the object itself
+     */
+    public QueueSimple setGranularity(final int granularity) {
+        this.granularity = granularity;
+        return this;
+    }
+
+    /**
+     * Get the umask.
+     *
+     * @return numerical umask
+     */
+    public int getUmask() {
+        return umask;
+    }
+
+    /**
+     * Set the umask.
+     *
+     * @param umask to be set (numerical)
+     * @return the object itself
+     */
+    public QueueSimple setUmask(final int umask) {
+        if (umask == -1) {
+            directoryAttributes = null;
+            fileAttributes = null;
+        } else if (0 <= umask && umask <= 0777) {
+            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
+            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
+        } else {
+            throw new IllegalArgumentException("invalid umask: " + umask);
+        }
+        this.umask = umask;
+        return this;
+    }
+
+    /**
+     * Get the default maxLock for purge().
+     *
+     * @return maximum lock time (in seconds)
+     */
+    public int getMaxLock() {
+        return defaultMaxLock;
+    }
+
+    /**
+     * Set the default maxLock for purge().
+     *
+     * @param maxLock maximum lock time (in seconds)
+     * @return the object itself
+     */
+    public QueueSimple setMaxLock(final int maxLock) {
+        this.defaultMaxLock = maxLock;
+        return this;
+    }
+
+    /**
+     * Get the default maxTemp for purge().
+     *
+     * @return maximum temporary time (in seconds)
+     */
+    public int getMaxTemp() {
+        return defaultMaxTemp;
+    }
+
+    /**
+     * Set the default maxTemp for purge().
+     *
+     * @param maxTemp maximum temporary time (in seconds)
+     * @return the object itself
+     */
+    public QueueSimple setMaxTemp(final int maxTemp) {
+        this.defaultMaxTemp = maxTemp;
+        return this;
+    }
+
+    /**
+     * Get the random hexadecimal digit.
+     *
+     * @return numerical hexadecimal digit
+     */
+    public int getRndHex() {
+        return rndHex;
+    }
+
+    /**
+     * Set the random hexadecimal digit.
+     *
+     * @param rndHex hexadecimal digit to be set (numerical)
+     * @return the object itself
+     */
+    public QueueSimple setRndHex(final int rndHex) {
+        this.rndHex = rndHex % 16;
+        return this;
+    }
+
+    //
+    // helper methods
+    //
+
+    private void warn(final String string) {
+        if (!WARN) {
+            return;
+        }
+        System.out.println(string);
+        System.out.flush();
+    }
+
+    private static String name(final int r) {
+        return String.format("%013x%01x", System.nanoTime() / 1000, r);
+    }
+
+    protected String addDir() {
+        long now = System.currentTimeMillis() / 1000;
+        if (granularity > 0) {
+            now -= now % granularity;
+        }
+        return String.format("%08x", now);
+    }
+
+    private String addPathHelper(final File tmp, final String dir) throws IOException {
+        String name = null;
+        while (true) {
+            name = name(rndHex);
+            File newFile = new File(queuePath + File.separator + dir
+                    + File.separator + name);
+            try {
+                posix.link(tmp.getPath(), newFile.getPath());
+            } catch (LastErrorException e) {
+                if (Posix.getErrorCode(e) != BasePosix.EEXIST) {
+                    throw new IOException(String.format(
+                            "cannot link(%s, %s): %s", tmp, newFile,
+                            e.getMessage()));
+                } else {
+                    continue;
+                }
+            }
+            Files.delete(tmp.toPath());
+            break;
+        }
+        return dir + File.separator + name;
+    }
+
+    // FIXME: to return a Path?
+    private File fileCreate(final String path) throws IOException {
+        Path newPath;
+        try {
+            if (fileAttributes == null) {
+                newPath = Files.createFile(Paths.get(path));
+            } else {
+                newPath = Files.createFile(Paths.get(path), fileAttributes);
+            }
+        } catch (NoSuchFileException e) {
+            // RACE: the containing directory may be mising (ENOENT)
+            return null;
+        } catch (FileAlreadyExistsException e) {
+            // RACE: someone else may have created the file (EEXIST)
+            return null;
+        }
+        return newPath.toFile();
+    }
+
+    private File addData(final String dir, final byte[] data) throws IOException {
+        File newFile = getNewFile(dir);
+        try {
+            FileUtils.writeToFile(newFile, data);
+        } catch (IOException e) {
+            throw new IOException("cannot write to file: " + newFile);
+        }
+        return newFile;
+    }
+
+    private File addData(final String dir, final String data) throws IOException {
+        File newFile = getNewFile(dir);
+        try {
+            FileUtils.writeToFile(newFile, data);
+        } catch (IOException e) {
+            throw new IOException("cannot write to file: " + newFile);
+        }
+        return newFile;
+    }
+
+    private File getNewFile(final String dir) throws IOException {
+        File dirFile = new File(queuePath + File.separator + dir);
+        String dirPrefix = queuePath + File.separator + dir + File.separator;
+        File newFile = null;
+        while (true) {
+            String name = name(rndHex);
+            newFile = fileCreate(dirPrefix + name + TEMPORARY_SUFFIX);
+            if (newFile != null) {
+                break;
+            }
+            if (!dirFile.exists()) {
+                if (directoryAttributes == null) {
+                    Files.createDirectories(dirFile.toPath());
+                } else {
+                    Files.createDirectories(dirFile.toPath(), directoryAttributes);
+                }
+            }
+        }
+        return newFile;
+    }
+
+    //
+    // helper classes (file filtering)
+    //
+
     /**
      * FileFilter class to iterate over intermediate directories.
      */
@@ -651,6 +671,10 @@ public class QueueSimple implements Queue {
             return true;
         }
     }
+
+    //
+    // iterator class
+    //
 
     /**
      * Iterator for the simple directory queue.
