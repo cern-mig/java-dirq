@@ -47,7 +47,6 @@
 
   <properties>
     <github.global.server>github</github.global.server>
-    <jna.version>4.2.1</jna.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -165,12 +164,7 @@
   </profiles>
 
   <dependencies>
-    <!-- runtime dependencies -->
-    <dependency>
-      <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>${jna.version}</version>
-    </dependency>
+    <!-- runtime dependencies (currently, none) -->
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>

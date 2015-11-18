@@ -1,7 +1,7 @@
 Change log for java-dirq:
 
 ???	???
-	* [lc] reduced reliance on the posix package
+	* [lc] now using Java NIO instead of POSIX calls through JNA
 
 1.6	Tue Nov  3 2015
 	* [lc] major code cleanup
