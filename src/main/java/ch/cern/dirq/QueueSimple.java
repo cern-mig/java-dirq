@@ -524,8 +524,9 @@ public class QueueSimple implements Queue {
     }
 
     private static String elementName(final int rnd) {
-        // FIXME: use currentTimeMillis() instead?
-        return String.format("%013x%01x", System.nanoTime() / 1000, rnd);
+        long now = System.currentTimeMillis() / 1000;
+        long micro = System.nanoTime() / 1000;
+        return String.format("%08x%05x%01x", now, micro % 1000000, rnd);
     }
 
     private String addPathHelper(final Path tmp, final String dir) throws IOException {
