@@ -110,7 +110,7 @@ public class QueueSimpleTest extends QueueTestBase {
     /**
      * Test failing lock (non permissive).
      */
-    @Test(expected=FileAlreadyExistsException.class)
+    @Test(expected = FileAlreadyExistsException.class)
     public void failLock() throws IOException {
         String data = "abc";
         String elem = qsObject.add(data);
@@ -121,7 +121,7 @@ public class QueueSimpleTest extends QueueTestBase {
     /**
      * Test failing unlock (non permissive).
      */
-    @Test(expected=NoSuchFileException.class)
+    @Test(expected = NoSuchFileException.class)
     public void failUnock() throws IOException {
         String data = "abc";
         String elem = qsObject.add(data);

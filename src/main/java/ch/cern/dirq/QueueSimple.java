@@ -274,7 +274,10 @@ public class QueueSimple implements Queue {
         }
         if (permissive && !file.exists()) {
             // RACE: the file probably has been removed by someone else
-            lock.delete();
+            if (!lock.delete()) {
+                // weird: we did create the lock so nobody should remove it!
+                warn("disappeared lock: " + lock);
+            }
             return false;
         }
         throw new IOException(String.format("cannot touch(%s)", file));
