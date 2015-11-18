@@ -2,7 +2,9 @@ package ch.cern.dirq;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -32,8 +34,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test multi level directory queue creation.
-     *
-     * @throws IOException
      */
     @Test
     public void multiLevelDirectory() throws IOException {
@@ -46,8 +46,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test queue creation.
-     *
-     * @throws IOException
      */
     @Test
     public void creation() throws IOException {
@@ -57,8 +55,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test add.
-     *
-     * @throws IOException
      */
     @Test
     public void add() throws IOException {
@@ -76,8 +72,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test addPath.
-     *
-     * @throws IOException
      */
     @Test
     public void addPath() throws IOException {
@@ -99,8 +93,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test lock/unlock.
-     *
-     * @throws IOException
      */
     @Test
     public void lockUnlock() throws IOException {
@@ -109,14 +101,37 @@ public class QueueSimpleTest extends QueueTestBase {
         String elemPath = qsPath + File.separator + elemName;
         FileUtils.writeToFile(elemPath, data);
         Assert.assertTrue(qsObject.lock(elemName));
+        Assert.assertFalse(qsObject.lock(elemName, true));
         Assert.assertTrue(new File(elemPath + QueueSimple.LOCKED_SUFFIX).exists());
-        qsObject.unlock(elemName);
+        Assert.assertTrue(qsObject.unlock(elemName));
+        Assert.assertFalse(qsObject.unlock(elemName, true));
+    }
+
+    /**
+     * Test failing lock (non permissive).
+     */
+    @Test(expected=FileAlreadyExistsException.class)
+    public void failLock() throws IOException {
+        String data = "abc";
+        String elem = qsObject.add(data);
+        Assert.assertTrue(qsObject.lock(elem));
+        Assert.assertFalse(qsObject.lock(elem, false));
+    }
+
+    /**
+     * Test failing unlock (non permissive).
+     */
+    @Test(expected=NoSuchFileException.class)
+    public void failUnock() throws IOException {
+        String data = "abc";
+        String elem = qsObject.add(data);
+        Assert.assertTrue(qsObject.lock(elem));
+        Assert.assertTrue(qsObject.unlock(elem));
+        Assert.assertFalse(qsObject.unlock(elem, false));
     }
 
     /**
      * Test get.
-     *
-     * @throws IOException
      */
     @Test
     public void get() throws IOException {
@@ -128,8 +143,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test get as byte array.
-     *
-     * @throws IOException
      */
     @Test
     public void getAsByteArray() throws IOException {
@@ -141,7 +154,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test count.
-     *
      */
     @Test
     public void count() throws IOException {
@@ -153,15 +165,13 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test iterate.
-     *
-     * @throws IOException
      */
     @Test
     public void iterate() throws IOException {
         qsObject.add("foo bar 1");
         qsObject.add("foo bar 2");
         int count = 0;
-        for (String name : qsObject) {
+        for (String name: qsObject) {
             String[] parts = name.split(File.separator);
             Assert.assertEquals(2, parts.length);
             Assert.assertTrue(QueueSimple.DIRECTORY_REGEXP.matcher(parts[0]).matches());
@@ -173,8 +183,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test count with junk.
-     *
-     * @throws IOException
      */
     @Test
     public void junkCount() throws IOException {
@@ -188,8 +196,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test remove.
-     *
-     * @throws IOException
      */
     @Test
     public void remove() throws IOException {
@@ -198,7 +204,7 @@ public class QueueSimpleTest extends QueueTestBase {
             qsObject.add(data);
         }
         Assert.assertEquals(5, qsObject.count());
-        for (String element : qsObject) {
+        for (String element: qsObject) {
             qsObject.lock(element);
             qsObject.remove(element);
         }
@@ -207,8 +213,6 @@ public class QueueSimpleTest extends QueueTestBase {
 
     /**
      * Test purge basic.
-     *
-     * @throws IOException
      */
     @Test
     public void purgeBasic() throws IOException {
@@ -217,13 +221,11 @@ public class QueueSimpleTest extends QueueTestBase {
         qsObject.add("abc");
         Assert.assertEquals(1, qsObject.count());
         qsObject.purge();
+        Assert.assertEquals(1, qsObject.count());
     }
 
     /**
-     * Test purge one dir.
-     *
-     * @throws IOException
-     * @throws InterruptedException
+     * Test purge one directory.
      */
     @Test
     public void purgeOneDir() throws IOException, InterruptedException {
@@ -243,10 +245,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test purge one dir with an orphan lock.
-     *
-     * @throws IOException
-     * @throws InterruptedException
+     * Test purge one directory with an orphan lock.
      */
     @Test
     public void purgeOneDir2() throws IOException, InterruptedException {
@@ -270,9 +269,7 @@ public class QueueSimpleTest extends QueueTestBase {
     }
 
     /**
-     * Test purge multi dir.
-     *
-     * @throws IOException
+     * Test purge multiple.
      */
     @Test
     public void purgeMultiDir() throws IOException {
@@ -296,7 +293,7 @@ public class QueueSimpleTest extends QueueTestBase {
 
         qsObject.add("abc");
         Assert.assertEquals("abc + 1 count", 2, qsObject.count());
-        for (String element : qsObject) {
+        for (String element: qsObject) {
             qsObject.lock(element);
         }
         Iterator<String> it = qsObject.iterator();

@@ -19,13 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import com.sun.jna.LastErrorException;
-
-import ch.cern.mig.posix.BasePosix;
-import ch.cern.mig.posix.Posix;
 import ch.cern.mig.utils.FileUtils;
-
-import static ch.cern.mig.posix.Posix.posix;
 
 /**
  * QueueSimple - object oriented interface to a <i>simple</i> directory based queue.
@@ -149,48 +143,48 @@ public class QueueSimple implements Queue {
     /**
      * Constructor creating a simple directory queue from the given path.
      *
-     * @param queuePath path of the directory queue
+     * @param path path of the directory queue
      * @throws IOException if any file operation fails
      */
-    public QueueSimple(final String queuePath) throws IOException {
-        this(queuePath, -1);
+    public QueueSimple(final String path) throws IOException {
+        this(path, -1);
     }
 
     /**
      * Constructor creating a simple directory queue from the given path and umask.
      *
-     * @param queuePath path of the directory queue
-     * @param umask umask of the directory queue
+     * @param path path of the directory queue
+     * @param numask numerical umask of the directory queue
      * @throws IOException if any file operation fails
      */
-    public QueueSimple(final String queuePath, final int umask) throws IOException {
-        this.queuePath = queuePath;
-        if (umask == -1) {
+    public QueueSimple(final String path, final int numask) throws IOException {
+        queuePath = path;
+        if (numask == -1) {
             directoryAttributes = null;
             fileAttributes = null;
-        } else if (0 <= umask && umask <= 0777) {
-            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~umask);
-            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~umask);
+        } else if (0 <= numask && numask <= 0777) {
+            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~numask);
+            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~numask);
         } else {
-            throw new IllegalArgumentException("invalid umask: " + umask);
+            throw new IllegalArgumentException("invalid umask: " + numask);
         }
-        this.umask = umask;
+        umask = numask;
         rndHex = rand.nextInt(0x10);
         // check if the directory exists, create it otherwise
-        File dir = new File(queuePath);
-        if (dir.exists()) {
-            if (!dir.isDirectory()) {
+        File queueFile = new File(path);
+        if (queueFile.exists()) {
+            if (!queueFile.isDirectory()) {
                 throw new IllegalArgumentException("not a directory: " + queuePath);
             }
         } else {
             if (directoryAttributes == null) {
-                Files.createDirectories(dir.toPath());
+                Files.createDirectories(queueFile.toPath());
             } else {
-                Files.createDirectories(dir.toPath(), directoryAttributes);
+                Files.createDirectories(queueFile.toPath(), directoryAttributes);
             }
         }
-        // we can now set the unique id from the path
-        queueId = FileUtils.fileKey(dir);
+        // we can now get the unique id from the (now existing) path
+        queueId = FileUtils.fileKey(queueFile);
     }
 
     //
@@ -209,35 +203,33 @@ public class QueueSimple implements Queue {
 
     @Override
     public String add(final String data) throws IOException {
-        String dir = addDir();
-        File tmp = addData(dir, data);
-        return addPathHelper(tmp, dir);
+        String dir = directoryName();
+        return addPathHelper(addDataHelper(dir, data), dir);
     }
 
     @Override
     public String add(final byte[] data) throws IOException {
-        String dir = addDir();
-        File tmp = addData(dir, data);
-        return addPathHelper(tmp, dir);
+        String dir = directoryName();
+        return addPathHelper(addDataHelper(dir, data), dir);
     }
 
     @Override
     public String addPath(final String path) throws IOException {
-        String dir = addDir();
+        String dir = directoryName();
         Path dirPath = Paths.get(queuePath + File.separator + dir);
         if (directoryAttributes == null) {
             Files.createDirectories(dirPath);
         } else {
             Files.createDirectories(dirPath, directoryAttributes);
         }
-        return addPathHelper(new File(path), dir);
+        return addPathHelper(Paths.get(path), dir);
     }
 
     @Override
     public String get(final String name) {
         try {
-            return FileUtils.readToString(queuePath + File.separator + name
-                                          + LOCKED_SUFFIX);
+            String path = queuePath + File.separator + name + LOCKED_SUFFIX;
+            return FileUtils.readToString(path);
         } catch (IOException e) {
             return null;
         }
@@ -246,8 +238,8 @@ public class QueueSimple implements Queue {
     @Override
     public byte[] getAsByteArray(final String name) {
         try {
-            return FileUtils.readToByteArray(queuePath + File.separator + name
-                                             + LOCKED_SUFFIX);
+            String path = queuePath + File.separator + name + LOCKED_SUFFIX;
+            return FileUtils.readToByteArray(path);
         } catch (IOException e) {
             return null;
         }
@@ -268,15 +260,14 @@ public class QueueSimple implements Queue {
         File file = new File(queuePath + File.separator + name);
         File lock = new File(queuePath + File.separator + name + LOCKED_SUFFIX);
         try {
-            posix.link(file.getPath(), lock.getPath());
-        } catch (LastErrorException e) {
-            if (permissive
-                && (Posix.getErrorCode(e) == BasePosix.EEXIST || Posix
-                    .getErrorCode(e) == BasePosix.ENOENT)) {
+            Files.createLink(lock.toPath(), file.toPath());
+        } catch (FileAlreadyExistsException | NoSuchFileException e) {
+            // RACE: someone else may have created the lock (EEXIST)
+            // RACE: someone else may have deleted the parent directory (ENOENT)
+            if (permissive) {
                 return false;
             }
-            throw new IOException(String.format("cannot link(%s, %s): %s",
-                                                file, lock, e.getMessage()));
+            throw e;
         }
         if (file.setLastModified(System.currentTimeMillis())) {
             return true;
@@ -524,11 +515,7 @@ public class QueueSimple implements Queue {
         System.out.flush();
     }
 
-    private static String name(final int r) {
-        return String.format("%013x%01x", System.nanoTime() / 1000, r);
-    }
-
-    private String addDir() {
+    private String directoryName() {
         long now = System.currentTimeMillis() / 1000;
         if (granularity > 0) {
             now -= now % granularity;
@@ -536,31 +523,29 @@ public class QueueSimple implements Queue {
         return String.format("%08x", now);
     }
 
-    private String addPathHelper(final File tmp, final String dir) throws IOException {
-        String name = null;
+    private static String elementName(final int rnd) {
+        // FIXME: use currentTimeMillis() instead?
+        return String.format("%013x%01x", System.nanoTime() / 1000, rnd);
+    }
+
+    private String addPathHelper(final Path tmp, final String dir) throws IOException {
+        String dirPrefix = queuePath + File.separator + dir + File.separator;
+        String name;
         while (true) {
-            name = name(rndHex);
-            File newFile = new File(queuePath + File.separator + dir
-                    + File.separator + name);
+            name = elementName(rndHex);
             try {
-                posix.link(tmp.getPath(), newFile.getPath());
-            } catch (LastErrorException e) {
-                if (Posix.getErrorCode(e) != BasePosix.EEXIST) {
-                    throw new IOException(String.format(
-                            "cannot link(%s, %s): %s", tmp, newFile,
-                            e.getMessage()));
-                } else {
-                    continue;
-                }
+                Files.createLink(Paths.get(dirPrefix + name), tmp);
+            } catch (FileAlreadyExistsException e) {
+                // RACE: someone else may have created the file (EEXIST)
+                continue;
             }
-            Files.delete(tmp.toPath());
+            Files.delete(tmp);
             break;
         }
         return dir + File.separator + name;
     }
 
-    // FIXME: to return a Path?
-    private File fileCreate(final String path) throws IOException {
+    private Path createPath(final String path) throws IOException {
         Path newPath;
         try {
             if (fileAttributes == null) {
@@ -575,37 +560,17 @@ public class QueueSimple implements Queue {
             // RACE: someone else may have created the file (EEXIST)
             return null;
         }
-        return newPath.toFile();
+        return newPath;
     }
 
-    private File addData(final String dir, final byte[] data) throws IOException {
-        File newFile = getNewFile(dir);
-        try {
-            FileUtils.writeToFile(newFile, data);
-        } catch (IOException e) {
-            throw new IOException("cannot write to file: " + newFile);
-        }
-        return newFile;
-    }
-
-    private File addData(final String dir, final String data) throws IOException {
-        File newFile = getNewFile(dir);
-        try {
-            FileUtils.writeToFile(newFile, data);
-        } catch (IOException e) {
-            throw new IOException("cannot write to file: " + newFile);
-        }
-        return newFile;
-    }
-
-    private File getNewFile(final String dir) throws IOException {
+    private Path getNewPath(final String dir) throws IOException {
         File dirFile = new File(queuePath + File.separator + dir);
         String dirPrefix = queuePath + File.separator + dir + File.separator;
-        File newFile = null;
+        Path newPath;
         while (true) {
-            String name = name(rndHex);
-            newFile = fileCreate(dirPrefix + name + TEMPORARY_SUFFIX);
-            if (newFile != null) {
+            String name = elementName(rndHex);
+            newPath = createPath(dirPrefix + name + TEMPORARY_SUFFIX);
+            if (newPath != null) {
                 break;
             }
             if (!dirFile.exists()) {
@@ -616,7 +581,19 @@ public class QueueSimple implements Queue {
                 }
             }
         }
-        return newFile;
+        return newPath;
+    }
+
+    private Path addDataHelper(final String dir, final byte[] data) throws IOException {
+        Path newPath = getNewPath(dir);
+        FileUtils.writeToFile(newPath, data);
+        return newPath;
+    }
+
+    private Path addDataHelper(final String dir, final String data) throws IOException {
+        Path newPath = getNewPath(dir);
+        FileUtils.writeToFile(newPath, data);
+        return newPath;
     }
 
     //
