@@ -10,6 +10,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import ch.cern.mig.utils.FileUtils;
@@ -133,8 +135,8 @@ public class QueueSimple implements Queue {
 
     private String queueId = null;
     private String queuePath = null;
-    private FileAttribute<?> directoryAttributes = null;
-    private FileAttribute<?> fileAttributes = null;
+    private Set<PosixFilePermission> directoryPermissions = null;
+    private Set<PosixFilePermission> filePermissions = null;
 
     //
     // constructors
@@ -160,11 +162,11 @@ public class QueueSimple implements Queue {
     public QueueSimple(final String path, final int numask) throws IOException {
         queuePath = path;
         if (numask == -1) {
-            directoryAttributes = null;
-            fileAttributes = null;
+            directoryPermissions = null;
+            filePermissions = null;
         } else if (0 <= numask && numask <= 0777) {
-            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~numask);
-            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~numask);
+            directoryPermissions = FileUtils.posixPermissionsFromInteger(0777 & ~numask);
+            filePermissions = FileUtils.posixPermissionsFromInteger(0666 & ~numask);
         } else {
             throw new IllegalArgumentException("invalid umask: " + numask);
         }
@@ -177,10 +179,9 @@ public class QueueSimple implements Queue {
                 throw new IllegalArgumentException("not a directory: " + queuePath);
             }
         } else {
-            if (directoryAttributes == null) {
-                Files.createDirectories(queueFile.toPath());
-            } else {
-                Files.createDirectories(queueFile.toPath(), directoryAttributes);
+            Files.createDirectories(queueFile.toPath());
+            if (directoryPermissions != null) {
+                Files.setPosixFilePermissions(queueFile.toPath(), directoryPermissions);
             }
         }
         // we can now get the unique id from the (now existing) path
@@ -217,10 +218,9 @@ public class QueueSimple implements Queue {
     public String addPath(final String path) throws IOException {
         String dir = directoryName();
         Path dirPath = Paths.get(queuePath + File.separator + dir);
-        if (directoryAttributes == null) {
-            Files.createDirectories(dirPath);
-        } else {
-            Files.createDirectories(dirPath, directoryAttributes);
+        Files.createDirectories(dirPath);
+        if (directoryPermissions != null) {
+            Files.setPosixFilePermissions(dirPath, directoryPermissions);
         }
         return addPathHelper(Paths.get(path), dir);
     }
@@ -434,11 +434,11 @@ public class QueueSimple implements Queue {
      */
     public QueueSimple setUmask(final int value) {
         if (value == -1) {
-            directoryAttributes = null;
-            fileAttributes = null;
+            directoryPermissions = null;
+            filePermissions = null;
         } else if (0 <= value && value <= 0777) {
-            directoryAttributes = FileUtils.fileAttributesFromInteger(0777 & ~value);
-            fileAttributes = FileUtils.fileAttributesFromInteger(0666 & ~value);
+            directoryPermissions = FileUtils.posixPermissionsFromInteger(0777 & ~value);
+            filePermissions = FileUtils.posixPermissionsFromInteger(0666 & ~value);
         } else {
             throw new IllegalArgumentException("invalid umask: " + value);
         }
@@ -552,10 +552,9 @@ public class QueueSimple implements Queue {
     private Path createPath(final String path) throws IOException {
         Path newPath;
         try {
-            if (fileAttributes == null) {
-                newPath = Files.createFile(Paths.get(path));
-            } else {
-                newPath = Files.createFile(Paths.get(path), fileAttributes);
+            newPath = Files.createFile(Paths.get(path));
+            if (filePermissions != null) {
+                Files.setPosixFilePermissions(newPath, filePermissions);
             }
         } catch (NoSuchFileException e) {
             // RACE: the containing directory may be mising (ENOENT)
@@ -578,10 +577,9 @@ public class QueueSimple implements Queue {
                 break;
             }
             if (!dirFile.exists()) {
-                if (directoryAttributes == null) {
-                    Files.createDirectories(dirFile.toPath());
-                } else {
-                    Files.createDirectories(dirFile.toPath(), directoryAttributes);
+                Files.createDirectories(dirFile.toPath());
+                if (directoryPermissions != null) {
+                    Files.setPosixFilePermissions(dirFile.toPath(), directoryPermissions);
                 }
             }
         }

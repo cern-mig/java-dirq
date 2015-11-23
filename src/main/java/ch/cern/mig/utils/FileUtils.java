@@ -34,6 +34,13 @@ public final class FileUtils {
      * Create NIO file attributes from numerical POSIX permissions.
      */
     public static FileAttribute<?> fileAttributesFromInteger(final int perm) {
+        return PosixFilePermissions.asFileAttribute(posixPermissionsFromInteger(perm));
+    }
+
+    /**
+     * Create NIO POSIX file permissions from numerical POSIX permissions.
+     */
+    public static Set<PosixFilePermission> posixPermissionsFromInteger(final int perm) {
         Set<PosixFilePermission> result = EnumSet.noneOf(PosixFilePermission.class);
         if (isSet(perm, 0400)) {
             result.add(PosixFilePermission.OWNER_READ);
@@ -62,7 +69,7 @@ public final class FileUtils {
         if (isSet(perm, 01)) {
             result.add(PosixFilePermission.OTHERS_EXECUTE);
         }
-        return PosixFilePermissions.asFileAttribute(result);
+        return result;
     }
 
     /**
