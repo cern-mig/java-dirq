@@ -218,10 +218,7 @@ public class QueueSimple implements Queue {
     public String addPath(final String path) throws IOException {
         String dir = directoryName();
         Path dirPath = Paths.get(queuePath + File.separator + dir);
-        Files.createDirectories(dirPath);
-        if (directoryPermissions != null) {
-            Files.setPosixFilePermissions(dirPath, directoryPermissions);
-        }
+        ensureDirectory(dirPath);
         return addPathHelper(Paths.get(path), dir);
     }
 
@@ -549,7 +546,7 @@ public class QueueSimple implements Queue {
         return dir + File.separator + name;
     }
 
-    private Path createPath(final String path) throws IOException {
+    private Path createFile(final String path) throws IOException {
         Path newPath;
         try {
             newPath = Files.createFile(Paths.get(path));
@@ -572,15 +569,12 @@ public class QueueSimple implements Queue {
         Path newPath;
         while (true) {
             String name = elementName(rndHex);
-            newPath = createPath(dirPrefix + name + TEMPORARY_SUFFIX);
+            newPath = createFile(dirPrefix + name + TEMPORARY_SUFFIX);
             if (newPath != null) {
                 break;
             }
             if (!dirFile.exists()) {
-                Files.createDirectories(dirFile.toPath());
-                if (directoryPermissions != null) {
-                    Files.setPosixFilePermissions(dirFile.toPath(), directoryPermissions);
-                }
+                ensureDirectory(dirFile.toPath());
             }
         }
         return newPath;
@@ -596,6 +590,13 @@ public class QueueSimple implements Queue {
         Path newPath = getNewPath(dir);
         FileUtils.writeToFile(newPath, data);
         return newPath;
+    }
+
+    private void ensureDirectory (final Path path) throws IOException {
+        Files.createDirectories(path);
+        if (directoryPermissions != null) {
+            Files.setPosixFilePermissions(path, directoryPermissions);
+        }
     }
 
     //
