@@ -31,13 +31,6 @@ public final class FileUtils {
     }
 
     /**
-     * Create NIO file attributes from numerical POSIX permissions.
-     */
-    public static FileAttribute<?> fileAttributesFromInteger(final int perm) {
-        return PosixFilePermissions.asFileAttribute(posixPermissionsFromInteger(perm));
-    }
-
-    /**
      * Create NIO POSIX file permissions from numerical POSIX permissions.
      */
     public static Set<PosixFilePermission> posixPermissionsFromInteger(final int perm) {
@@ -70,6 +63,13 @@ public final class FileUtils {
             result.add(PosixFilePermission.OTHERS_EXECUTE);
         }
         return result;
+    }
+
+    /**
+     * Create NIO file attributes from numerical POSIX permissions.
+     */
+    public static FileAttribute<?> fileAttributesFromInteger(final int perm) {
+        return PosixFilePermissions.asFileAttribute(posixPermissionsFromInteger(perm));
     }
 
     /**

@@ -3,6 +3,7 @@ package ch.cern.dirq;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -266,7 +267,7 @@ public class QueueSimple implements Queue {
             }
             throw e;
         }
-        if (file.setLastModified(System.currentTimeMillis())) {
+        if (touchFile(file)) {
             return true;
         }
         if (permissive && !file.exists()) {
@@ -592,11 +593,35 @@ public class QueueSimple implements Queue {
         return newPath;
     }
 
-    private void ensureDirectory (final Path path) throws IOException {
+    private void ensureDirectory(final Path path) throws IOException {
         Files.createDirectories(path);
         if (directoryPermissions != null) {
             Files.setPosixFilePermissions(path, directoryPermissions);
         }
+    }
+
+    private boolean touchFile(final File file) {
+        if (file.setLastModified(System.currentTimeMillis())) {
+            return true;
+        }
+        // since we cannot use utime(file, null) from Java, setLastModified()
+        // might fail with EPERM even though we have write access to the file
+        // (this happens if the file owner is different from the process user);
+        // we therefore try to change the time via the dirty hack below...
+        if (file.exists() && file.canWrite()) {
+            try (
+                RandomAccessFile raf = new RandomAccessFile(file, "rw");
+            ) {
+                long length = raf.length();
+                raf.setLength(length + 1);
+                raf.setLength(length);
+                raf.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     //
