@@ -1,6 +1,8 @@
 Change log for java-dirq:
 
 ???	???
+
+1.7	Fri Nov 27 2015
 	* [lc] now using the checkstyle maven plugin
 	* [lc] now using Java NIO instead of POSIX calls through JNA
 	* [lc] removed all external runtime dependencies (jna and commons-lang3)
