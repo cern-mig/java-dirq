@@ -1,4 +1,4 @@
-package ch.cern.mig.utils;
+package ch.cern.dirq;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,9 @@ import java.util.Set;
 
 /**
  * Convenient file related utilities.
+ * <br>
+ * This is a private class to be used only by the directory queue classes.
+ * Its API can change at any time without any notice.
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
@@ -22,23 +25,25 @@ import java.util.Set;
  */
 public final class FileUtils {
 
-    public static final int S_IRWXU = 00700;
-    public static final int S_IRUSR = 00400;
-    public static final int S_IWUSR = 00200;
-    public static final int S_IXUSR = 00100;
-    public static final int S_IRWXG = 00070;
-    public static final int S_IRGRP = 00040;
-    public static final int S_IWGRP = 00020;
-    public static final int S_IXGRP = 00010;
-    public static final int S_IRWXO = 00007;
-    public static final int S_IROTH = 00004;
-    public static final int S_IWOTH = 00002;
-    public static final int S_IXOTH = 00001;
+    // stat(2) constants
+    public static final int S_IRWXU = 0700;
+    public static final int S_IRUSR = 0400;
+    public static final int S_IWUSR = 0200;
+    public static final int S_IXUSR = 0100;
+    public static final int S_IRWXG = 0070;
+    public static final int S_IRGRP = 0040;
+    public static final int S_IWGRP = 0020;
+    public static final int S_IXGRP = 0010;
+    public static final int S_IRWXO = 0007;
+    public static final int S_IROTH = 0004;
+    public static final int S_IWOTH = 0002;
+    public static final int S_IXOTH = 0001;
 
+    // this utility class cannot be instantiated
     private FileUtils() {
     }
 
-    // helper for fileAttributesFromInteger()
+    // helper for posixPermissionsFromInteger()
     private static boolean isSet(final int perm, final int bit) {
         return (perm & bit) == bit;
     }

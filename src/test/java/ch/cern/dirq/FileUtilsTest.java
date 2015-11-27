@@ -11,10 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import ch.cern.mig.utils.FileUtils;
-
 /**
- * Unit tests for {@link ch.cern.mig.utils.FileUtils}.
+ * Unit tests for {@link ch.cern.dirq.FileUtils}.
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;

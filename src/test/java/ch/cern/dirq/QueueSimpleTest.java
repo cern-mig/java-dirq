@@ -13,8 +13,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.cern.mig.utils.FileUtils;
-
 /**
  * Unit tests for {@link ch.cern.dirq.QueueSimple}.
  *

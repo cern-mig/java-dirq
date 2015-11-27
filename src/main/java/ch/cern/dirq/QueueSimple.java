@@ -21,8 +21,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import ch.cern.mig.utils.FileUtils;
-
 /**
  * QueueSimple - object oriented interface to a <i>simple</i> directory based queue.
  * <br>
@@ -121,6 +119,15 @@ public class QueueSimple implements Queue {
     private static final int DEFAULT_MAXLOCK = 600;
     private static final int DEFAULT_MAXTEMP = 600;
 
+    private static final int MAX_RNDHEX = 16;
+    private static final int MAX_UMASK = 0777;
+    private static final int MAX_DIRECTORY_UMASK = 0777;
+    private static final int MAX_FILE_UMASK = 0666;
+
+    private static final long SECOND = 1000L;
+    private static final long NANO2MICRO = 1000L;
+    private static final long MAX_MICRO = 1000000L;
+
     private static final FileFilter INTERMEDIATE_DIRECTORY_FF =
         new IntermediateDirectoryFF();
     private static final FileFilter ELEMENT_FF =
@@ -128,7 +135,7 @@ public class QueueSimple implements Queue {
     private static final FileFilter DOT_ELEMENT_FF =
         new DotElementFF();
 
-    private static boolean WARN = false;
+    private static boolean reportWarn;
     private static Random rand = new Random();
 
     private int granularity = DEFAULT_GRANULARITY;
@@ -167,14 +174,14 @@ public class QueueSimple implements Queue {
         if (numask == -1) {
             directoryPermissions = null;
             filePermissions = null;
-        } else if (0 <= numask && numask <= 0777) {
-            directoryPermissions = FileUtils.posixPermissionsFromInteger(0777 & ~numask);
-            filePermissions = FileUtils.posixPermissionsFromInteger(0666 & ~numask);
+        } else if (0 <= numask && numask <= MAX_UMASK) {
+            directoryPermissions = directoryPerms(numask);
+            filePermissions = filePerms(numask);
         } else {
             throw new IllegalArgumentException("invalid umask: " + numask);
         }
         umask = numask;
-        rndHex = rand.nextInt(0x10);
+        rndHex = rand.nextInt(MAX_RNDHEX);
         // check if the directory exists, create it otherwise
         File queueFile = new File(path);
         if (queueFile.exists()) {
@@ -342,10 +349,10 @@ public class QueueSimple implements Queue {
         long oldlock = 0;
         long oldtemp = 0;
         if (maxLock > 0) {
-            oldlock = now - maxLock * 1000L;
+            oldlock = now - maxLock * SECOND;
         }
         if (maxTemp > 0) {
-            oldtemp = now - maxTemp * 1000L;
+            oldtemp = now - maxTemp * SECOND;
         }
         if (maxTemp > 0 || maxLock > 0) {
             for (File idir: idirs) {
@@ -435,9 +442,9 @@ public class QueueSimple implements Queue {
         if (value == -1) {
             directoryPermissions = null;
             filePermissions = null;
-        } else if (0 <= value && value <= 0777) {
-            directoryPermissions = FileUtils.posixPermissionsFromInteger(0777 & ~value);
-            filePermissions = FileUtils.posixPermissionsFromInteger(0666 & ~value);
+        } else if (0 <= value && value <= MAX_UMASK) {
+            directoryPermissions = directoryPerms(value);
+            filePermissions = filePerms(value);
         } else {
             throw new IllegalArgumentException("invalid umask: " + value);
         }
@@ -501,7 +508,7 @@ public class QueueSimple implements Queue {
      * @return the object itself
      */
     public QueueSimple setRndHex(final int value) {
-        rndHex = value % 16;
+        rndHex = value % MAX_RNDHEX;
         return this;
     }
 
@@ -509,16 +516,23 @@ public class QueueSimple implements Queue {
     // helper methods
     //
 
-    private void warn(final String string) {
-        if (!WARN) {
-            return;
+    private static Set<PosixFilePermission> directoryPerms(final int numask) {
+        return FileUtils.posixPermissionsFromInteger(MAX_DIRECTORY_UMASK & ~numask);
+    }
+
+    private static Set<PosixFilePermission> filePerms(final int numask) {
+        return FileUtils.posixPermissionsFromInteger(MAX_FILE_UMASK & ~numask);
+    }
+
+    private static void warn(final String string) {
+        if (reportWarn) {
+            System.out.println(string);
+            System.out.flush();
         }
-        System.out.println(string);
-        System.out.flush();
     }
 
     private String directoryName() {
-        long now = System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis() / SECOND;
         if (granularity > 0) {
             now -= now % granularity;
         }
@@ -526,9 +540,9 @@ public class QueueSimple implements Queue {
     }
 
     private static String elementName(final int rnd) {
-        long now = System.currentTimeMillis() / 1000;
-        long micro = System.nanoTime() / 1000;
-        return String.format("%08x%05x%01x", now, micro % 1000000, rnd);
+        long now = System.currentTimeMillis() / SECOND;
+        long micro = System.nanoTime() / NANO2MICRO;
+        return String.format("%08x%05x%01x", now, micro % MAX_MICRO, rnd);
     }
 
     private String addPathHelper(final Path tmp, final String dir) throws IOException {
@@ -691,7 +705,7 @@ public class QueueSimple implements Queue {
      */
     private static class QueueSimpleIterator implements Iterator<String> {
 
-        private QueueSimple itQueue = null;
+        private QueueSimple itQueue;
         private List<String> itDirs = new ArrayList<String>();
         private List<String> itElts = new ArrayList<String>();
 
