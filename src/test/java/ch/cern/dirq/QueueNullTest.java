@@ -68,7 +68,7 @@ public class QueueNullTest extends QueueTestBase {
      * Test unlock.
      */
     @Test(expected = UnsupportedOperationException.class)
-    public void unlock() throws Exception {
+    public void unlock() {
         qnObject.unlock("");
     }
 

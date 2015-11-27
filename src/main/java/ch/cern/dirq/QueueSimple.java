@@ -632,7 +632,7 @@ public class QueueSimple implements Queue {
                 raf.setLength(length);
                 raf.close();
                 return true;
-            } catch (Exception e) {
+            } catch (IOException e) {
                 return false;
             }
         }
