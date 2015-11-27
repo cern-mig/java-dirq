@@ -1,13 +1,15 @@
 Change log for java-dirq:
 
 ???	???
+	* [lc] now using the checkstyle maven plugin
 	* [lc] now using Java NIO instead of POSIX calls through JNA
+	* [lc] removed all external runtime dependencies (jna and commons-lang3)
 
 1.6	Tue Nov  3 2015
 	* [lc] major code cleanup
 
 1.5	Tue Mar 31 2015
-        * [lc] fixed NPE in QueueSimple's count() method
+	* [lc] fixed NPE in QueueSimple's count() method
 
 1.4	Mon Jul 15 2013
 	* [lc] changed all the tests to use a temporary directory
