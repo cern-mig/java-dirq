@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,6 +117,10 @@ public class QueueSimple implements Queue {
     public static final Pattern ELEMENT_REGEXP =
         Pattern.compile("^[0-9a-f]{14}$");
 
+    private static final int DEFAULT_GRANULARITY = 60;
+    private static final int DEFAULT_MAXLOCK = 600;
+    private static final int DEFAULT_MAXTEMP = 600;
+
     private static final FileFilter INTERMEDIATE_DIRECTORY_FF =
         new IntermediateDirectoryFF();
     private static final FileFilter ELEMENT_FF =
@@ -128,16 +131,15 @@ public class QueueSimple implements Queue {
     private static boolean WARN = false;
     private static Random rand = new Random();
 
-    private int granularity = 60;
-    private int umask = -1;
-    private int defaultMaxLock = 600;
-    private int defaultMaxTemp = 300;
-    private int rndHex = 0;
-
-    private String queueId = null;
-    private String queuePath = null;
-    private Set<PosixFilePermission> directoryPermissions = null;
-    private Set<PosixFilePermission> filePermissions = null;
+    private int granularity = DEFAULT_GRANULARITY;
+    private int qMaxLock = DEFAULT_MAXLOCK;
+    private int qMaxTemp = DEFAULT_MAXTEMP;
+    private int rndHex;
+    private int umask;
+    private String queueId;
+    private String queuePath;
+    private Set<PosixFilePermission> directoryPermissions;
+    private Set<PosixFilePermission> filePermissions;
 
     //
     // constructors
@@ -322,24 +324,23 @@ public class QueueSimple implements Queue {
 
     @Override
     public void purge() throws IOException {
-        purge(defaultMaxLock, defaultMaxTemp);
+        purge(qMaxLock, qMaxTemp);
     }
 
     @Override
     public void purge(final int maxLock) throws IOException {
-        purge(maxLock, defaultMaxTemp);
+        purge(maxLock, qMaxTemp);
     }
 
     @Override
     public void purge(final int maxLock, final int maxTemp) throws IOException {
-        long now = System.currentTimeMillis();
-        long oldtemp = 0;
-        long oldlock = 0;
-        // get the list of intermediate directories
         File[] idirs = new File(queuePath).listFiles(INTERMEDIATE_DIRECTORY_FF);
         if (idirs == null) {
             return;
         }
+        long now = System.currentTimeMillis();
+        long oldlock = 0;
+        long oldtemp = 0;
         if (maxLock > 0) {
             oldlock = now - maxLock * 1000L;
         }
@@ -450,7 +451,7 @@ public class QueueSimple implements Queue {
      * @return maximum lock time (in seconds)
      */
     public int getMaxLock() {
-        return defaultMaxLock;
+        return qMaxLock;
     }
 
     /**
@@ -460,7 +461,7 @@ public class QueueSimple implements Queue {
      * @return the object itself
      */
     public QueueSimple setMaxLock(final int value) {
-        defaultMaxLock = value;
+        qMaxLock = value;
         return this;
     }
 
@@ -470,7 +471,7 @@ public class QueueSimple implements Queue {
      * @return maximum temporary time (in seconds)
      */
     public int getMaxTemp() {
-        return defaultMaxTemp;
+        return qMaxTemp;
     }
 
     /**
@@ -480,7 +481,7 @@ public class QueueSimple implements Queue {
      * @return the object itself
      */
     public QueueSimple setMaxTemp(final int value) {
-        defaultMaxTemp = value;
+        qMaxTemp = value;
         return this;
     }
 

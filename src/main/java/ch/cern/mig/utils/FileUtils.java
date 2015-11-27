@@ -22,6 +22,19 @@ import java.util.Set;
  */
 public final class FileUtils {
 
+    public static final int S_IRWXU = 00700;
+    public static final int S_IRUSR = 00400;
+    public static final int S_IWUSR = 00200;
+    public static final int S_IXUSR = 00100;
+    public static final int S_IRWXG = 00070;
+    public static final int S_IRGRP = 00040;
+    public static final int S_IWGRP = 00020;
+    public static final int S_IXGRP = 00010;
+    public static final int S_IRWXO = 00007;
+    public static final int S_IROTH = 00004;
+    public static final int S_IWOTH = 00002;
+    public static final int S_IXOTH = 00001;
+
     private FileUtils() {
     }
 
@@ -35,31 +48,31 @@ public final class FileUtils {
      */
     public static Set<PosixFilePermission> posixPermissionsFromInteger(final int perm) {
         Set<PosixFilePermission> result = EnumSet.noneOf(PosixFilePermission.class);
-        if (isSet(perm, 0400)) {
+        if (isSet(perm, S_IRUSR)) {
             result.add(PosixFilePermission.OWNER_READ);
         }
-        if (isSet(perm, 0200)) {
+        if (isSet(perm, S_IWUSR)) {
             result.add(PosixFilePermission.OWNER_WRITE);
         }
-        if (isSet(perm, 0100)) {
+        if (isSet(perm, S_IXUSR)) {
             result.add(PosixFilePermission.OWNER_EXECUTE);
         }
-        if (isSet(perm, 040)) {
+        if (isSet(perm, S_IRGRP)) {
             result.add(PosixFilePermission.GROUP_READ);
         }
-        if (isSet(perm, 020)) {
+        if (isSet(perm, S_IWGRP)) {
             result.add(PosixFilePermission.GROUP_WRITE);
         }
-        if (isSet(perm, 010)) {
+        if (isSet(perm, S_IXGRP)) {
             result.add(PosixFilePermission.GROUP_EXECUTE);
         }
-        if (isSet(perm, 04)) {
+        if (isSet(perm, S_IROTH)) {
             result.add(PosixFilePermission.OTHERS_READ);
         }
-        if (isSet(perm, 02)) {
+        if (isSet(perm, S_IWOTH)) {
             result.add(PosixFilePermission.OTHERS_WRITE);
         }
-        if (isSet(perm, 01)) {
+        if (isSet(perm, S_IXOTH)) {
             result.add(PosixFilePermission.OTHERS_EXECUTE);
         }
         return result;
