@@ -21,6 +21,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * QueueSimple - object oriented interface to a <i>simple</i> directory based queue.
  * <br>
@@ -108,6 +111,8 @@ import java.util.regex.Pattern;
 
 public class QueueSimple implements Queue {
 
+    private static final Logger logger = LoggerFactory.getLogger(QueueSimple.class);
+
     public static final String TEMPORARY_SUFFIX = ".tmp";
     public static final String LOCKED_SUFFIX = ".lck";
     public static final Pattern DIRECTORY_REGEXP =
@@ -135,7 +140,6 @@ public class QueueSimple implements Queue {
     private static final FileFilter DOT_ELEMENT_FF =
         new DotElementFF();
 
-    private static boolean reportWarn;
     private static Random rand = new Random();
 
     private int granularity = DEFAULT_GRANULARITY;
@@ -233,23 +237,15 @@ public class QueueSimple implements Queue {
     }
 
     @Override
-    public String get(final String name) {
-        try {
-            String path = queuePath + File.separator + name + LOCKED_SUFFIX;
-            return FileUtils.readToString(path);
-        } catch (IOException e) {
-            return null;
-        }
+    public String get(final String name) throws IOException {
+        String path = queuePath + File.separator + name + LOCKED_SUFFIX;
+        return FileUtils.readToString(path);
     }
 
     @Override
-    public byte[] getAsByteArray(final String name) {
-        try {
-            String path = queuePath + File.separator + name + LOCKED_SUFFIX;
-            return FileUtils.readToByteArray(path);
-        } catch (IOException e) {
-            return null;
-        }
+    public byte[] getAsByteArray(final String name) throws IOException {
+        String path = queuePath + File.separator + name + LOCKED_SUFFIX;
+        return FileUtils.readToByteArray(path);
     }
 
     @Override
@@ -283,7 +279,7 @@ public class QueueSimple implements Queue {
             // RACE: the file probably has been removed by someone else
             if (!lock.delete()) {
                 // weird: we did create the lock so nobody should remove it!
-                warn("disappeared lock: " + lock);
+                logger.warn("disappeared lock: {}", lock);
             }
             return false;
         }
@@ -375,7 +371,7 @@ public class QueueSimple implements Queue {
                     if (elt.getName().endsWith(LOCKED_SUFFIX) && mtime >= oldlock) {
                         continue;
                     }
-                    warn("removing too old volatile file: " + elt);
+                    logger.warn("removing too old volatile file: {}", elt);
                     Files.deleteIfExists(elt.toPath());
                 }
             }
@@ -522,13 +518,6 @@ public class QueueSimple implements Queue {
 
     private static Set<PosixFilePermission> filePerms(final int numask) {
         return FileUtils.posixPermissionsFromInteger(MAX_FILE_UMASK & ~numask);
-    }
-
-    private static void warn(final String string) {
-        if (reportWarn) {
-            System.out.println(string);
-            System.out.flush();
-        }
     }
 
     private String directoryName() {

@@ -1,6 +1,10 @@
 Change log for java-dirq:
 
 ???	???
+	* [lc] now using the findbugs maven plugin
+	* [lc] now using SLF4J to log warnings (new runtime dependency)
+	* [lc] the get() method can now throw an IOException
+	* [lc] the getAsByteArray() method can now throw an IOException
 
 1.7	Fri Nov 27 2015
 	* [lc] now using the checkstyle maven plugin

@@ -144,7 +144,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element to be retrieved
      * @return data associated with the given element
      */
-    String get(String name);
+    String get(String name) throws IOException;
 
     /**
      * Get the given locked element as byte array data.
@@ -152,7 +152,7 @@ public interface Queue extends Iterable<String> {
      * @param name name of the element to be retrieved
      * @return data associated with the given element
      */
-    byte[] getAsByteArray(String name);
+    byte[] getAsByteArray(String name) throws IOException;
 
     /**
      * Get the path of the given locked element.

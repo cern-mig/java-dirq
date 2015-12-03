@@ -81,6 +81,25 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.3</version>
+        <configuration>
+          <effort>Max</effort>
+          <threshold>Low</threshold>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+        <executions>
+          <execution>
+            <id>findbugs</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.6</version>
@@ -110,7 +129,6 @@
         <configuration>
           <nohelp>true</nohelp>
           <show>public</show>
-          <excludePackageNames>ch.cern.mig.posix:ch.cern.mig.utils</excludePackageNames>
         </configuration>
         <executions>
           <execution>
@@ -191,12 +209,24 @@
   </profiles>
 
   <dependencies>
-    <!-- runtime dependencies (currently, none) -->
+    <!-- runtime dependencies -->
+    <!-- note: an SLF4J binding is also required, see http://www.slf4j.org/manual.html#swapping -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.13</version>
+    </dependency>
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.13</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
