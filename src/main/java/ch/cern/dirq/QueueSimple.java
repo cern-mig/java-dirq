@@ -725,7 +725,7 @@ public class QueueSimple implements Queue {
          *
          * @param queue queue to be iterated on
          */
-        public QueueSimpleIterator(final QueueSimple queue) {
+        QueueSimpleIterator(final QueueSimple queue) {
             itQueue = queue;
             File[] idirs = new File(itQueue.getQueuePath())
                 .listFiles(INTERMEDIATE_DIRECTORY_FF);
