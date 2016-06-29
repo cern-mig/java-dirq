@@ -1,6 +1,6 @@
 Change log for java-dirq:
 
-???	???
+1.8	Wed Jun 29 2016
 	* [lc] now using the findbugs maven plugin
 	* [lc] now using SLF4J to log warnings (new runtime dependency)
 	* [lc] the get() method can now throw an IOException
