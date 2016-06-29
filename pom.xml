@@ -67,7 +67,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>6.14.1</version>
+            <version>6.17</version>
           </dependency>
         </dependencies>
         <executions>
@@ -214,7 +214,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.13</version>
+      <version>1.7.21</version>
     </dependency>
     <!-- test dependencies -->
     <dependency>
@@ -226,7 +226,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.13</version>
+      <version>1.7.21</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
