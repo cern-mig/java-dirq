@@ -38,7 +38,7 @@ so you can simply add to your `pom.xml` file something like:
     <dependency>
       <groupId>ch.cern.dirq</groupId>
       <artifactId>dirq</artifactId>
-      <version>1.5</version>
+      <version>1.8</version>
     </dependency>
 ```
 
@@ -64,4 +64,4 @@ License and Copyright
 
 Apache License, Version 2.0
 
-Copyright (C) 2012-2015 CERN
+Copyright (C) CERN 2012-2016

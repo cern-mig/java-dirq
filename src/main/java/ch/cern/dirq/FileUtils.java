@@ -21,7 +21,7 @@ import java.util.Set;
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
- * Copyright (C) CERN 2012-2015
+ * Copyright (C) CERN 2012-2016
  */
 public final class FileUtils {
 
