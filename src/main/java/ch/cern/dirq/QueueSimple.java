@@ -106,7 +106,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Lionel Cons &lt;lionel.cons@cern.ch&gt;
  * @author Massimo Paladin &lt;massimo.paladin@gmail.com&gt;
- * Copyright (C) CERN 2012-2016
+ * Copyright (C) CERN 2012-2017
  */
 
 public class QueueSimple implements Queue {
