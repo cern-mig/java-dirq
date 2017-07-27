@@ -143,6 +143,7 @@ public interface Queue extends Iterable<String> {
      *
      * @param name name of the element to be retrieved
      * @return data associated with the given element
+     * @throws IOException if any file operation fails
      */
     String get(String name) throws IOException;
 
@@ -151,6 +152,7 @@ public interface Queue extends Iterable<String> {
      *
      * @param name name of the element to be retrieved
      * @return data associated with the given element
+     * @throws IOException if any file operation fails
      */
     byte[] getAsByteArray(String name) throws IOException;
 

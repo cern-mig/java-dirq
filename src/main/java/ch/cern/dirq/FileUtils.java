@@ -50,6 +50,9 @@ public final class FileUtils {
 
     /**
      * Create NIO POSIX file permissions from numerical POSIX permissions.
+     *
+     * @param perm numerical permissions
+     * @return file permissions
      */
     public static Set<PosixFilePermission> posixPermissionsFromInteger(final int perm) {
         Set<PosixFilePermission> result = EnumSet.noneOf(PosixFilePermission.class);
@@ -85,6 +88,9 @@ public final class FileUtils {
 
     /**
      * Create NIO file attributes from numerical POSIX permissions.
+     *
+     * @param perm numerical permissions
+     * @return file attributes
      */
     public static FileAttribute<?> fileAttributesFromInteger(final int perm) {
         return PosixFilePermissions.asFileAttribute(posixPermissionsFromInteger(perm));
@@ -92,6 +98,10 @@ public final class FileUtils {
 
     /**
      * Return a unique string identifying the given file object.
+     *
+     * @param file file object
+     * @return unique string
+     * @throws IOException if any file operation fails
      */
     public static String fileKey(final File file)
         throws IOException {
@@ -100,6 +110,10 @@ public final class FileUtils {
 
     /**
      * Return a unique string identifying the given path string.
+     *
+     * @param path file path string
+     * @return unique string
+     * @throws IOException if any file operation fails
      */
     public static String fileKey(final String path)
         throws IOException {
@@ -108,6 +122,10 @@ public final class FileUtils {
 
     /**
      * Return a unique string identifying the given path object.
+     *
+     * @param path file path object
+     * @return unique string
+     * @throws IOException if any file operation fails
      */
     public static String fileKey(final Path path)
         throws IOException {
@@ -117,6 +135,10 @@ public final class FileUtils {
 
     /**
      * Write a UTF-8 string to a file object.
+     *
+     * @param file file object
+     * @param data UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final File file, final String data)
         throws IOException {
@@ -125,6 +147,10 @@ public final class FileUtils {
 
     /**
      * Write a UTF-8 string to a path string.
+     *
+     * @param path file path string
+     * @param data UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final String path, final String data)
         throws IOException {
@@ -133,6 +159,10 @@ public final class FileUtils {
 
     /**
      * Write a UTF-8 string to a path object.
+     *
+     * @param path file path object
+     * @param data UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final Path path, final String data)
         throws IOException {
@@ -141,6 +171,10 @@ public final class FileUtils {
 
     /**
      * Write bytes to a file object.
+     *
+     * @param file file object
+     * @param data bytes
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final File file, final byte[] data)
         throws IOException {
@@ -149,6 +183,10 @@ public final class FileUtils {
 
     /**
      * Write bytes to a path string.
+     *
+     * @param path file path string
+     * @param data bytes
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final String path, final byte[] data)
         throws IOException {
@@ -157,6 +195,10 @@ public final class FileUtils {
 
     /**
      * Write bytes to a path object.
+     *
+     * @param path file path object
+     * @param data bytes
+     * @throws IOException if any file operation fails
      */
     public static void writeToFile(final Path path, final byte[] data)
         throws IOException {
@@ -165,6 +207,10 @@ public final class FileUtils {
 
     /**
      * Read a UTF-8 string from a file object.
+     *
+     * @param file file object
+     * @return UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static String readToString(final File file)
         throws IOException {
@@ -173,6 +219,10 @@ public final class FileUtils {
 
     /**
      * Read a UTF-8 string from a path string.
+     *
+     * @param path file path string
+     * @return UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static String readToString(final String path)
         throws IOException {
@@ -181,6 +231,10 @@ public final class FileUtils {
 
     /**
      * Read a UTF-8 string from a path object.
+     *
+     * @param path file path object
+     * @return UTF-8 string
+     * @throws IOException if any file operation fails
      */
     public static String readToString(final Path path)
         throws IOException {
@@ -190,6 +244,10 @@ public final class FileUtils {
 
     /**
      * Read all the bytes from a file object.
+     *
+     * @param file file object
+     * @return bytes
+     * @throws IOException if any file operation fails
      */
     public static byte[] readToByteArray(final File file)
         throws IOException {
@@ -198,6 +256,10 @@ public final class FileUtils {
 
     /**
      * Read all the bytes from a path string.
+     *
+     * @param path file path string
+     * @return bytes
+     * @throws IOException if any file operation fails
      */
     public static byte[] readToByteArray(final String path)
         throws IOException {
@@ -206,6 +268,10 @@ public final class FileUtils {
 
     /**
      * Read all the bytes from a path object.
+     *
+     * @param path file path object
+     * @return bytes
+     * @throws IOException if any file operation fails
      */
     public static byte[] readToByteArray(final Path path)
         throws IOException {
@@ -214,6 +280,9 @@ public final class FileUtils {
 
     /**
      * Recursively delete the given path, stopping on the first error.
+     *
+     * @param path file object
+     * @return true if delete succeeded
      */
     public static boolean recursiveDelete(final File path) {
         if (path.isDirectory()) {
