@@ -64,4 +64,4 @@ License and Copyright
 
 Apache License, Version 2.0
 
-Copyright (C) CERN 2012-2017
+Copyright (C) CERN 2012-2019
