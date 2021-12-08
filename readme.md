@@ -1,7 +1,7 @@
 java-dirq
 =========
 
-[![Build Status](https://secure.travis-ci.org/cern-mig/java-dirq.png)](http://travis-ci.org/cern-mig/java-dirq)
+[![Build Status](https://github.com/cern-mig/java-dirq/actions/workflows/test.yml/badge.svg)
 
 
 Overview
