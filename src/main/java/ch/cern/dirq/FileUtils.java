@@ -25,18 +25,40 @@ import java.util.Set;
  */
 public final class FileUtils {
 
-    // stat(2) constants
+    /* Owner has read, write, and execute permission. */
     public static final int S_IRWXU = 0700;
+
+    /* Owner has read permission. */
     public static final int S_IRUSR = 0400;
+
+    /* Owner has write permission. */
     public static final int S_IWUSR = 0200;
+
+    /* Owner has execute permission. */
     public static final int S_IXUSR = 0100;
+
+    /* Group has read, write, and execute permission. */
     public static final int S_IRWXG = 0070;
+
+    /* Group has read permission. */
     public static final int S_IRGRP = 0040;
+
+    /* Group has write permission. */
     public static final int S_IWGRP = 0020;
+
+    /* Group has execute permission. */
     public static final int S_IXGRP = 0010;
+
+    /* Others have read, write, and execute permission. */
     public static final int S_IRWXO = 0007;
+
+    /* Others have read permission. */
     public static final int S_IROTH = 0004;
+
+    /* Others have write permission. */
     public static final int S_IWOTH = 0002;
+
+    /* Others have execute permission. */
     public static final int S_IXOTH = 0001;
 
     // this utility class cannot be instantiated

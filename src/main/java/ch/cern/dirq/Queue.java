@@ -5,10 +5,10 @@ import java.io.IOException;
 /**
  * Queue - object oriented interface to a directory based queue.
  * <br>
- * <h3>Description</h3> The goal of this module is to offer a queue system using
- * the underlying filesystem for storage, security and to prevent race
- * conditions via atomic operations. It focuses on simplicity, robustness and
- * scalability.
+ * <h2>Description</h2>
+ * The goal of this module is to offer a queue system using the underlying
+ * filesystem for storage, security and to prevent race * conditions via
+ * atomic operations. It focuses on simplicity, robustness and scalability.
  * <br>
  * This module allows multiple concurrent readers and writers to interact with
  * the same queue.
@@ -27,7 +27,7 @@ import java.io.IOException;
  * There is no knowledge of priority within a queue. If multiple priorities are
  * needed, multiple queues should be used.
  * <br>
- * <h3>Terminology</h3>
+ * <h2>Terminology</h2>
  * An element is something that contains one or more pieces of data. With
  * {@link ch.cern.dirq.QueueSimple} queues, an element can only contain one
  * binary string.
@@ -50,8 +50,8 @@ import java.io.IOException;
  * but this is not guaranteed. This is achieved by using a high-resolution timer
  * and having elements sorted by the time their final directory gets created.
  * <br>
- * <h3>Locking</h3> Adding an element is not a problem because the add() method
- * is atomic.
+ * <h2>Locking</h2>
+ * Adding an element is not a problem because the add() method is atomic.
  * <br>
  * In order to support multiple reader processes interacting with the same
  * queue, advisory locking is used. Processes should first lock an element
@@ -73,7 +73,8 @@ import java.io.IOException;
  * useless since it may change at any time. Instead, programs should directly
  * try to lock elements to make sure they are indeed locked.
  * <br>
- * <h3>Security</h3> There are no specific security mechanisms in this module.
+ * <h2>Security</h2>
+ * There are no specific security mechanisms in this module.
  * <br>
  * The elements are stored as plain files and directories. The filesystem
  * security features (owner, group, permissions, ACLs...) should be used to
