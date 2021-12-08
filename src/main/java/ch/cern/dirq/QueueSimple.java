@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * <br>
  * The documentation from Directory::Queue::Simple module has been adapted for Java.
  * <br>
- * <h3>Usage</h3>
+ * <h2>Usage</h2>
  * <pre>
  * {@code
  * // sample producer
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * }
  * }
  * </pre>
- * <h3>Description</h3>
+ * <h2>Description</h2>
  * This module is very similar to the normal directory queue, but uses a
  * different way to store data in the filesystem, using less directories. Its
  * API is almost identical.
@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * <li>can only store and retrieve byte strings
  * <li>is not compatible (at filesystem level) with the normal directory queue
  * </ul>
- * <h3>Directory Structure</h3>
+ * <h2>Directory Structure</h2>
  * The toplevel directory contains intermediate directories that contain the
  * stored elements, each of them in a file.
  * <br>
