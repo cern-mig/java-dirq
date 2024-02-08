@@ -619,7 +619,6 @@ public class QueueSimple implements Queue {
                 long length = raf.length();
                 raf.setLength(length + 1);
                 raf.setLength(length);
-                raf.close();
                 return true;
             } catch (IOException e) {
                 return false;
