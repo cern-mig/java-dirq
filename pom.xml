@@ -172,10 +172,10 @@
     <profile>
       <id>set-compiler-release</id>
       <activation>
-        <jdk>[9,)</jdk>
+        <jdk>[11,)</jdk>
       </activation>
       <properties>
-        <maven.compiler.release>9</maven.compiler.release>
+        <maven.compiler.release>11</maven.compiler.release>
       </properties>
     </profile>
     <profile>
