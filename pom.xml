@@ -4,7 +4,7 @@
   <groupId>ch.cern.dirq</groupId>
   <artifactId>dirq</artifactId>
   <packaging>jar</packaging>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.9</version>
   <name>dirq</name>
   <description>Directory based queue.</description>
   <url>https://github.com/cern-mig/java-dirq</url>
