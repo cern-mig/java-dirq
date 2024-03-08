@@ -46,7 +46,7 @@ Documentation
 -------------
 
 See:
-[http://cern-mig.github.com/java-dirq/](http://cern-mig.github.com/java-dirq/)
+[http://cern-mig.github.io/java-dirq/](http://cern-mig.github.io/java-dirq/)
 
 
 Acknowledgments
