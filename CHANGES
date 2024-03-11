@@ -1,5 +1,9 @@
 Change log for java-dirq:
 
+1.9	Mon Mar 11 2024
+	* refreshed both code and build files to support Java 21
+       	* stopped using the findbugs maven plugin
+
 1.8	Wed Jun 29 2016
 	* now using the findbugs maven plugin
 	* now using SLF4J to log warnings (new runtime dependency)
