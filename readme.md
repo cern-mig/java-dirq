@@ -3,6 +3,8 @@ java-dirq
 
 ![Build Status](https://github.com/cern-mig/java-dirq/actions/workflows/test.yml/badge.svg)
 
+> [!WARNING]
+> This software is not maintained anymore.
 
 Overview
 --------
